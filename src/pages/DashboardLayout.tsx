@@ -8,12 +8,14 @@ import PipelinePage from './PipelinePage';
 import LoansPage from './LoansPage';
 import AnalyticsPage from './AnalyticsPage';
 import SettingsPage from './SettingsPage';
+import AgentsPage from './AgentsPage';
 
 const pageTitles: Record<string, { title: string; subtitle?: string }> = {
   dashboard: { title: 'Fund Manager Dashboard' },
   businesses: { title: 'All Businesses — Complete Fundability View', subtitle: '10 businesses tracked' },
   pipeline: { title: 'Fundability Pipeline', subtitle: 'Pipeline view of all businesses' },
   loans: { title: 'Loan Approval Queue', subtitle: 'Review and approve loan applications' },
+  agents: { title: 'AI Agents', subtitle: 'Run AI-powered analysis on your businesses' },
   analytics: { title: 'Analytics & Reporting', subtitle: 'Portfolio performance metrics' },
   settings: { title: 'Settings', subtitle: 'Manage your profile and fund configuration' },
 };
