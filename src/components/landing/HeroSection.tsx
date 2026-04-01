@@ -28,7 +28,7 @@ const HeroSection = () => {
 
         <div className="flex gap-4 flex-wrap mb-14">
           <button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/auth')}
             className="bg-gradient-to-br from-primary to-gold-lt text-primary-foreground font-body text-xs font-extrabold px-9 py-4 border-none cursor-pointer tracking-[2px] uppercase rounded-sm transition-all hover:brightness-110 hover:-translate-y-0.5 shadow-[0_6px_24px_hsl(var(--gold)/0.2)] inline-flex items-center gap-2"
           >
             Request a Demo →
