@@ -75,13 +75,21 @@ const Sidebar = ({ activePage, onNavigate, onSignOut }: SidebarProps) => {
       <div className="p-3.5 border-t border-border">
         <div className="flex items-center gap-2.5">
           <div className="w-[30px] h-[30px] bg-gradient-to-br from-primary to-gold-lt rounded-full flex items-center justify-center text-[11px] font-extrabold text-primary-foreground flex-shrink-0">
-            MS
+            {initials}
           </div>
-          <div>
-            <div className="text-[11px] font-bold text-foreground">Maurice Stewart</div>
-            <div className="text-[9px] text-muted-foreground font-mono tracking-[0.5px]">Fund Manager · CFO</div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[11px] font-bold text-foreground truncate">{displayName}</div>
+            <div className="text-[9px] text-muted-foreground font-mono tracking-[0.5px]">{user?.email}</div>
           </div>
         </div>
+        {onSignOut && (
+          <button
+            onClick={onSignOut}
+            className="mt-2 w-full text-[10px] font-bold text-muted-foreground hover:text-destructive transition-colors bg-transparent border border-border rounded-sm py-1.5 cursor-pointer tracking-[1px] uppercase font-mono"
+          >
+            Sign Out
+          </button>
+        )}
       </div>
     </aside>
   );
