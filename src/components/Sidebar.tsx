@@ -15,6 +15,9 @@ const navItems = [
     { id: 'pipeline', icon: '⚡', label: 'Fundability Pipeline', badge: '10' },
     { id: 'loans', icon: '🏦', label: 'Loan Queue', badge: '3', badgeGold: false },
   ]},
+  { section: 'AI', items: [
+    { id: 'agents', icon: '🤖', label: 'AI Agents', badge: '6' },
+  ]},
   { section: 'Reporting', items: [
     { id: 'analytics', icon: '📈', label: 'Analytics' },
     { id: 'settings', icon: '⚙️', label: 'Settings' },
