@@ -1,6 +1,9 @@
+import { useAuth } from '@/contexts/AuthContext';
+
 interface SidebarProps {
   activePage: string;
   onNavigate: (page: string) => void;
+  onSignOut?: () => void;
 }
 
 const navItems = [
