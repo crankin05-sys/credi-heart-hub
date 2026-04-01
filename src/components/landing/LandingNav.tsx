@@ -23,7 +23,7 @@ const LandingNav = () => {
         <button onClick={() => scrollTo('revenue')} className="text-[13px] font-semibold text-foreground/60 hover:text-primary transition-colors tracking-wide bg-transparent border-none cursor-pointer">Revenue Model</button>
         <button onClick={() => scrollTo('cta')} className="text-[13px] font-semibold text-foreground/60 hover:text-primary transition-colors tracking-wide bg-transparent border-none cursor-pointer">Contact</button>
         <button
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/auth')}
           className="bg-gradient-to-br from-primary to-gold-lt text-primary-foreground font-body text-xs font-extrabold px-6 py-3 border-none cursor-pointer tracking-[1.5px] uppercase rounded-sm transition-all hover:brightness-110 shadow-[0_4px_16px_hsl(var(--gold)/0.2)]"
         >
           Request a Demo →
