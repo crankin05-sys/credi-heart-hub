@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import LoginPage from '@/components/LoginPage';
+import { useAuth } from '@/contexts/AuthContext';
 import Sidebar from '@/components/Sidebar';
 import Topbar from '@/components/Topbar';
 import DashboardPage from './DashboardPage';
@@ -19,16 +19,14 @@ const pageTitles: Record<string, { title: string; subtitle?: string }> = {
 };
 
 const DashboardLayout = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
   const [activePage, setActivePage] = useState('dashboard');
-
-  if (!loggedIn) return <LoginPage onLogin={() => setLoggedIn(true)} />;
+  const { signOut } = useAuth();
 
   const pageInfo = pageTitles[activePage] || pageTitles.dashboard;
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar activePage={activePage} onNavigate={setActivePage} />
+      <Sidebar activePage={activePage} onNavigate={setActivePage} onSignOut={signOut} />
       <div className="ml-[220px] flex-1 min-h-screen flex flex-col">
         <Topbar
           title={pageInfo.title}
