@@ -21,7 +21,10 @@ const navItems = [
   ]},
 ];
 
-const Sidebar = ({ activePage, onNavigate }: SidebarProps) => {
+const Sidebar = ({ activePage, onNavigate, onSignOut }: SidebarProps) => {
+  const { user } = useAuth();
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
+  const initials = displayName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
   return (
     <aside className="w-[220px] bg-background border-r border-border fixed top-0 left-0 bottom-0 flex flex-col z-[100]">
       {/* Logo */}
