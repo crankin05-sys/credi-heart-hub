@@ -40,6 +40,7 @@ const DashboardLayout = () => {
           {activePage === 'businesses' && <BusinessesPage />}
           {activePage === 'pipeline' && <PipelinePage />}
           {activePage === 'loans' && <LoansPage />}
+          {activePage === 'agents' && <AgentsPage />}
           {activePage === 'analytics' && <AnalyticsPage />}
           {activePage === 'settings' && <SettingsPage />}
         </main>
