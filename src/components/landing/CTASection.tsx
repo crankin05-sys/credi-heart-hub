@@ -4,28 +4,32 @@ const CTASection = () => {
   const navigate = useNavigate();
 
   return (
-    <section id="cta" className="bg-gradient-to-br from-card to-navy-3 border-y border-border px-6 md:px-[60px] py-20 text-center relative overflow-hidden">
-      <div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[radial-gradient(circle,hsl(var(--gold)/0.08)_0%,transparent_65%)]" />
-      <div className="relative z-10">
-        <div className="text-[10px] font-bold tracking-[3.5px] text-primary uppercase mb-3 font-mono">Get Started</div>
-        <h2 className="font-display text-[clamp(36px,4vw,54px)] font-extrabold text-foreground leading-[1.1] mb-4 tracking-tight">
-          Ready to Scale Your<br />Capital <em className="italic text-primary">Impact?</em>
+    <section id="cta" className="px-6 md:px-10 py-28 relative overflow-hidden">
+      {/* Ambient glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[radial-gradient(circle,hsl(var(--gold)/0.08)_0%,transparent_60%)]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-card/30 to-transparent" />
+
+      <div className="relative z-10 text-center max-w-2xl mx-auto">
+        <div className="text-[10px] font-bold tracking-[4px] text-primary uppercase mb-4 font-mono">Get Started</div>
+        <h2 className="font-display text-[clamp(36px,4.5vw,58px)] font-extrabold text-foreground leading-[1.08] mb-5 tracking-tight">
+          Ready to Scale Your<br />Capital <em className="italic text-gradient-gold not-italic">Impact?</em>
         </h2>
-        <p className="text-base text-foreground/50 max-w-[500px] mx-auto mb-9 leading-[1.75]">
+        <p className="text-[15px] text-foreground/45 max-w-[480px] mx-auto mb-10 leading-[1.8]">
           Request a personalized demo to see the full platform and discuss how Credibility Suite AI fits your organization.
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
           <button
             onClick={() => navigate('/auth')}
-            className="bg-gradient-to-br from-primary to-gold-lt text-primary-foreground font-body text-xs font-extrabold px-9 py-4 border-none cursor-pointer tracking-[2px] uppercase rounded-sm transition-all hover:brightness-110 hover:-translate-y-0.5 shadow-[0_6px_24px_hsl(var(--gold)/0.2)] inline-flex items-center gap-2"
+            className="bg-gradient-to-r from-primary to-gold-lt text-primary-foreground font-body text-xs font-bold px-10 py-4 border-none cursor-pointer tracking-[1.5px] uppercase rounded-lg transition-all duration-300 hover:shadow-[0_12px_40px_hsl(var(--gold)/0.3)] hover:-translate-y-1 inline-flex items-center gap-2.5"
           >
-            Request a Demo →
+            Request a Demo
+            <span className="text-sm">→</span>
           </button>
-          <button className="bg-transparent text-foreground/70 border border-foreground/20 font-body text-xs font-semibold px-7 py-4 cursor-pointer rounded-sm transition-all hover:border-primary hover:text-primary">
+          <button className="bg-foreground/[0.04] text-foreground/70 border border-foreground/10 font-body text-xs font-semibold px-8 py-4 cursor-pointer rounded-lg transition-all duration-300 hover:border-primary/40 hover:text-primary">
             Schedule a Call
           </button>
         </div>
-        <p className="text-xs text-foreground/30 mt-6">Powered by She Wins With AI · AgentFlow Enterprise Platform</p>
+        <p className="text-[11px] text-foreground/20 mt-8 font-mono tracking-wide">Powered by She Wins With AI · AgentFlow Enterprise Platform</p>
       </div>
     </section>
   );

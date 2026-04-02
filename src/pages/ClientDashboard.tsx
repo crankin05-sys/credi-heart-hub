@@ -95,7 +95,6 @@ const ClientDashboard = () => {
         .from('documents')
         .getPublicUrl(filePath);
 
-      // Upsert submission
       const { error: subError } = await supabase
         .from('checklist_submissions')
         .upsert({
@@ -107,7 +106,6 @@ const ClientDashboard = () => {
 
       if (subError) throw subError;
 
-      // Update checklist in business record
       const updatedChecklist = checklist.map(item =>
         item.label === uploadTarget ? { ...item, complete: true } : item
       );
@@ -116,7 +114,6 @@ const ClientDashboard = () => {
         .update({ checklist: updatedChecklist as unknown as Json })
         .eq('id', selectedBizId);
 
-      // Refresh
       setSubmissions(prev => {
         const filtered = prev.filter(s => s.checklist_key !== uploadTarget);
         return [...filtered, {
@@ -129,7 +126,6 @@ const ClientDashboard = () => {
         }];
       });
 
-      // Update local business data
       setBusinesses(prev => prev.map(b =>
         b.id === selectedBizId ? { ...b, checklist: updatedChecklist as unknown as Json, score: Math.min(100, b.score + 2) } : b
       ));
@@ -145,28 +141,31 @@ const ClientDashboard = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'capital-ready': return { label: 'Capital Ready', cls: 'bg-success/15 text-success border border-success' };
-      case 'funded': return { label: 'Funded ✓', cls: 'bg-success/30 text-success border border-success' };
-      case 'improving': return { label: 'Improving', cls: 'bg-warning/15 text-warning border border-warning' };
-      default: return { label: 'Assessment', cls: 'bg-info/15 text-info border border-info' };
+      case 'capital-ready': return { label: 'Capital Ready', cls: 'bg-success/10 text-success border border-success/20' };
+      case 'funded': return { label: 'Funded ✓', cls: 'bg-success/20 text-success border border-success/30' };
+      case 'improving': return { label: 'Improving', cls: 'bg-warning/10 text-warning border border-warning/20' };
+      default: return { label: 'Assessment', cls: 'bg-info/10 text-info border border-info/20' };
     }
   };
 
   if (loading) {
     return (
-      <div className="p-8 text-center text-muted-foreground text-sm animate-pulse">
-        Loading your dashboard...
+      <div className="flex items-center justify-center py-20">
+        <div className="glass rounded-2xl px-8 py-6 text-center animate-pulse">
+          <div className="text-2xl mb-2">✨</div>
+          <div className="text-sm text-muted-foreground">Loading your dashboard...</div>
+        </div>
       </div>
     );
   }
 
   if (businesses.length === 0) {
     return (
-      <div className="animate-fade-up">
-        <div className="bg-card border border-border p-8 text-center">
-          <div className="text-4xl mb-4">📋</div>
-          <h2 className="font-display text-xl font-bold text-foreground mb-2">Welcome to Credibility Suite AI</h2>
-          <p className="text-muted-foreground text-sm mb-4">
+      <div className="animate-fade-up max-w-lg mx-auto mt-12">
+        <div className="glass-card rounded-2xl p-10 text-center">
+          <div className="text-5xl mb-5">📋</div>
+          <h2 className="font-display text-2xl font-bold text-foreground mb-3">Welcome to Credibility Suite AI</h2>
+          <p className="text-muted-foreground text-sm leading-relaxed">
             Your fund manager hasn't set up your business profile yet. Once they do, you'll see your fundability checklist and score here.
           </p>
         </div>
@@ -176,18 +175,23 @@ const ClientDashboard = () => {
 
   const status = biz ? getStatusBadge(biz.status) : null;
 
+  // Score ring SVG
+  const scoreRadius = 42;
+  const scoreCircumference = 2 * Math.PI * scoreRadius;
+  const scoreOffset = scoreCircumference - (scoreCircumference * (biz?.score || 0)) / 100;
+
   return (
-    <div className="animate-fade-up">
+    <div className="animate-fade-up space-y-5">
       <input type="file" ref={fileInputRef} className="hidden" onChange={onFileSelected} accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xlsx,.csv" />
 
       {/* Business selector if multiple */}
       {businesses.length > 1 && (
-        <div className="bg-card border border-border p-3 mb-4">
-          <label className="text-[9px] font-bold tracking-[2px] uppercase text-muted-foreground font-mono block mb-1.5">Select Business</label>
+        <div className="glass-card rounded-xl p-4">
+          <label className="text-[9px] font-bold tracking-[2px] uppercase text-muted-foreground font-mono block mb-2">Select Business</label>
           <select
             value={selectedBizId}
             onChange={e => setSelectedBizId(e.target.value)}
-            className="w-full bg-background border border-border text-foreground text-xs p-2 rounded-sm focus:border-primary focus:outline-none"
+            className="w-full bg-background/50 border border-foreground/[0.08] text-foreground text-xs p-2.5 rounded-lg focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
           >
             {businesses.map(b => (
               <option key={b.id} value={b.id}>{b.name}</option>
@@ -199,101 +203,142 @@ const ClientDashboard = () => {
       {biz && (
         <>
           {/* Score + Status Hero */}
-          <div className="bg-card border border-border p-5 mb-4">
-            <div className="flex items-center gap-6">
-              <div>
-                <div className={`font-display text-[56px] font-extrabold ${getScoreColor(biz.score)} leading-none`}>
-                  {biz.score}
+          <div className="glass-card rounded-2xl p-6">
+            <div className="flex items-center gap-8">
+              {/* Score Ring */}
+              <div className="score-ring flex-shrink-0">
+                <svg width="108" height="108" viewBox="0 0 108 108">
+                  <circle cx="54" cy="54" r={scoreRadius} fill="none" stroke="hsl(var(--foreground) / 0.05)" strokeWidth="6" />
+                  <circle
+                    cx="54" cy="54" r={scoreRadius} fill="none"
+                    stroke="url(#scoreGradient)"
+                    strokeWidth="6"
+                    strokeLinecap="round"
+                    strokeDasharray={scoreCircumference}
+                    strokeDashoffset={scoreOffset}
+                    className="transition-all duration-1000"
+                  />
+                  <defs>
+                    <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="hsl(var(--primary))" />
+                      <stop offset="100%" stopColor="hsl(var(--gold-lt))" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <div className={`font-display text-[32px] font-extrabold leading-none ${getScoreColor(biz.score)}`}>
+                    {biz.score}
+                  </div>
+                  <div className="text-[8px] text-muted-foreground uppercase tracking-[1px] font-mono mt-0.5">Score</div>
                 </div>
-                <div className="text-[9px] text-muted-foreground uppercase tracking-[1.5px] font-mono mt-1">Fundability Score</div>
               </div>
+
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <h2 className="font-display text-lg font-bold text-foreground">{biz.name}</h2>
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-display text-xl font-bold text-foreground">{biz.name}</h2>
                   {status && (
-                    <span className={`text-[8px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-[0.5px] ${status.cls}`}>{status.label}</span>
+                    <span className={`text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-[0.5px] ${status.cls}`}>{status.label}</span>
                   )}
                 </div>
-                <div className="text-xs text-muted-foreground mb-2">{biz.industry} · ${(biz.capital_need || 0).toLocaleString()} capital needed</div>
-                <div className="h-2.5 bg-foreground/5 rounded-sm overflow-hidden">
-                  <div
-                    className={`h-full rounded-sm transition-all duration-500 ${pct >= 90 ? 'bg-success' : pct >= 60 ? 'bg-warning' : 'bg-destructive'}`}
-                    style={{ width: `${pct}%` }}
-                  />
+                <div className="text-xs text-muted-foreground mb-4">{biz.industry} · ${(biz.capital_need || 0).toLocaleString()} capital needed</div>
+                
+                {/* Progress bar */}
+                <div className="relative">
+                  <div className="h-2 bg-foreground/[0.04] rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-primary to-gold-lt transition-all duration-1000 relative"
+                      style={{ width: `${pct}%` }}
+                    >
+                      <div className="absolute inset-0 animate-shimmer rounded-full" />
+                    </div>
+                  </div>
+                  <div className="flex justify-between mt-2">
+                    <span className="text-[10px] text-muted-foreground font-mono">{complete}/{total} complete</span>
+                    <span className="text-[10px] font-bold text-primary font-mono">{pct}%</span>
+                  </div>
                 </div>
-                <div className="text-[10px] text-muted-foreground mt-1 font-mono">{complete}/{total} checklist items complete ({pct}%)</div>
               </div>
             </div>
           </div>
 
-          {/* Pct banner */}
+          {/* Status banner */}
           {pct === 100 ? (
-            <div className="bg-success/10 border border-success/30 px-4 py-3 mb-4 text-xs text-success font-bold">
-              🎉 All checklist items complete! Your business is fundability-ready. Your fund manager will review your package.
+            <div className="glass rounded-xl border border-success/20 px-5 py-4 text-sm text-success font-medium flex items-center gap-3">
+              <span className="text-xl">🎉</span>
+              All checklist items complete! Your business is fundability-ready. Your fund manager will review your package.
             </div>
           ) : (
-            <div className="bg-primary/[0.08] border border-primary/20 px-4 py-3 mb-4 text-xs text-foreground/70 leading-relaxed">
-              <strong className="text-primary">📋 {total - complete} items remaining</strong> — Upload the missing documents below to improve your fundability score and get closer to capital access.
+            <div className="glass rounded-xl border border-primary/15 px-5 py-4 text-sm text-foreground/60 flex items-center gap-3">
+              <span className="text-xl">📋</span>
+              <div>
+                <strong className="text-primary">{total - complete} items remaining</strong> — Upload documents below to improve your fundability score.
+              </div>
             </div>
           )}
 
           {/* Fundability Checklist */}
-          <div className="bg-card border border-border">
-            <div className="px-4 py-3 bg-background border-b border-border">
-              <span className="text-[9px] font-bold tracking-[2px] uppercase text-primary font-mono">
+          <div className="glass-card rounded-2xl overflow-hidden">
+            <div className="px-5 py-4 border-b border-foreground/[0.06] flex items-center justify-between">
+              <span className="text-[10px] font-bold tracking-[2px] uppercase text-primary font-mono">
                 📋 Your Fundability Checklist
               </span>
+              <span className="text-[10px] text-muted-foreground font-mono">{complete} of {total}</span>
             </div>
-            {checklist.map((item, i) => {
-              const sub = getSubmission(item.label);
-              const isUploading = uploading === item.label;
-              return (
-                <div key={i} className={`px-4 py-3 border-b border-border/50 last:border-b-0 flex items-center gap-3 ${
-                  item.complete ? 'bg-success/[0.03]' : 'hover:bg-foreground/[0.02]'
-                }`}>
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold flex-shrink-0 ${
-                    item.complete
-                      ? 'bg-success/20 text-success'
-                      : 'bg-foreground/10 text-muted-foreground'
+            <div className="stagger-children">
+              {checklist.map((item, i) => {
+                const sub = getSubmission(item.label);
+                const isUploading = uploading === item.label;
+                return (
+                  <div key={i} className={`px-5 py-4 border-b border-foreground/[0.04] last:border-b-0 flex items-center gap-4 transition-all duration-300 ${
+                    item.complete ? 'bg-success/[0.02]' : 'hover:bg-foreground/[0.02]'
                   }`}>
-                    {item.complete ? '✓' : (i + 1)}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className={`text-xs font-semibold ${item.complete ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
-                      {item.label}
+                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold flex-shrink-0 transition-all duration-300 ${
+                      item.complete
+                        ? 'bg-success/15 text-success shadow-[0_0_12px_hsl(var(--success)/0.15)]'
+                        : 'bg-foreground/[0.05] text-muted-foreground'
+                    }`}>
+                      {item.complete ? '✓' : (i + 1)}
                     </div>
-                    {sub && (
-                      <div className="text-[10px] text-muted-foreground mt-0.5 font-mono flex items-center gap-1.5">
-                        📎 {sub.file_name}
-                        {sub.verified ? (
-                          <span className="text-success font-bold">✓ Verified</span>
-                        ) : (
-                          <span className="text-warning">Pending review</span>
-                        )}
+                    <div className="flex-1 min-w-0">
+                      <div className={`text-[13px] font-medium ${item.complete ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
+                        {item.label}
                       </div>
+                      {sub && (
+                        <div className="text-[10px] text-muted-foreground mt-1 font-mono flex items-center gap-2">
+                          📎 {sub.file_name}
+                          {sub.verified ? (
+                            <span className="text-success font-bold bg-success/10 px-1.5 py-0.5 rounded-full">✓ Verified</span>
+                          ) : (
+                            <span className="text-warning bg-warning/10 px-1.5 py-0.5 rounded-full">Pending review</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {!item.complete && (
+                      <button
+                        onClick={() => handleUpload(item.label)}
+                        disabled={isUploading}
+                        className="text-[10px] font-bold text-primary bg-primary/[0.08] border border-primary/20 px-4 py-2 rounded-lg cursor-pointer hover:bg-primary/15 hover:border-primary/30 transition-all duration-300 disabled:opacity-50 flex-shrink-0 hover:-translate-y-0.5"
+                      >
+                        {isUploading ? '⏳ Uploading...' : '📤 Upload'}
+                      </button>
+                    )}
+                    {item.complete && !sub && (
+                      <span className="text-[10px] font-bold text-success flex-shrink-0 bg-success/10 px-2 py-1 rounded-full">✓ Complete</span>
                     )}
                   </div>
-                  {!item.complete && (
-                    <button
-                      onClick={() => handleUpload(item.label)}
-                      disabled={isUploading}
-                      className="text-[10px] font-bold text-primary bg-primary/10 border border-primary/30 px-3 py-1.5 rounded-sm cursor-pointer hover:bg-primary/20 transition-all disabled:opacity-50 flex-shrink-0"
-                    >
-                      {isUploading ? '⏳ Uploading...' : '📤 Upload'}
-                    </button>
-                  )}
-                  {item.complete && !sub && (
-                    <span className="text-[10px] font-bold text-success flex-shrink-0">✓ Complete</span>
-                  )}
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
 
           {/* Top Gap */}
           {biz.top_gap && biz.top_gap !== 'None' && biz.top_gap !== 'None — All docs complete' && (
-            <div className="bg-warning/[0.08] border border-warning/20 px-4 py-3 mt-4 text-xs text-foreground/70">
-              <strong className="text-warning">⚠️ Top Gap:</strong> {biz.top_gap}
+            <div className="glass rounded-xl border border-warning/15 px-5 py-4 text-sm text-foreground/60 flex items-center gap-3">
+              <span className="text-xl">⚠️</span>
+              <div>
+                <strong className="text-warning">Top Gap:</strong> {biz.top_gap}
+              </div>
             </div>
           )}
         </>

@@ -52,7 +52,7 @@ const DashboardLayout = () => {
       ) : (
         <ClientSidebar activePage={activePage} onNavigate={setActivePage} onSignOut={signOut} />
       )}
-      <div className="ml-[220px] flex-1 min-h-screen flex flex-col">
+      <div className="ml-[240px] flex-1 min-h-screen flex flex-col">
         <Topbar
           title={pageInfo.title}
           subtitle={pageInfo.subtitle}
