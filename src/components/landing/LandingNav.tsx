@@ -47,7 +47,7 @@ const LandingNav = () => {
             </button>
           ))}
           <button
-            onClick={() => navigate('/auth')}
+            onClick={() => navigate('/get-started')}}
             className="bg-gradient-to-r from-primary to-gold-lt text-primary-foreground font-body text-xs font-bold px-6 py-2.5 border-none cursor-pointer tracking-[1px] uppercase rounded-lg transition-all duration-300 hover:shadow-[0_8px_24px_hsl(var(--gold)/0.3)] hover:-translate-y-0.5"
           >
             Get Started →
