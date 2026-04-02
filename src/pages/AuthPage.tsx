@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Navigate, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 const AuthPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -10,7 +11,12 @@ const AuthPage = () => {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+
+  if (!authLoading && user) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +25,7 @@ const AuthPage = () => {
     setLoading(true);
 
     if (isSignUp) {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -29,6 +35,8 @@ const AuthPage = () => {
       });
       if (error) {
         setError(error.message);
+      } else if (data.session) {
+        navigate('/dashboard', { replace: true });
       } else {
         setMessage('Check your email for a verification link to complete your sign up.');
       }
@@ -37,7 +45,7 @@ const AuthPage = () => {
       if (error) {
         setError(error.message);
       } else {
-        navigate('/dashboard');
+        navigate('/dashboard', { replace: true });
       }
     }
     setLoading(false);

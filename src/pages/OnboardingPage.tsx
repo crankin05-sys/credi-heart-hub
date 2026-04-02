@@ -101,7 +101,6 @@ const OnboardingPage = () => {
     setLoading(true);
 
     try {
-      // Create auth user
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -112,47 +111,50 @@ const OnboardingPage = () => {
       });
 
       if (authError) throw authError;
+      if (!authData.user) throw new Error('Unable to create your account.');
 
-      if (authData.user) {
-        // Build checklist based on answers
-        const checklist = [
-          { label: 'Business License / Registration', complete: false },
-          { label: 'EIN / Tax ID', complete: false },
-          { label: 'Business Bank Account', complete: hasBusinessBank || false },
-          { label: 'Bank Statements (3 months)', complete: false },
-          { label: 'Tax Returns (2 years)', complete: hasTaxReturns || false },
-          { label: 'Profit & Loss Statement', complete: false },
-          { label: 'Balance Sheet', complete: false },
-          { label: 'Business Plan', complete: false },
-          { label: 'Operating Agreement', complete: false },
-          { label: 'Debt Schedule', complete: false },
-          { label: 'Personal Financial Statement', complete: false },
-          { label: 'Insurance Documentation', complete: false },
-        ];
-
-        const completedCount = checklist.filter(c => c.complete).length;
-        const initialScore = Math.round((completedCount / checklist.length) * 40) + 10; // Base score
-
-        // Create business record
-        await supabase.from('businesses').insert({
-          user_id: authData.user.id,
-          name: businessName,
-          industry,
-          capital_need: capitalNeedNumeric(capitalRange),
-          checklist,
-          score: initialScore,
-          status: 'assessment',
-          notes: `Funding purpose: ${fundingPurpose.join(', ')}. Years in business: ${yearsInBusiness}. Capital range: ${capitalRange}.`,
-          top_gap: hasBusinessBank ? (hasTaxReturns ? 'Financial Statements' : 'Tax Returns') : 'Business Bank Account',
-        });
-
-        // Update profile with phone
-        if (phone) {
-          await supabase.from('profiles').update({ phone }).eq('user_id', authData.user.id);
-        }
-
-        setMessage('Check your email for a verification link to complete sign up!');
+      if (!authData.session) {
+        setMessage('Check your email for a verification link to complete sign up.');
+        return;
       }
+
+      const checklist = [
+        { label: 'Business License / Registration', complete: false },
+        { label: 'EIN / Tax ID', complete: false },
+        { label: 'Business Bank Account', complete: hasBusinessBank || false },
+        { label: 'Bank Statements (3 months)', complete: false },
+        { label: 'Tax Returns (2 years)', complete: hasTaxReturns || false },
+        { label: 'Profit & Loss Statement', complete: false },
+        { label: 'Balance Sheet', complete: false },
+        { label: 'Business Plan', complete: false },
+        { label: 'Operating Agreement', complete: false },
+        { label: 'Debt Schedule', complete: false },
+        { label: 'Personal Financial Statement', complete: false },
+        { label: 'Insurance Documentation', complete: false },
+      ];
+
+      const completedCount = checklist.filter(c => c.complete).length;
+      const initialScore = Math.round((completedCount / checklist.length) * 40) + 10;
+
+      const { error: businessError } = await supabase.from('businesses').insert({
+        user_id: authData.user.id,
+        name: businessName,
+        industry,
+        capital_need: capitalNeedNumeric(capitalRange),
+        checklist,
+        score: initialScore,
+        status: 'assessment',
+        notes: `Funding purpose: ${fundingPurpose.join(', ')}. Years in business: ${yearsInBusiness}. Capital range: ${capitalRange}.`,
+        top_gap: hasBusinessBank ? (hasTaxReturns ? 'Financial Statements' : 'Tax Returns') : 'Business Bank Account',
+      });
+
+      if (businessError) throw businessError;
+
+      if (phone) {
+        await supabase.from('profiles').update({ phone }).eq('user_id', authData.user.id);
+      }
+
+      navigate('/dashboard', { replace: true });
     } catch (e: any) {
       setError(e.message || 'Something went wrong');
     } finally {
