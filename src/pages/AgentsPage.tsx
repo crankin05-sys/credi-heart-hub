@@ -31,6 +31,8 @@ const AgentsPage = () => {
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<string>('');
   const [agentLabel, setAgentLabel] = useState<string>('');
+  const [introText, setIntroText] = useState<string>('');
+  const [loadingIntro, setLoadingIntro] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -44,10 +46,31 @@ const AgentsPage = () => {
       });
   }, [user]);
 
+  const handleAgentSelect = async (agentId: string) => {
+    setSelectedAgent(agentId);
+    setAnalysis('');
+
+    // Fetch agent intro
+    setLoadingIntro(true);
+    setIntroText('');
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-agent', {
+        body: { agentType: agentId, mode: 'intro' },
+      });
+      if (error) throw error;
+      setIntroText(data.analysis);
+    } catch {
+      setIntroText("I'm ready to analyze your business. Select a business and click Run Agent to begin!");
+    } finally {
+      setLoadingIntro(false);
+    }
+  };
+
   const runAgent = async () => {
     if (!selectedBiz || !selectedAgent) return;
     setLoading(true);
     setAnalysis('');
+    setIntroText('');
     const agent = agents.find(a => a.id === selectedAgent);
     setAgentLabel(agent?.name || '');
 
@@ -65,45 +88,89 @@ const AgentsPage = () => {
   };
 
   const biz = businesses.find(b => b.id === selectedBiz);
+  const activeAgentData = agents.find(a => a.id === selectedAgent);
 
   return (
-    <div className="animate-fade-up">
+    <div className="animate-fade-up space-y-5">
       {businesses.length === 0 ? (
-        <div className="bg-card border border-border p-8 text-center">
-          <p className="text-muted-foreground text-sm mb-2">No businesses found. Add businesses first to run AI agents.</p>
+        <div className="glass-card rounded-2xl p-10 text-center">
+          <div className="text-4xl mb-3">🤖</div>
+          <p className="text-muted-foreground text-sm">No businesses found. Add businesses first to run AI agents.</p>
         </div>
       ) : (
         <>
           {/* Agent selector grid */}
-          <div className="grid grid-cols-3 gap-3 mb-4 max-lg:grid-cols-2">
+          <div className="grid grid-cols-3 gap-3 max-lg:grid-cols-2">
             {agents.map(a => (
               <button
                 key={a.id}
-                onClick={() => setSelectedAgent(a.id)}
-                className={`text-left bg-card border p-4 transition-all cursor-pointer ${
+                onClick={() => handleAgentSelect(a.id)}
+                className={`text-left glass-card rounded-xl p-5 transition-all duration-300 cursor-pointer group ${
                   selectedAgent === a.id
-                    ? 'border-primary bg-primary/[0.07]'
-                    : 'border-border hover:border-primary/30 hover:bg-foreground/[0.02]'
+                    ? '!border-primary/40 !bg-primary/[0.08] shadow-[0_0_30px_hsl(var(--gold)/0.1)]'
+                    : ''
                 }`}
               >
-                <div className="text-2xl mb-2">{a.icon}</div>
-                <div className="text-xs font-extrabold text-foreground mb-1">{a.name}</div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`text-2xl transition-transform duration-300 ${
+                    selectedAgent === a.id ? 'scale-110 animate-float' : 'group-hover:scale-110'
+                  }`}>{a.icon}</div>
+                  {selectedAgent === a.id && (
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 bg-success rounded-full animate-glow" />
+                      <span className="text-[8px] font-bold text-success font-mono tracking-[1px]">ACTIVE</span>
+                    </div>
+                  )}
+                </div>
+                <div className={`text-xs font-bold mb-1 transition-colors ${
+                  selectedAgent === a.id ? 'text-primary' : 'text-foreground group-hover:text-primary'
+                }`}>{a.name}</div>
                 <div className="text-[10px] text-muted-foreground leading-relaxed">{a.desc}</div>
-                {selectedAgent === a.id && (
-                  <div className="mt-2 text-[9px] font-bold text-primary uppercase tracking-[1px] font-mono">● Selected</div>
-                )}
               </button>
             ))}
           </div>
 
+          {/* Agent Intro Speech */}
+          {selectedAgent && activeAgentData && (introText || loadingIntro) && !analysis && !loading && (
+            <div className="glass-card rounded-2xl p-5 animate-fade-up relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent" />
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-gold-lt flex items-center justify-center text-xl flex-shrink-0 shadow-[0_4px_16px_hsl(var(--gold)/0.2)] animate-float">
+                  {activeAgentData.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-sm font-bold text-primary">{activeAgentData.name}</span>
+                    <span className="w-1.5 h-1.5 bg-success rounded-full animate-glow" />
+                    <span className="text-[8px] text-success font-mono font-bold tracking-[1px]">SPEAKING</span>
+                  </div>
+                  {loadingIntro ? (
+                    <div className="flex items-center gap-2 text-xs text-foreground/50">
+                      <span className="inline-flex gap-1">
+                        <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                      </span>
+                      Thinking...
+                    </div>
+                  ) : (
+                    <div className="prose prose-sm prose-invert max-w-none text-[13px] text-foreground/65 leading-[1.8] [&_strong]:text-foreground [&_p]:mb-2">
+                      <ReactMarkdown>{introText}</ReactMarkdown>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Business selector + Run */}
-          <div className="bg-card border border-border p-4 mb-4 flex flex-wrap items-center gap-3">
+          <div className="glass-card rounded-xl p-5 flex flex-wrap items-end gap-4">
             <div className="flex-1 min-w-[200px]">
-              <label className="text-[9px] font-bold tracking-[2px] uppercase text-muted-foreground font-mono block mb-1.5">Select Business</label>
+              <label className="text-[9px] font-bold tracking-[2px] uppercase text-muted-foreground font-mono block mb-2">Select Business</label>
               <select
                 value={selectedBiz}
                 onChange={e => setSelectedBiz(e.target.value)}
-                className="w-full bg-background border border-border text-foreground text-xs p-2 rounded-sm focus:border-primary focus:outline-none"
+                className="w-full bg-background/50 border border-foreground/[0.08] text-foreground text-xs p-2.5 rounded-lg focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
               >
                 {businesses.map(b => (
                   <option key={b.id} value={b.id}>{b.name} — Score: {b.score} — {b.status}</option>
@@ -113,7 +180,7 @@ const AgentsPage = () => {
             <button
               onClick={runAgent}
               disabled={!selectedAgent || loading}
-              className="bg-gradient-to-br from-primary to-gold-lt text-primary-foreground border-none font-body text-[11px] font-extrabold px-6 py-2.5 cursor-pointer tracking-[1.5px] uppercase rounded-sm transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-gradient-to-r from-primary to-gold-lt text-primary-foreground border-none font-body text-[11px] font-bold px-6 py-2.5 cursor-pointer tracking-[1px] uppercase rounded-lg transition-all duration-300 hover:shadow-[0_4px_16px_hsl(var(--gold)/0.25)] hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
               {loading ? '⏳ Analyzing...' : '▶ Run Agent'}
             </button>
@@ -121,14 +188,14 @@ const AgentsPage = () => {
 
           {/* Business quick stats */}
           {biz && (
-            <div className="grid grid-cols-4 gap-3 mb-4 max-lg:grid-cols-2">
+            <div className="grid grid-cols-4 gap-3 max-lg:grid-cols-2">
               {[
                 { label: 'Score', value: biz.score, color: biz.score >= 75 ? 'text-success' : biz.score >= 50 ? 'text-warning' : 'text-destructive' },
                 { label: 'Status', value: biz.status.replace('-', ' '), color: 'text-primary' },
                 { label: 'Capital Need', value: `$${(biz.capital_need || 0).toLocaleString()}`, color: 'text-info' },
                 { label: 'Industry', value: biz.industry || 'N/A', color: 'text-foreground' },
               ].map((s, i) => (
-                <div key={i} className="bg-card border border-border p-3">
+                <div key={i} className="glass-card rounded-xl p-4">
                   <div className={`font-display text-lg font-bold ${s.color} capitalize`}>{s.value}</div>
                   <div className="text-[8px] text-muted-foreground uppercase tracking-[1.5px] font-mono">{s.label}</div>
                 </div>
@@ -138,22 +205,27 @@ const AgentsPage = () => {
 
           {/* Analysis output */}
           {(analysis || loading) && (
-            <div className="bg-card border border-border">
-              <div className="px-4 py-3 bg-background border-b border-border flex items-center gap-2">
-                <span className="text-[9px] font-bold tracking-[2px] uppercase text-primary font-mono">
-                  🤖 {agentLabel} — Analysis
+            <div className="glass-card rounded-2xl overflow-hidden">
+              <div className="px-5 py-4 border-b border-foreground/[0.06] flex items-center gap-3">
+                {activeAgentData && (
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-gold-lt flex items-center justify-center text-base flex-shrink-0">
+                    {activeAgentData.icon}
+                  </div>
+                )}
+                <span className="text-[10px] font-bold tracking-[2px] uppercase text-primary font-mono">
+                  {agentLabel} — Analysis
                 </span>
-                {loading && <span className="text-[9px] text-success font-mono font-bold animate-pulse">● RUNNING</span>}
+                {loading && <span className="text-[9px] text-success font-mono font-bold animate-pulse flex items-center gap-1"><span className="w-1.5 h-1.5 bg-success rounded-full" /> RUNNING</span>}
               </div>
-              <div className="p-4">
+              <div className="p-5">
                 {loading ? (
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {[...Array(5)].map((_, i) => (
-                      <div key={i} className="h-3 bg-foreground/5 rounded animate-pulse" style={{ width: `${80 - i * 10}%` }} />
+                      <div key={i} className="h-3 bg-foreground/[0.04] rounded-lg animate-pulse" style={{ width: `${85 - i * 12}%` }} />
                     ))}
                   </div>
                 ) : (
-                  <div className="prose prose-sm prose-invert max-w-none text-xs text-foreground/80 leading-relaxed [&_h1]:text-sm [&_h1]:font-bold [&_h1]:text-foreground [&_h2]:text-xs [&_h2]:font-bold [&_h2]:text-foreground [&_h3]:text-xs [&_h3]:font-bold [&_h3]:text-foreground [&_strong]:text-foreground [&_li]:text-foreground/70 [&_ul]:space-y-1 [&_ol]:space-y-1">
+                  <div className="prose prose-sm prose-invert max-w-none text-xs text-foreground/75 leading-relaxed [&_h1]:text-sm [&_h1]:font-bold [&_h1]:text-foreground [&_h2]:text-xs [&_h2]:font-bold [&_h2]:text-foreground [&_h3]:text-xs [&_h3]:font-bold [&_h3]:text-foreground [&_strong]:text-foreground [&_li]:text-foreground/65 [&_ul]:space-y-1 [&_ol]:space-y-1">
                     <ReactMarkdown>{analysis}</ReactMarkdown>
                   </div>
                 )}

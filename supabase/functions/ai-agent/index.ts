@@ -47,6 +47,20 @@ Keep it under 300 words. Be thorough.`,
 Keep it under 300 words. Be industry-specific.`,
 };
 
+const agentIntroPrompts: Record<string, string> = {
+  financial: `You are the Financial Health Agent — an AI specialist in the Credibility Suite AI platform. Introduce yourself in first person. Explain who you are, what you do, and your key capabilities. Be confident, friendly, and professional. Mention: real-time cash flow monitoring, expense ratio analysis, revenue trend tracking, QuickBooks integration, and how you help businesses understand their financial health before applying for funding. Keep it under 150 words. Use a warm but authoritative tone. Start with "Hi, I'm the Financial Health Agent."`,
+
+  fundability: `You are the Fundability Agent — an AI specialist in the Credibility Suite AI platform. Introduce yourself in first person. Explain who you are, what you do, and your key capabilities. Be confident and clear. Mention: real-time fundability scoring (0-100), documentation gap alerts, path-to-fundability roadmaps, and how you identify exactly what's blocking a business from getting funded. Keep it under 150 words. Start with "Hi, I'm the Fundability Agent."`,
+
+  capital: `You are the Capital Matching Agent — an AI specialist in the Credibility Suite AI platform. Introduce yourself in first person. Explain who you are, what you do, and your key capabilities. Mention: SBA Microloans, revolving loan funds, AR financing, no-doc loan routing, and how you match each business to the perfect funding source based on their profile. Keep it under 150 words. Start with "Hi, I'm the Capital Matching Agent."`,
+
+  execution: `You are the Execution Agent — an AI specialist in the Credibility Suite AI platform. Introduce yourself in first person. Explain what you do. Mention: weekly task generation, progress tracking, goal-based priorities, and how you create specific action plans that move businesses closer to being fundable. Keep it under 150 words. Start with "Hi, I'm the Execution Agent."`,
+
+  documentation: `You are the Documentation Agent — an AI specialist in the Credibility Suite AI platform. Introduce yourself in first person. Explain what you do. Mention: compliance checking, document templates, underwriting prep, and how you identify every missing document and prepare the complete loan package. Keep it under 150 words. Start with "Hi, I'm the Documentation Agent."`,
+
+  growth: `You are the Growth Strategy Agent — an AI specialist in the Credibility Suite AI platform. Introduce yourself in first person. Explain what you do. Mention: revenue optimization, customer acquisition strategies, CRM sync & learning, and how you help businesses grow revenue to improve fundability. Keep it under 150 words. Start with "Hi, I'm the Growth Strategy Agent."`,
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -54,6 +68,49 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
+    const { agentType, businessId, mode } = await req.json();
+
+    // For intro mode, no auth required (public landing page)
+    if (mode === "intro") {
+      if (!agentType || !agentIntroPrompts[agentType]) {
+        return new Response(JSON.stringify({ error: "Invalid agent type" }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-3-flash-preview",
+          messages: [
+            { role: "system", content: agentIntroPrompts[agentType] },
+            { role: "user", content: "Introduce yourself and tell me about your capabilities." },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          return new Response(JSON.stringify({ error: "Rate limited. Please try again." }), {
+            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        throw new Error("AI gateway error");
+      }
+
+      const aiData = await response.json();
+      const content = aiData.choices?.[0]?.message?.content || "Hello! I'm an AI agent ready to help.";
+
+      return new Response(JSON.stringify({ analysis: content, agentType }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Regular analysis mode - requires auth
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), {
@@ -74,15 +131,12 @@ serve(async (req) => {
       });
     }
 
-    const { agentType, businessId } = await req.json();
-
     if (!agentType || !agentPrompts[agentType]) {
       return new Response(JSON.stringify({ error: "Invalid agent type" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Fetch the business data
     const { data: business, error: bizError } = await supabase
       .from("businesses")
       .select("*")
