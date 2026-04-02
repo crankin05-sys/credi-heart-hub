@@ -25,7 +25,7 @@ const CTASection = () => {
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <button
-              onClick={() => navigate('/auth')}
+              onClick={() => navigate('/get-started')}
               className="group relative bg-gradient-to-r from-primary to-gold-lt text-primary-foreground font-body text-xs font-bold px-10 py-4 border-none cursor-pointer tracking-[1.5px] uppercase rounded-lg transition-all duration-300 hover:shadow-[0_12px_40px_hsl(var(--gold)/0.3)] hover:-translate-y-1 inline-flex items-center gap-2.5 overflow-hidden"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-gold-lt to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
