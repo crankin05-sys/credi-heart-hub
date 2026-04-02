@@ -1,71 +1,114 @@
 import { useNavigate } from 'react-router-dom';
+import ParticleField from '@/components/ParticleField';
+import TypingEffect from '@/components/TypingEffect';
+import ScrollReveal from '@/components/ScrollReveal';
 
 const HeroSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="min-h-screen flex items-center px-6 md:px-10 pt-28 pb-24 relative overflow-hidden noise-overlay">
-      {/* Ambient background effects */}
+    <section className="min-h-screen flex items-center px-6 md:px-10 pt-28 pb-24 relative overflow-hidden">
+      {/* Ambient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-[hsl(218_55%_12%)]" />
-      <div className="absolute top-[-40%] right-[-20%] w-[800px] h-[800px] bg-[radial-gradient(circle,hsl(var(--gold)/0.06)_0%,transparent_70%)] animate-float" />
-      <div className="absolute bottom-[-30%] left-[-15%] w-[600px] h-[600px] bg-[radial-gradient(circle,hsl(var(--info)/0.04)_0%,transparent_70%)]" />
       
+      {/* Particle field */}
+      <ParticleField />
+
+      {/* Animated gradient orb */}
+      <div className="absolute top-[10%] right-[5%] w-[500px] h-[500px] hidden md:block">
+        <div className="w-full h-full rounded-full bg-[conic-gradient(from_0deg,hsl(var(--primary)/0.08),hsl(var(--info)/0.05),hsl(var(--gold-lt)/0.08),hsl(var(--primary)/0.04),hsl(var(--primary)/0.08))] animate-[spin_20s_linear_infinite] blur-[60px]" />
+      </div>
+
       {/* Grid pattern */}
-      <div className="absolute inset-0 opacity-[0.02]" style={{
+      <div className="absolute inset-0 opacity-[0.015]" style={{
         backgroundImage: 'linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)',
         backgroundSize: '60px 60px'
       }} />
 
-      {/* Decorative rings */}
-      <div className="absolute -top-[150px] -right-[150px] w-[600px] h-[600px] hidden md:block">
-        <div className="absolute inset-0 border border-primary/[0.06] rounded-full animate-[spin_60s_linear_infinite]" />
-        <div className="absolute inset-16 border border-primary/[0.04] rounded-full animate-[spin_45s_linear_infinite_reverse]" />
-        <div className="absolute inset-32 border border-primary/[0.03] rounded-full animate-[spin_30s_linear_infinite]" />
+      {/* Scan line effect */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent animate-[scanline_4s_linear_infinite]" />
       </div>
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="max-w-[680px]">
-          <div className="inline-flex items-center gap-2.5 glass rounded-full text-primary text-[11px] font-bold px-5 py-2.5 tracking-[2px] uppercase mb-8 font-mono animate-fade-up">
-            <span className="w-2 h-2 bg-success rounded-full shadow-[0_0_10px_hsl(var(--success))] animate-glow" />
-            AI-Powered Business Intelligence
-          </div>
+          <ScrollReveal>
+            <div className="inline-flex items-center gap-2.5 glass rounded-full text-primary text-[11px] font-bold px-5 py-2.5 tracking-[2px] uppercase mb-8 font-mono">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success" />
+              </span>
+              AI-Powered Business Intelligence
+            </div>
+          </ScrollReveal>
 
-          <h1 className="font-display text-[clamp(44px,5.5vw,78px)] font-extrabold leading-[1.03] tracking-tight mb-7 text-foreground animate-fade-up" style={{ animationDelay: '0.1s' }}>
-            Turn Any Business<br />Into a <em className="italic text-gradient-gold not-italic">Fundable</em><br />Business.
-          </h1>
+          <ScrollReveal delay={0.1}>
+            <h1 className="font-display text-[clamp(44px,5.5vw,78px)] font-extrabold leading-[1.03] tracking-tight mb-7 text-foreground">
+              Turn Any Business<br />Into a{' '}
+              <span className="text-gradient-gold relative">
+                Fundable
+                <span className="absolute -bottom-1 left-0 right-0 h-[3px] bg-gradient-to-r from-primary to-gold-lt rounded-full opacity-60" />
+              </span>
+              <br />Business.
+            </h1>
+          </ScrollReveal>
 
-          <p className="text-[17px] text-foreground/55 leading-[1.85] max-w-[540px] mb-11 animate-fade-up" style={{ animationDelay: '0.2s' }}>
-            Credibility Suite AI automates the entire path from unfundable to funded — <span className="text-foreground/80 font-medium">assessment, coaching, capital matching, and ongoing guidance.</span> Powered by 6 specialized AI agents working 24/7.
-          </p>
+          <ScrollReveal delay={0.2}>
+            <p className="text-[17px] text-foreground/55 leading-[1.85] max-w-[540px] mb-4">
+              Credibility Suite AI automates the entire path from unfundable to funded —
+            </p>
+            <p className="text-[17px] text-foreground/80 font-medium mb-11 h-[28px]">
+              <TypingEffect
+                texts={[
+                  'Automated business assessment.',
+                  'AI-powered capital matching.',
+                  '24/7 fundability coaching.',
+                  'Real-time documentation tracking.',
+                  'Intelligent growth strategy.',
+                ]}
+                speed={40}
+                pauseTime={2500}
+              />
+            </p>
+          </ScrollReveal>
 
-          <div className="flex gap-4 flex-wrap mb-16 animate-fade-up" style={{ animationDelay: '0.3s' }}>
-            <button
-              onClick={() => navigate('/auth')}
-              className="bg-gradient-to-r from-primary to-gold-lt text-primary-foreground font-body text-xs font-bold px-9 py-4 border-none cursor-pointer tracking-[1.5px] uppercase rounded-lg transition-all duration-300 hover:shadow-[0_12px_40px_hsl(var(--gold)/0.3)] hover:-translate-y-1 inline-flex items-center gap-2.5"
-            >
-              Request a Demo
-              <span className="text-sm">→</span>
-            </button>
-            <button
-              onClick={() => document.getElementById('agents')?.scrollIntoView({ behavior: 'smooth' })}
-              className="bg-foreground/[0.04] text-foreground/70 border border-foreground/10 font-body text-xs font-semibold px-7 py-4 cursor-pointer rounded-lg transition-all duration-300 hover:border-primary/40 hover:text-primary hover:bg-primary/[0.05] tracking-wide"
-            >
-              Meet the AI Agents
-            </button>
-          </div>
+          <ScrollReveal delay={0.3}>
+            <div className="flex gap-4 flex-wrap mb-16">
+              <button
+                onClick={() => navigate('/auth')}
+                className="group relative bg-gradient-to-r from-primary to-gold-lt text-primary-foreground font-body text-xs font-bold px-9 py-4 border-none cursor-pointer tracking-[1.5px] uppercase rounded-lg transition-all duration-300 hover:shadow-[0_12px_40px_hsl(var(--gold)/0.3)] hover:-translate-y-1 inline-flex items-center gap-2.5 overflow-hidden"
+              >
+                <span className="absolute inset-0 bg-gradient-to-r from-gold-lt to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <span className="relative">Request a Demo</span>
+                <span className="relative text-sm transition-transform duration-300 group-hover:translate-x-1">→</span>
+              </button>
+              <button
+                onClick={() => document.getElementById('agents')?.scrollIntoView({ behavior: 'smooth' })}
+                className="group bg-foreground/[0.04] text-foreground/70 border border-foreground/10 font-body text-xs font-semibold px-7 py-4 cursor-pointer rounded-lg transition-all duration-300 hover:border-primary/40 hover:text-primary hover:bg-primary/[0.05] tracking-wide"
+              >
+                <span className="inline-flex items-center gap-2">
+                  Meet the AI Agents
+                  <span className="w-5 h-5 rounded-full border border-current flex items-center justify-center text-[10px] group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all">▶</span>
+                </span>
+              </button>
+            </div>
+          </ScrollReveal>
 
-          <div className="grid grid-cols-3 glass rounded-xl max-w-[520px] overflow-hidden animate-fade-up" style={{ animationDelay: '0.4s' }}>
-            {[
-              { n: '6', l: 'AI Agents' },
-              { n: '24/7', l: 'Always On' },
-              { n: '∞', l: 'Scalable' },
-            ].map((s, i) => (
-              <div key={i} className={`px-6 py-6 text-center ${i < 2 ? 'border-r border-foreground/[0.06]' : ''}`}>
-                <div className="font-display text-[36px] font-bold text-gradient-gold leading-none">{s.n}</div>
-                <div className="text-[10px] text-foreground/35 uppercase tracking-[1.5px] mt-1.5 font-mono">{s.l}</div>
-              </div>
-            ))}
-          </div>
+          <ScrollReveal delay={0.4}>
+            <div className="grid grid-cols-3 glass rounded-xl max-w-[520px] overflow-hidden">
+              {[
+                { n: '6', l: 'AI Agents', icon: '🤖' },
+                { n: '24/7', l: 'Always On', icon: '⚡' },
+                { n: '∞', l: 'Scalable', icon: '📈' },
+              ].map((s, i) => (
+                <div key={i} className={`px-6 py-6 text-center group hover:bg-foreground/[0.02] transition-all duration-300 ${i < 2 ? 'border-r border-foreground/[0.06]' : ''}`}>
+                  <div className="text-lg mb-1 group-hover:scale-125 transition-transform duration-300">{s.icon}</div>
+                  <div className="font-display text-[32px] font-bold text-gradient-gold leading-none">{s.n}</div>
+                  <div className="text-[10px] text-foreground/35 uppercase tracking-[1.5px] mt-1.5 font-mono">{s.l}</div>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>
