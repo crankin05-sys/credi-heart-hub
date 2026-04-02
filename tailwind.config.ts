@@ -12,8 +12,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Playfair Display", "serif"],
-        body: ["Plus Jakarta Sans", "sans-serif"],
+        display: ["Space Grotesk", "sans-serif"],
+        body: ["Sora", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
       colors: {
