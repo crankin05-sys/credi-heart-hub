@@ -15,12 +15,11 @@ interface BusinessRow {
 }
 
 const agents = [
-  { id: 'financial', icon: '💰', name: 'Financial Health Agent', desc: 'Cash flow monitoring, expense analysis, revenue trends' },
-  { id: 'fundability', icon: '📊', name: 'Fundability Agent', desc: 'Real-time score analysis, gap identification, roadmap' },
-  { id: 'capital', icon: '🎯', name: 'Capital Matching Agent', desc: 'Matches business to right funding sources' },
-  { id: 'execution', icon: '⚡', name: 'Execution Agent', desc: 'Weekly action plan, task generation, priorities' },
-  { id: 'documentation', icon: '📋', name: 'Documentation Agent', desc: 'Missing docs, compliance, underwriting prep' },
-  { id: 'growth', icon: '📈', name: 'Growth Strategy Agent', desc: 'Revenue optimization, customer acquisition' },
+  { id: 'fundability', icon: '📊', name: 'Fundability Agent', desc: 'Real-time score analysis, gap identification, fundability roadmap' },
+  { id: 'execution', icon: '⚡', name: 'Execution Agent', desc: 'Weekly action plan, task generation, operational priorities' },
+  { id: 'capital', icon: '🎯', name: 'Capital Matching Agent', desc: 'Matches business to right funding programs by credit & revenue' },
+  { id: 'financial', icon: '💰', name: 'Financial Health Agent', desc: 'Cash flow monitoring, expense analysis, income verification' },
+  { id: 'growth', icon: '📈', name: 'Growth Strategy Agent', desc: 'Revenue optimization, scalability, exit planning' },
 ];
 
 const AgentsPage = () => {
