@@ -30,10 +30,10 @@ const timeOptions = [
 ];
 
 const getScoreLabel = (s: number) => {
-  if (s >= 80) return { text: 'Excellent — You're likely fundable!', color: 'text-success', emoji: '🔥' };
+  if (s >= 80) return { text: "Excellent — You're likely fundable!", color: 'text-success', emoji: '🔥' };
   if (s >= 60) return { text: 'Good — Almost there!', color: 'text-primary', emoji: '⚡' };
-  if (s >= 40) return { text: 'Building — Let's close the gaps', color: 'text-warning', emoji: '🚀' };
-  return { text: 'Getting Started — We'll guide you', color: 'text-foreground/60', emoji: '💡' };
+  if (s >= 40) return { text: "Building — Let's close the gaps", color: 'text-warning', emoji: '🚀' };
+  return { text: "Getting Started — We'll guide you", color: 'text-foreground/60', emoji: '💡' };
 };
 
 const OnboardingPage = () => {
