@@ -19,7 +19,7 @@ const LandingNav = () => {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-500 ${
       scrolled 
-        ? 'bg-background/80 backdrop-blur-xl border-b border-border py-3 shadow-sm' 
+        ? 'bg-white/90 backdrop-blur-xl border-b border-border py-3 shadow-sm' 
         : 'bg-transparent py-5'
     }`}>
       <div className="max-w-7xl mx-auto px-6 md:px-10 flex justify-between items-center">
