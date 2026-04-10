@@ -19,7 +19,7 @@ const HeroSection = () => {
       <div className="absolute bottom-[10%] left-[10%] w-[400px] h-[400px] bg-[radial-gradient(circle,hsl(200_80%_40%/0.1),transparent_70%)] blur-[60px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Left: Copy */}
           <div>
             <ScrollReveal>
@@ -113,7 +113,7 @@ const HeroSection = () => {
 
         {/* Bottom stats */}
         <ScrollReveal delay={0.5}>
-          <div className="grid grid-cols-3 bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] rounded-xl max-w-[520px] overflow-hidden mt-8 lg:mt-0">
+          <div className="grid grid-cols-3 bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] rounded-xl max-w-[520px] overflow-hidden mt-8 md:mt-0">
             {[
               { n: '6', l: 'AI Agents', icon: '🤖' },
               { n: '24/7', l: 'Always On', icon: '⚡' },

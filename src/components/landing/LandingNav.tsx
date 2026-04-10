@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Brain, Sparkles } from 'lucide-react';
+import { Brain, Sparkles, LogIn, LayoutDashboard } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const LandingNav = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -47,13 +49,32 @@ const LandingNav = () => {
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] group-hover:w-full transition-all duration-300" />
             </button>
           ))}
-          <button
-            onClick={() => navigate('/get-started')}
-            className="bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-6 py-2.5 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            Get Started
-          </button>
+          {user ? (
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-6 py-2.5 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2"
+            >
+              <LayoutDashboard className="w-3.5 h-3.5" />
+              My Dashboard
+            </button>
+          ) : (
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => navigate('/auth')}
+                className={`text-[13px] font-semibold transition-all duration-300 bg-transparent border-none cursor-pointer flex items-center gap-1.5 ${scrolled ? 'text-foreground hover:text-primary' : 'text-white/80 hover:text-white'}`}
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                Log In
+              </button>
+              <button
+                onClick={() => navigate('/get-started')}
+                className="bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-6 py-2.5 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                Get Started
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </nav>
