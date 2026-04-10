@@ -489,6 +489,21 @@ const OnboardingPage = () => {
                 <p className="text-[11px] text-muted-foreground/60">No charge for 7 days · $299/mo after · Cancel anytime</p>
               </div>
 
+              {/* Credit Agent Add-On */}
+              <div className="bg-background rounded-2xl border border-border shadow-sm p-5 flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0">
+                  <CreditCard className="w-5 h-5 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-semibold text-foreground text-sm">Credit Agent</h4>
+                  <p className="text-xs text-muted-foreground mt-0.5">AI-powered credit monitoring, dispute filing & score optimization</p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <div className="font-bold text-foreground text-sm">+$99<span className="text-xs font-normal text-muted-foreground">/mo</span></div>
+                  <span className="text-[10px] text-muted-foreground">Add-on</span>
+                </div>
+              </div>
+
               {/* Custom Agent CTA */}
               <div className="bg-secondary/50 rounded-2xl border border-border p-5 text-center">
                 <div className="text-sm font-semibold text-foreground mb-1">Need a Custom Agent?</div>
