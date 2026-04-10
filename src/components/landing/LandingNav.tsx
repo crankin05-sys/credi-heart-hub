@@ -27,7 +27,7 @@ const LandingNav = () => {
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] flex items-center justify-center shadow-md">
             <Brain className="w-5 h-5 text-white" />
           </div>
-          <div className="text-lg font-bold text-foreground">
+          <div className={`text-lg font-bold transition-colors ${scrolled ? 'text-foreground' : 'text-white'}`}>
             Credibility Suite <span className="text-gradient-ai">AI</span>
           </div>
         </div>
