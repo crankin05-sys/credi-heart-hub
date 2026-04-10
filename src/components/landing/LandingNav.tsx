@@ -19,7 +19,7 @@ const LandingNav = () => {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-500 ${
       scrolled 
-        ? 'bg-background/80 backdrop-blur-xl border-b border-border py-3 shadow-sm' 
+        ? 'bg-white/90 backdrop-blur-xl border-b border-border py-3 shadow-sm' 
         : 'bg-transparent py-5'
     }`}>
       <div className="max-w-7xl mx-auto px-6 md:px-10 flex justify-between items-center">
@@ -27,7 +27,7 @@ const LandingNav = () => {
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] flex items-center justify-center shadow-md">
             <Brain className="w-5 h-5 text-white" />
           </div>
-          <div className="text-lg font-bold text-foreground">
+          <div className={`text-lg font-bold transition-colors ${scrolled ? 'text-foreground' : 'text-white'}`}>
             Credibility Suite <span className="text-gradient-ai">AI</span>
           </div>
         </div>
@@ -41,7 +41,7 @@ const LandingNav = () => {
             <button
               key={item.label}
               onClick={() => scrollTo(item.id)}
-              className="text-[13px] font-medium text-muted-foreground hover:text-foreground transition-all duration-300 bg-transparent border-none cursor-pointer relative group"
+              className={`text-[13px] font-medium transition-all duration-300 bg-transparent border-none cursor-pointer relative group ${scrolled ? 'text-muted-foreground hover:text-foreground' : 'text-white/60 hover:text-white'}`}
             >
               {item.label}
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] group-hover:w-full transition-all duration-300" />
