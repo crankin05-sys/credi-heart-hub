@@ -74,13 +74,13 @@ const generateInsights = (credit: string, revenue: string, time: string) => {
   const hasRevenue = !['pre', 'under100k'].includes(revenue);
   const established = ['10+', '2-10'].includes(time);
 
-  if (highCredit && hasRevenue) insights.push('You're strong in credit and revenue — excellent foundation for traditional lending.');
+  if (highCredit && hasRevenue) insights.push('You are strong in credit and revenue — excellent foundation for traditional lending.');
   else if (highCredit && !hasRevenue) insights.push('Strong credit but revenue needs growth — focus on sales acceleration.');
   else if (!highCredit && hasRevenue) insights.push('Revenue is solid but credit needs work — consider credit repair first.');
   else insights.push('Both credit and revenue need attention — start with quick wins in each area.');
 
   if (established) insights.push('Your business longevity is a major strength for lenders.');
-  else insights.push('Newer businesses can still qualify — we'll show you the right programs.');
+  else insights.push('Newer businesses can still qualify — we will show you the right programs.');
 
   if (hasRevenue && !highCredit) insights.push('Biggest opportunity: fix credit score while leveraging revenue-based funding.');
   if (highCredit && hasRevenue) insights.push('You may qualify for SBA loans with the best rates available.');
