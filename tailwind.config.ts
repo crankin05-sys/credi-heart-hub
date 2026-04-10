@@ -12,8 +12,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Space Grotesk", "sans-serif"],
-        body: ["Sora", "sans-serif"],
+        display: ["Inter", "sans-serif"],
+        body: ["Inter", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
       colors: {
@@ -50,16 +50,6 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        navy: {
-          DEFAULT: "hsl(var(--navy))",
-          2: "hsl(var(--navy-2))",
-          3: "hsl(var(--navy-3))",
-        },
-        gold: {
-          DEFAULT: "hsl(var(--gold))",
-          lt: "hsl(var(--gold-lt))",
-          pale: "hsl(var(--gold-pale))",
-        },
         success: {
           DEFAULT: "hsl(var(--success))",
           lt: "hsl(var(--success-lt))",
@@ -74,11 +64,11 @@ export default {
           foreground: "hsl(var(--info-foreground))",
         },
         sidebar: {
-          DEFAULT: "hsl(var(--navy))",
+          DEFAULT: "hsl(var(--background))",
           foreground: "hsl(var(--foreground))",
           primary: "hsl(var(--primary))",
           "primary-foreground": "hsl(var(--primary-foreground))",
-          accent: "hsl(var(--navy-2))",
+          accent: "hsl(var(--secondary))",
           "accent-foreground": "hsl(var(--foreground))",
           border: "hsl(var(--border))",
           ring: "hsl(var(--ring))",
