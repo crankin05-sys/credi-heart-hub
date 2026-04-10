@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Brain, Sparkles, ArrowRight, ArrowLeft, Check, Lock, Zap, Target, DollarSign, FileText, TrendingUp, Play } from 'lucide-react';
+import { Brain, Sparkles, ArrowRight, ArrowLeft, Check, Lock, Zap, Target, DollarSign, FileText, TrendingUp, Play, CreditCard } from 'lucide-react';
 
 /* ──────── scoring options ──────── */
 const creditScoreOptions = [
