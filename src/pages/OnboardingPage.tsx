@@ -2,146 +2,228 @@ import { useState, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
-/* ──────── scoring model ──────── */
+/* ──────── scoring options ──────── */
 const creditScoreOptions = [
-  { label: '750+', value: 'excellent', points: 35 },
-  { label: '700–749', value: 'good', points: 28 },
-  { label: '650–699', value: 'fair', points: 18 },
-  { label: '600–649', value: 'below_avg', points: 10 },
-  { label: 'Below 600', value: 'poor', points: 4 },
-  { label: "I don't know", value: 'unknown', points: 12 },
+  { label: '780+', value: '780+', points: 10 },
+  { label: '740–779', value: '740-779', points: 8 },
+  { label: '680–739', value: '680-739', points: 6 },
+  { label: '600–680', value: '600-680', points: 4 },
+  { label: 'Below 600', value: '<600', points: 2 },
 ];
 
 const revenueOptions = [
-  { label: '$50k+ / month', value: '50k+', points: 35 },
-  { label: '$25k–$50k / month', value: '25k-50k', points: 28 },
-  { label: '$10k–$25k / month', value: '10k-25k', points: 20 },
-  { label: '$5k–$10k / month', value: '5k-10k', points: 12 },
-  { label: 'Under $5k / month', value: 'under5k', points: 5 },
+  { label: '$1M+', value: '1m+', points: 10 },
+  { label: '$250K – $1M', value: '250k-1m', points: 8 },
+  { label: '$100K – $250K', value: '100k-250k', points: 6 },
+  { label: 'Under $100K', value: 'under100k', points: 4 },
   { label: 'Pre-revenue', value: 'pre', points: 2 },
 ];
 
 const timeOptions = [
-  { label: '5+ years', value: '5+', points: 30 },
-  { label: '2–5 years', value: '2-5', points: 24 },
-  { label: '1–2 years', value: '1-2', points: 16 },
-  { label: '6–12 months', value: '6-12', points: 8 },
-  { label: 'Less than 6 months', value: '<6', points: 3 },
-];
-
-const capitalPurposeOptions = [
-  { label: 'Working Capital', value: 'working_capital' },
-  { label: 'Equipment Purchase', value: 'equipment' },
-  { label: 'Inventory', value: 'inventory' },
-  { label: 'Expansion / Growth', value: 'expansion' },
-  { label: 'Debt Refinancing', value: 'refinancing' },
-  { label: 'Marketing', value: 'marketing' },
-  { label: 'Hiring / Payroll', value: 'hiring' },
-  { label: 'Real Estate / Lease', value: 'real_estate' },
-];
-
-const derogatoryOptions = [
-  { label: 'None', value: 'none', penalty: 0 },
-  { label: '1–2 items', value: '1-2', penalty: -8 },
-  { label: '3–5 items', value: '3-5', penalty: -15 },
-  { label: '6+ items', value: '6+', penalty: -25 },
-  { label: "I don't know", value: 'unknown', penalty: -5 },
+  { label: '10+ years', value: '10+', points: 10 },
+  { label: '2–10 years', value: '2-10', points: 8 },
+  { label: 'Less than 2 years', value: '<2', points: 4 },
+  { label: 'Not started yet', value: 'not-started', points: 1 },
 ];
 
 const getScoreLabel = (s: number) => {
-  if (s >= 80) return { text: "Excellent — You're likely fundable!", color: 'text-success', emoji: '🔥' };
-  if (s >= 60) return { text: 'Good — Almost there!', color: 'text-primary', emoji: '⚡' };
-  if (s >= 40) return { text: "Building — Let's close the gaps", color: 'text-warning', emoji: '🚀' };
-  return { text: "Getting Started — We'll guide you", color: 'text-foreground/60', emoji: '💡' };
+  if (s >= 80) return { text: "Excellent — You're highly fundable!", tier: 'Tier 1', color: 'text-emerald-600', bg: 'bg-emerald-50', emoji: '🔥' };
+  if (s >= 60) return { text: 'Good — Strong foundation', tier: 'Tier 2', color: 'text-blue-600', bg: 'bg-blue-50', emoji: '⚡' };
+  if (s >= 40) return { text: "Building — Let's close the gaps", tier: 'Tier 3', color: 'text-amber-600', bg: 'bg-amber-50', emoji: '🚀' };
+  return { text: 'Getting Started — We can help', tier: 'Tier 4', color: 'text-gray-500', bg: 'bg-gray-50', emoji: '💡' };
 };
 
-/* ──────── Funding route logic ──────── */
-const getFundingRoute = (credit: string, rev: string, derogs: string) => {
-  const highCredit = ['excellent', 'good'].includes(credit);
-  const highRevenue = ['50k+', '25k-50k', '10k-25k'].includes(rev);
-  const cleanCredit = derogs === 'none';
-
-  if (highCredit && cleanCredit) {
-    return { route: 'standard', label: 'Standard SBA / Term Loan', color: 'text-success', icon: '🏦', desc: 'You qualify for traditional lending programs with the best rates.' };
-  }
-  if (highCredit && !cleanCredit) {
-    return { route: 'credit-repair', label: 'Credit Repair → Standard', color: 'text-warning', icon: '🔧', desc: 'Strong credit but derogatories detected. Our Credit Sweep Agent can clear these in ~90 days.' };
-  }
-  if (!highCredit && highRevenue) {
-    return { route: 'revenue-based', label: 'Revenue-Based Funding', color: 'text-info', icon: '💰', desc: 'Lower credit but strong revenue — you can qualify for revenue-based programs.' };
-  }
-  if (!highCredit && !highRevenue && !cleanCredit) {
-    return { route: 'mca-fallback', label: 'MCA / Alternative Funding', color: 'text-warning', icon: '⚡', desc: 'Quick access funding available. We recommend also working on credit repair for better rates.' };
-  }
-  return { route: 'building', label: 'Build Your Profile', color: 'text-foreground/60', icon: '📈', desc: 'Let our AI agents guide you to build fundability from the ground up.' };
+/* ──────── Canvas generator (mock AI) ──────── */
+const generateCanvas = (revenue: string, time: string, businessName: string) => {
+  const isEstablished = ['10+', '2-10'].includes(time);
+  const hasRevenue = !['pre', 'under100k'].includes(revenue);
+  return {
+    valueProposition: hasRevenue
+      ? `${businessName} delivers proven value with an established revenue model and market traction.`
+      : `${businessName} is positioned to capture market share with a fresh approach and growth potential.`,
+    customerSegments: isEstablished
+      ? 'Established customer base with repeat buyers and referral networks'
+      : 'Early adopters and initial market segment — room to expand',
+    revenueStreams: hasRevenue
+      ? 'Active revenue streams generating consistent income'
+      : 'Revenue model in development — focus on first sales and validation',
+    keyActivities: isEstablished
+      ? 'Operations, customer fulfillment, scaling systems'
+      : 'Product development, market validation, customer acquisition',
+    keyResources: hasRevenue
+      ? 'Team, technology, customer relationships, brand equity'
+      : 'Founder expertise, initial capital, development tools',
+    channels: isEstablished
+      ? 'Direct sales, partnerships, digital marketing, referrals'
+      : 'Social media, direct outreach, online presence building',
+    growthOpportunities: hasRevenue
+      ? 'Expand product lines, enter new markets, build recurring revenue'
+      : 'Validate product-market fit, build initial customer base, secure funding',
+    gapsRisks: !hasRevenue
+      ? 'Pre-revenue risk — need to establish cash flow quickly'
+      : isEstablished
+        ? 'Scaling risk — systems may need upgrading for next growth phase'
+        : 'Growth stage risk — capital allocation and operational efficiency',
+  };
 };
+
+/* ──────── Insights generator ──────── */
+const generateInsights = (credit: string, revenue: string, time: string) => {
+  const insights: string[] = [];
+  const highCredit = ['780+', '740-779'].includes(credit);
+  const hasRevenue = !['pre', 'under100k'].includes(revenue);
+  const established = ['10+', '2-10'].includes(time);
+
+  if (highCredit && hasRevenue) insights.push('You're strong in credit and revenue — excellent foundation for traditional lending.');
+  else if (highCredit && !hasRevenue) insights.push('Strong credit but revenue needs growth — focus on sales acceleration.');
+  else if (!highCredit && hasRevenue) insights.push('Revenue is solid but credit needs work — consider credit repair first.');
+  else insights.push('Both credit and revenue need attention — start with quick wins in each area.');
+
+  if (established) insights.push('Your business longevity is a major strength for lenders.');
+  else insights.push('Newer businesses can still qualify — we'll show you the right programs.');
+
+  if (hasRevenue && !highCredit) insights.push('Biggest opportunity: fix credit score while leveraging revenue-based funding.');
+  if (highCredit && hasRevenue) insights.push('You may qualify for SBA loans with the best rates available.');
+  if (!hasRevenue) insights.push('Focus: build recurring revenue streams and organize financials.');
+
+  return insights;
+};
+
+/* ──────── Deep question options ──────── */
+const businessLocationOpts = [
+  { label: 'Home', value: 'home' },
+  { label: 'Commercial', value: 'commercial' },
+  { label: 'Virtual', value: 'virtual' },
+  { label: 'Not started', value: 'not-started' },
+];
+const stageOpts = [
+  { label: 'Idea', value: 'idea' },
+  { label: 'Early', value: 'early' },
+  { label: 'Growing', value: 'growing' },
+  { label: 'Established', value: 'established' },
+];
+const profitableOpts = [
+  { label: 'Yes', value: 'yes' },
+  { label: 'Break-even', value: 'breakeven' },
+  { label: 'No', value: 'no' },
+];
+const financialsOpts = [
+  { label: 'Fully organized', value: 'organized' },
+  { label: 'Somewhat', value: 'somewhat' },
+  { label: 'Not at all', value: 'not-at-all' },
+];
+const cashflowOpts = [
+  { label: 'Consistent', value: 'consistent' },
+  { label: 'Fluctuating', value: 'fluctuating' },
+  { label: 'Unpredictable', value: 'unpredictable' },
+];
+const customerOpts = [
+  { label: 'Consumers', value: 'consumers' },
+  { label: 'Businesses', value: 'businesses' },
+  { label: 'Government', value: 'government' },
+  { label: 'Mixed', value: 'mixed' },
+];
+const revenueModelOpts = [
+  { label: 'One-time sales', value: 'one-time' },
+  { label: 'Recurring', value: 'recurring' },
+  { label: 'Mixed', value: 'mixed' },
+  { label: 'Not yet generating', value: 'none' },
+];
+const bottleneckOpts = [
+  { label: 'Customers', value: 'customers' },
+  { label: 'Operations', value: 'operations' },
+  { label: 'Capital', value: 'capital' },
+  { label: 'Systems', value: 'systems' },
+  { label: 'Team', value: 'team' },
+];
+const fundingPurposeOpts = [
+  { label: 'Working Capital', value: 'working_capital' },
+  { label: 'Equipment', value: 'equipment' },
+  { label: 'Inventory', value: 'inventory' },
+  { label: 'Expansion', value: 'expansion' },
+  { label: 'Marketing', value: 'marketing' },
+  { label: 'Hiring', value: 'hiring' },
+  { label: 'Real Estate', value: 'real_estate' },
+  { label: 'Debt Refinancing', value: 'refinancing' },
+];
+const fundingTimelineOpts = [
+  { label: 'ASAP', value: 'asap' },
+  { label: '30–60 days', value: '30-60' },
+  { label: '2–6 months', value: '2-6' },
+  { label: 'Just planning', value: 'planning' },
+];
+
+const agentModules = [
+  { id: 'fundability', icon: '📊', name: 'Fundability Agent', desc: 'Improves your funding score, identifies exact blockers, shows approval pathways', color: 'border-blue-200 bg-blue-50' },
+  { id: 'capital', icon: '🎯', name: 'Capital Matching Agent', desc: 'Matches you to real funding options, shows amounts + likelihood, routes deals', color: 'border-emerald-200 bg-emerald-50' },
+  { id: 'financial', icon: '💰', name: 'Financial Health Agent', desc: 'Analyzes cash flow + profitability, recommends fixes', color: 'border-amber-200 bg-amber-50' },
+  { id: 'docs', icon: '📄', name: 'Documentation Agent', desc: 'Prepares you for underwriting, identifies missing docs', color: 'border-purple-200 bg-purple-50' },
+  { id: 'growth', icon: '📈', name: 'Growth Strategy Agent', desc: 'Builds revenue strategy, improves business model', color: 'border-pink-200 bg-pink-50' },
+  { id: 'execution', icon: '⚡', name: 'Execution Agent', desc: 'Weekly action plan, "what to do next" guidance', color: 'border-cyan-200 bg-cyan-50' },
+];
+
+type Phase = 'contact' | 'snapshot' | 'results' | 'paywall' | 'deep-a' | 'deep-b' | 'deep-c' | 'deep-d' | 'signup';
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
-  type Phase = 'choose' | '1a' | '1b-q1' | '1b-q2' | '1b-result' | 'signup' | 'pricing';
-  const [phase, setPhase] = useState<Phase>('choose');
+  const [phase, setPhase] = useState<Phase>('contact');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  /* 1A fields */
-  const [fullName, setFullName] = useState('');
-  const [companyName, setCompanyName] = useState('');
-  const [website, setWebsite] = useState('');
-  const [emailField, setEmailField] = useState('');
+  // Step 1: Contact
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [businessName, setBusinessName] = useState('');
+  const [website, setWebsite] = useState('');
+  const [noWebsite, setNoWebsite] = useState(false);
 
-  /* 1B fields — Stage 1 (3 core) */
+  // Step 2: Snapshot
   const [creditScore, setCreditScore] = useState('');
   const [revenue, setRevenue] = useState('');
   const [timeInBusiness, setTimeInBusiness] = useState('');
 
-  /* 1B fields — Stage 2 (underwriting) */
-  const [derogatories, setDerogatories] = useState('');
-  const [capitalPurpose, setCapitalPurpose] = useState('');
-  const [hasBusinessPlan, setHasBusinessPlan] = useState('');
-  const [hasProjections, setHasProjections] = useState('');
-  const [founderExpertise, setFounderExpertise] = useState('');
-  const [incomeVerifiable, setIncomeVerifiable] = useState('');
+  // Deep questions
+  const [bizDescription, setBizDescription] = useState('');
+  const [bizLocation, setBizLocation] = useState('');
+  const [bizStage, setBizStage] = useState('');
+  const [profitable, setProfitable] = useState('');
+  const [financials, setFinancials] = useState('');
+  const [cashflow, setCashflow] = useState('');
+  const [customers, setCustomers] = useState('');
+  const [revenueModel, setRevenueModel] = useState('');
+  const [bottleneck, setBottleneck] = useState('');
+  const [fundingPurposes, setFundingPurposes] = useState<string[]>([]);
+  const [fundingTimeline, setFundingTimeline] = useState('');
 
-  /* signup */
-  const [signupEmail, setSignupEmail] = useState('');
+  // Signup
   const [signupPassword, setSignupPassword] = useState('');
 
   const fundabilityScore = useMemo(() => {
     const cs = creditScoreOptions.find(o => o.value === creditScore)?.points || 0;
     const rv = revenueOptions.find(o => o.value === revenue)?.points || 0;
     const tb = timeOptions.find(o => o.value === timeInBusiness)?.points || 0;
-    const dp = derogatoryOptions.find(o => o.value === derogatories)?.penalty || 0;
-
-    // Underwriting bonuses
-    let bonus = 0;
-    if (hasBusinessPlan === 'yes') bonus += 3;
-    if (hasProjections === 'yes') bonus += 3;
-    if (founderExpertise === 'expert' || founderExpertise === 'experienced') bonus += 3;
-    if (incomeVerifiable === 'yes') bonus += 4;
-
-    return Math.max(0, Math.min(100, cs + rv + tb + dp + bonus));
-  }, [creditScore, revenue, timeInBusiness, derogatories, hasBusinessPlan, hasProjections, founderExpertise, incomeVerifiable]);
+    return Math.round(((cs + rv + tb) / 30) * 100);
+  }, [creditScore, revenue, timeInBusiness]);
 
   const scoreInfo = getScoreLabel(fundabilityScore);
-  const fundingRoute = getFundingRoute(creditScore, revenue, derogatories);
+  const canvas = useMemo(() => generateCanvas(revenue, timeInBusiness, businessName || 'Your Business'), [revenue, timeInBusiness, businessName]);
+  const insights = useMemo(() => generateInsights(creditScore, revenue, timeInBusiness), [creditScore, revenue, timeInBusiness]);
 
   const handleSignUp = async () => {
     setError('');
     setLoading(true);
     try {
-      const name = fullName || companyName || 'My Business';
-      const email = signupEmail || emailField;
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password: signupPassword,
-        options: { data: { full_name: fullName }, emailRedirectTo: window.location.origin },
+        options: { data: { full_name: `${firstName} ${lastName}` }, emailRedirectTo: window.location.origin },
       });
       if (authError) throw authError;
       if (!authData.user) throw new Error('Unable to create your account.');
-
       if (!authData.session) {
-        setError('Check your email for a verification link.');
+        setError('Check your email for a verification link, then sign in.');
         setLoading(false);
         return;
       }
@@ -154,8 +236,8 @@ const OnboardingPage = () => {
         { label: 'Tax Returns (2 years)', complete: false },
         { label: 'Profit & Loss Statement', complete: false },
         { label: 'Balance Sheet', complete: false },
-        { label: 'Business Plan', complete: hasBusinessPlan === 'yes' },
-        { label: 'Financial Projections', complete: hasProjections === 'yes' },
+        { label: 'Business Plan', complete: false },
+        { label: 'Financial Projections', complete: false },
         { label: 'Operating Agreement', complete: false },
         { label: 'Debt Schedule', complete: false },
         { label: 'Personal Financial Statement', complete: false },
@@ -163,29 +245,25 @@ const OnboardingPage = () => {
       ];
 
       const notesArr = [
-        `Credit: ${creditScore}`,
-        `Revenue: ${revenue}`,
-        `Time: ${timeInBusiness}`,
-        `Derogatories: ${derogatories}`,
-        `Capital purpose: ${capitalPurpose}`,
-        `Business plan: ${hasBusinessPlan}`,
-        `Projections: ${hasProjections}`,
-        `Founder expertise: ${founderExpertise}`,
-        `Income verifiable: ${incomeVerifiable}`,
-        `Funding route: ${fundingRoute.route}`,
+        `Credit: ${creditScore}`, `Revenue: ${revenue}`, `Time: ${timeInBusiness}`,
+        `Location: ${bizLocation}`, `Stage: ${bizStage}`, `Profitable: ${profitable}`,
+        `Financials: ${financials}`, `Cashflow: ${cashflow}`, `Customers: ${customers}`,
+        `Revenue model: ${revenueModel}`, `Bottleneck: ${bottleneck}`,
+        `Funding purposes: ${fundingPurposes.join(', ')}`, `Timeline: ${fundingTimeline}`,
+        `Description: ${bizDescription}`, `Website: ${website}`,
       ];
 
       await supabase.from('businesses').insert({
         user_id: authData.user.id,
-        name: companyName || name,
+        name: businessName || `${firstName}'s Business`,
         industry: null,
         capital_need: null,
         checklist,
         score: fundabilityScore || 10,
         status: 'assessment',
         notes: notesArr.join('. '),
-        top_gap: derogatories !== 'none' ? 'Credit Repair' : 'Business Bank Account',
-        loan_product: fundingRoute.route,
+        top_gap: fundabilityScore < 60 ? 'Credit & Revenue' : 'Documentation',
+        loan_product: fundabilityScore >= 80 ? 'standard' : fundabilityScore >= 60 ? 'revenue-based' : 'building',
       });
 
       if (phone) {
@@ -200,432 +278,427 @@ const OnboardingPage = () => {
     }
   };
 
-  /* ──────── Shared UI helpers ──────── */
-  const InputField = ({ label, value, onChange, placeholder, type = 'text', required = false }: any) => (
-    <div className="mb-4">
-      <label className="block text-[9px] font-bold tracking-[2px] uppercase text-muted-foreground mb-1.5 font-mono">
-        {label} {required && '*'}
-      </label>
-      <input
-        type={type}
-        value={value}
-        onChange={(e: any) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="w-full bg-background/50 border border-foreground/[0.08] text-foreground font-body text-sm px-4 py-3 outline-none transition-all focus:border-primary focus:ring-1 focus:ring-primary/20 rounded-xl placeholder:text-foreground/20"
-      />
-    </div>
-  );
-
-  const OptionGrid = ({ options, selected, onSelect, cols = 2 }: { options: { label: string; value: string }[]; selected: string; onSelect: (v: string) => void; cols?: number }) => (
-    <div className={`grid gap-2.5 ${cols === 3 ? 'grid-cols-3' : 'grid-cols-2'}`}>
-      {options.map(opt => (
-        <button
-          key={opt.value}
-          type="button"
-          onClick={() => onSelect(opt.value)}
-          className={`text-left text-[12px] font-medium px-4 py-3 rounded-xl border transition-all duration-300 cursor-pointer ${
-            selected === opt.value
-              ? 'border-primary bg-primary/[0.12] text-primary shadow-[0_0_20px_hsl(var(--gold)/0.15)] scale-[1.02]'
-              : 'border-foreground/[0.06] text-foreground/50 hover:border-foreground/15 hover:text-foreground/70 bg-transparent'
-          }`}
-        >
-          {selected === opt.value && '✓ '}{opt.label}
-        </button>
-      ))}
-    </div>
-  );
-
-  const YesNoSelect = ({ selected, onSelect }: { selected: string; onSelect: (v: string) => void }) => (
-    <div className="flex gap-2.5">
-      {[{ label: 'Yes', value: 'yes' }, { label: 'No', value: 'no' }].map(opt => (
-        <button
-          key={opt.value}
-          type="button"
-          onClick={() => onSelect(opt.value)}
-          className={`flex-1 text-[12px] font-medium py-3 rounded-xl border transition-all duration-300 cursor-pointer ${
-            selected === opt.value
-              ? 'border-primary bg-primary/[0.12] text-primary shadow-[0_0_20px_hsl(var(--gold)/0.15)]'
-              : 'border-foreground/[0.06] text-foreground/50 hover:border-foreground/15 bg-transparent'
-          }`}
-        >
-          {selected === opt.value ? '✓ ' : ''}{opt.label}
-        </button>
-      ))}
-    </div>
-  );
-
-  const ScoreRing = ({ score }: { score: number }) => {
-    const r = 54;
-    const c = 2 * Math.PI * r;
-    const offset = c - (c * score) / 100;
-    return (
-      <div className="relative w-36 h-36 mx-auto">
-        <svg viewBox="0 0 128 128" className="w-full h-full" style={{ transform: 'rotate(-90deg)' }}>
-          <circle cx="64" cy="64" r={r} fill="none" stroke="hsl(var(--foreground) / 0.06)" strokeWidth="8" />
-          <circle cx="64" cy="64" r={r} fill="none" stroke="url(#onb-grad)" strokeWidth="8" strokeLinecap="round"
-            strokeDasharray={c} strokeDashoffset={offset} className="transition-all duration-1000 ease-out" />
-          <defs>
-            <linearGradient id="onb-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="hsl(var(--primary))" />
-              <stop offset="100%" stopColor="hsl(var(--gold-lt))" />
-            </linearGradient>
-          </defs>
-        </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="font-display text-4xl font-extrabold text-gradient-gold leading-none">{score}</span>
-          <span className="text-[9px] text-foreground/30 uppercase tracking-[2px] font-mono mt-1">out of 100</span>
-        </div>
-      </div>
-    );
+  const toggleFundingPurpose = (val: string) => {
+    setFundingPurposes(prev => prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]);
   };
 
-  const BackBtn = ({ onClick }: { onClick: () => void }) => (
-    <button onClick={onClick} className="flex-shrink-0 bg-foreground/[0.04] text-foreground/60 border border-foreground/[0.08] font-body text-xs font-medium px-6 py-3 cursor-pointer rounded-xl transition-all hover:border-foreground/20">← Back</button>
+  /* ──── Step indicators ──── */
+  const steps = ['Contact', 'Snapshot', 'Results', 'Upgrade', 'Details', 'Account'];
+  const stepIndex = { contact: 0, snapshot: 1, results: 2, paywall: 3, 'deep-a': 4, 'deep-b': 4, 'deep-c': 4, 'deep-d': 4, signup: 5 }[phase];
+
+  /* ──── Shared UI ──── */
+  const InputField = ({ label, value, onChange, placeholder, type = 'text', required = false }: any) => (
+    <div className="mb-4">
+      <label className="block text-xs font-semibold text-gray-600 mb-1.5">{label} {required && <span className="text-red-400">*</span>}</label>
+      <input type={type} value={value} onChange={(e: any) => onChange(e.target.value)} placeholder={placeholder}
+        className="w-full bg-white border border-gray-200 text-gray-900 text-sm px-4 py-3 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-100 rounded-xl placeholder:text-gray-300" />
+    </div>
+  );
+
+  const OptionPill = ({ options, selected, onSelect }: { options: { label: string; value: string }[]; selected: string; onSelect: (v: string) => void }) => (
+    <div className="flex flex-wrap gap-2">
+      {options.map(opt => (
+        <button key={opt.value} type="button" onClick={() => onSelect(opt.value)}
+          className={`text-sm font-medium px-4 py-2.5 rounded-full border transition-all duration-200 cursor-pointer ${
+            selected === opt.value
+              ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm'
+              : 'border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700 bg-white'
+          }`}>
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
+
+  const MultiPill = ({ options, selected, onToggle }: { options: { label: string; value: string }[]; selected: string[]; onToggle: (v: string) => void }) => (
+    <div className="flex flex-wrap gap-2">
+      {options.map(opt => (
+        <button key={opt.value} type="button" onClick={() => onToggle(opt.value)}
+          className={`text-sm font-medium px-4 py-2.5 rounded-full border transition-all duration-200 cursor-pointer ${
+            selected.includes(opt.value)
+              ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm'
+              : 'border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700 bg-white'
+          }`}>
+          {selected.includes(opt.value) && '✓ '}{opt.label}
+        </button>
+      ))}
+    </div>
   );
 
   const PrimaryBtn = ({ onClick, disabled, children }: any) => (
     <button onClick={onClick} disabled={disabled}
-      className="flex-1 bg-gradient-to-r from-primary to-gold-lt text-primary-foreground border-none font-body text-xs font-bold py-3.5 cursor-pointer tracking-[1px] uppercase rounded-xl transition-all duration-300 hover:shadow-[0_8px_28px_hsl(var(--gold)/0.3)] hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed btn-aurora relative overflow-hidden">
-      <span className="relative">{children}</span>
+      className="flex-1 bg-gray-900 text-white border-none text-sm font-semibold py-3.5 cursor-pointer rounded-xl transition-all duration-200 hover:bg-gray-800 hover:shadow-lg disabled:opacity-40 disabled:cursor-not-allowed">
+      {children}
     </button>
   );
 
+  const BackBtn = ({ onClick }: { onClick: () => void }) => (
+    <button onClick={onClick} className="bg-white text-gray-500 border border-gray-200 text-sm font-medium px-5 py-3.5 cursor-pointer rounded-xl transition-all hover:border-gray-300 hover:text-gray-700">← Back</button>
+  );
+
+  const SectionTitle = ({ title, subtitle }: { title: string; subtitle?: string }) => (
+    <div className="mb-6">
+      <h2 className="text-xl font-bold text-gray-900">{title}</h2>
+      {subtitle && <p className="text-sm text-gray-400 mt-1">{subtitle}</p>}
+    </div>
+  );
+
+  const CanvasSection = ({ title, icon, content }: { title: string; icon: string; content: string }) => (
+    <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-base">{icon}</span>
+        <span className="text-xs font-bold text-gray-700 uppercase tracking-wide">{title}</span>
+      </div>
+      <p className="text-sm text-gray-600 leading-relaxed">{content}</p>
+    </div>
+  );
+
   return (
-    <div className="fixed inset-0 bg-background flex items-center justify-center z-[999] overflow-auto py-8">
-      <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-[radial-gradient(circle,hsl(var(--gold)/0.06)_0%,transparent_70%)] animate-[neon-pulse_6s_ease-in-out_infinite]" />
-      <div className="absolute bottom-[-20%] left-[-10%] w-[400px] h-[400px] bg-[radial-gradient(circle,hsl(var(--info)/0.05)_0%,transparent_70%)] animate-[neon-pulse_8s_ease-in-out_infinite]" />
-      <div className="absolute inset-0 opacity-[0.015]" style={{
-        backgroundImage: 'linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)',
-        backgroundSize: '60px 60px'
-      }} />
-
-      <div className="w-full max-w-[520px] px-6 relative z-10">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <Link to="/" className="inline-block no-underline">
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-gold-lt flex items-center justify-center text-base font-black text-primary-foreground rounded-xl font-display shadow-[0_4px_20px_hsl(var(--gold)/0.3)]">CS</div>
-              <div className="font-display text-xl font-bold text-foreground">Credibility Suite <span className="text-gradient-gold">AI</span></div>
-            </div>
+    <div className="min-h-screen bg-white flex flex-col">
+      {/* Top bar */}
+      <div className="border-b border-gray-100 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="max-w-2xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link to="/" className="no-underline flex items-center gap-2">
+            <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center text-white text-xs font-black">CS</div>
+            <span className="font-semibold text-gray-900 text-sm">Credibility Suite <span className="text-blue-600">AI</span></span>
           </Link>
+          <div className="flex items-center gap-1">
+            {steps.map((s, i) => (
+              <div key={s} className="flex items-center gap-1">
+                <div className={`w-2 h-2 rounded-full transition-all ${i <= stepIndex ? 'bg-blue-600' : 'bg-gray-200'}`} />
+                {i < steps.length - 1 && <div className={`w-4 h-px ${i < stepIndex ? 'bg-blue-600' : 'bg-gray-200'}`} />}
+              </div>
+            ))}
+          </div>
         </div>
+      </div>
 
-        {/* ─── Choose Path ─── */}
-        {phase === 'choose' && (
-          <div className="animate-fade-up">
-            <div className="text-center mb-8">
-              <h1 className="font-display text-2xl md:text-3xl font-extrabold text-foreground mb-2">
-                Let's Get You <span className="text-gradient-gold">Funded</span>
-              </h1>
-              <p className="text-sm text-foreground/40 max-w-sm mx-auto">Choose how you'd like to start. Either way, we'll show you your path to fundability.</p>
-            </div>
-            <div className="grid gap-4">
-              <button onClick={() => setPhase('1a')} className="group neon-card rounded-2xl p-6 text-left cursor-pointer transition-all duration-500 hover:border-primary/40 hover:-translate-y-1">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-gold-lt/20 flex items-center justify-center text-2xl flex-shrink-0 group-hover:scale-110 transition-transform">🏢</div>
-                  <div>
-                    <h3 className="font-display text-base font-bold text-foreground mb-1 group-hover:text-primary transition-colors">Quick Business Canvas</h3>
-                    <p className="text-xs text-foreground/40 leading-relaxed">Enter your basic info and get an instant Business Model Canvas — see your strengths at a glance.</p>
-                    <div className="flex items-center gap-2 mt-3">
-                      <span className="text-[9px] font-bold uppercase tracking-[1.5px] text-primary bg-primary/10 px-2.5 py-1 rounded-full">~1 min</span>
-                      <span className="text-[9px] text-foreground/25 font-mono">5 fields</span>
-                    </div>
-                  </div>
-                </div>
-              </button>
-              <button onClick={() => setPhase('1b-q1')} className="group neon-card rounded-2xl p-6 text-left cursor-pointer transition-all duration-500 hover:border-gold-lt/40 hover:-translate-y-1 relative overflow-hidden">
-                <div className="absolute top-3 right-3">
-                  <span className="text-[8px] font-bold uppercase tracking-[1.5px] text-primary-foreground bg-gradient-to-r from-primary to-gold-lt px-2.5 py-1 rounded-full shadow-[0_2px_12px_hsl(var(--gold)/0.3)]">⭐ Recommended</span>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gold-lt/20 to-primary/20 flex items-center justify-center text-2xl flex-shrink-0 group-hover:scale-110 transition-transform">📊</div>
-                  <div>
-                    <h3 className="font-display text-base font-bold text-foreground mb-1 group-hover:text-gradient-gold transition-colors">Fundability Assessment</h3>
-                    <p className="text-xs text-foreground/40 leading-relaxed">Answer quick questions to get your fundability score and see which funding programs you qualify for.</p>
-                    <div className="flex items-center gap-2 mt-3">
-                      <span className="text-[9px] font-bold uppercase tracking-[1.5px] text-primary bg-primary/10 px-2.5 py-1 rounded-full">~2 min</span>
-                      <span className="text-[9px] text-foreground/25 font-mono">2 quick steps</span>
-                    </div>
-                  </div>
-                </div>
-              </button>
-            </div>
-            <p className="text-[11px] text-foreground/25 text-center mt-6">
-              Already have an account? <Link to="/auth" className="text-primary font-bold hover:text-gold-lt transition-colors no-underline">Sign In</Link>
-            </p>
-          </div>
-        )}
+      <div className="flex-1 flex items-start justify-center py-8 px-6 overflow-auto">
+        <div className="w-full max-w-lg">
 
-        {/* ─── 1A — Basic Info ─── */}
-        {phase === '1a' && (
-          <div className="animate-fade-up">
-            <div className="glass-card rounded-2xl p-7">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-xl">🏢</div>
+          {/* ═══════ STEP 1: CONTACT CAPTURE ═══════ */}
+          {phase === 'contact' && (
+            <div className="animate-fade-up">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-4">⏱ Takes 60 seconds to get your score</div>
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Let's get your personalized<br />business snapshot started</h1>
+                <p className="text-sm text-gray-400">Quick info so we can tailor everything to you.</p>
+              </div>
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <InputField label="First Name" value={firstName} onChange={setFirstName} placeholder="Sarah" required />
+                  <InputField label="Last Name" value={lastName} onChange={setLastName} placeholder="Johnson" required />
+                </div>
+                <InputField label="Email Address" value={email} onChange={setEmail} placeholder="you@company.com" type="email" required />
+                <InputField label="Mobile Phone" value={phone} onChange={setPhone} placeholder="(404) 555-1234" type="tel" />
+                <InputField label="Business Name" value={businessName} onChange={setBusinessName} placeholder="Johnson's Catering LLC" required />
+                {!noWebsite && (
+                  <InputField label="Business Website" value={website} onChange={setWebsite} placeholder="www.example.com" />
+                )}
+                <label className="flex items-center gap-2 cursor-pointer mt-1">
+                  <input type="checkbox" checked={noWebsite} onChange={() => setNoWebsite(!noWebsite)} className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                  <span className="text-xs text-gray-400">I don't have a website</span>
+                </label>
+              </div>
+              <div className="flex gap-3 mt-6">
+                <PrimaryBtn onClick={() => setPhase('snapshot')} disabled={!firstName.trim() || !lastName.trim() || !email.trim() || !businessName.trim()}>
+                  Continue →
+                </PrimaryBtn>
+              </div>
+              <p className="text-xs text-gray-400 text-center mt-5">
+                Already have an account? <Link to="/auth" className="text-blue-600 font-semibold hover:text-blue-700 no-underline">Sign In</Link>
+              </p>
+            </div>
+          )}
+
+          {/* ═══════ STEP 2: QUICK SNAPSHOT ═══════ */}
+          {phase === 'snapshot' && (
+            <div className="animate-fade-up">
+              <SectionTitle title="Now let's quickly assess where your business stands" subtitle="3 quick questions to calculate your fundability score" />
+
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
                 <div>
-                  <h2 className="font-display text-lg font-bold text-foreground">Basic Business Info</h2>
-                  <p className="text-[11px] text-foreground/35">We'll generate your Business Model Canvas.</p>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">What's your estimated credit score?</label>
+                  <OptionPill options={creditScoreOptions} selected={creditScore} onSelect={setCreditScore} />
                 </div>
-              </div>
-              <InputField label="Your Full Name" value={fullName} onChange={setFullName} placeholder="e.g. Sarah Johnson" required />
-              <InputField label="Company Name" value={companyName} onChange={setCompanyName} placeholder="e.g. Johnson's Catering LLC" required />
-              <InputField label="Website" value={website} onChange={setWebsite} placeholder="e.g. www.example.com" />
-              <InputField label="Email" value={emailField} onChange={setEmailField} placeholder="you@company.com" type="email" required />
-              <InputField label="Phone" value={phone} onChange={setPhone} placeholder="(404) 555-1234" type="tel" />
-            </div>
-            <div className="flex gap-3 mt-5">
-              <BackBtn onClick={() => setPhase('choose')} />
-              <PrimaryBtn onClick={() => { setSignupEmail(emailField); setPhase('signup'); }} disabled={!fullName.trim() || !companyName.trim() || !emailField.trim()}>
-                Generate My Canvas →
-              </PrimaryBtn>
-            </div>
-          </div>
-        )}
-
-        {/* ─── 1B Step 1 — Three Core Questions ─── */}
-        {phase === '1b-q1' && (
-          <div className="animate-fade-up">
-            <div className="glass-card rounded-2xl p-7">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-gold-lt/20 flex items-center justify-center text-xl">📊</div>
                 <div>
-                  <h2 className="font-display text-lg font-bold text-foreground">Fundability Check</h2>
-                  <p className="text-[11px] text-foreground/35">Step 1 of 2 — Core metrics</p>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">What's your approximate annual revenue?</label>
+                  <OptionPill options={revenueOptions} selected={revenue} onSelect={setRevenue} />
                 </div>
-              </div>
-              {/* Progress dots */}
-              <div className="flex items-center gap-2 mb-6">
-                <div className="h-1.5 flex-1 rounded-full bg-gradient-to-r from-primary to-gold-lt" />
-                <div className="h-1.5 flex-1 rounded-full bg-foreground/[0.06]" />
-              </div>
-
-              <div className="mb-6">
-                <label className="block text-[9px] font-bold tracking-[2px] uppercase text-muted-foreground mb-2.5 font-mono">1. What's your personal credit score?</label>
-                <OptionGrid options={creditScoreOptions} selected={creditScore} onSelect={setCreditScore} />
-              </div>
-              <div className="mb-6">
-                <label className="block text-[9px] font-bold tracking-[2px] uppercase text-muted-foreground mb-2.5 font-mono">2. What's your monthly revenue?</label>
-                <OptionGrid options={revenueOptions} selected={revenue} onSelect={setRevenue} />
-              </div>
-              <div>
-                <label className="block text-[9px] font-bold tracking-[2px] uppercase text-muted-foreground mb-2.5 font-mono">3. How long have you been in business?</label>
-                <OptionGrid options={timeOptions} selected={timeInBusiness} onSelect={setTimeInBusiness} />
-              </div>
-            </div>
-            <div className="flex gap-3 mt-5">
-              <BackBtn onClick={() => setPhase('choose')} />
-              <PrimaryBtn onClick={() => setPhase('1b-q2')} disabled={!creditScore || !revenue || !timeInBusiness}>
-                Next Step →
-              </PrimaryBtn>
-            </div>
-          </div>
-        )}
-
-        {/* ─── 1B Step 2 — Underwriting & Viability ─── */}
-        {phase === '1b-q2' && (
-          <div className="animate-fade-up">
-            <div className="glass-card rounded-2xl p-7">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-info/20 to-primary/20 flex items-center justify-center text-xl">🔍</div>
                 <div>
-                  <h2 className="font-display text-lg font-bold text-foreground">Deeper Assessment</h2>
-                  <p className="text-[11px] text-foreground/35">Step 2 of 2 — Helps us match you to the right programs</p>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">How long have you been in business?</label>
+                  <OptionPill options={timeOptions} selected={timeInBusiness} onSelect={setTimeInBusiness} />
                 </div>
               </div>
-              <div className="flex items-center gap-2 mb-6">
-                <div className="h-1.5 flex-1 rounded-full bg-gradient-to-r from-primary to-gold-lt" />
-                <div className="h-1.5 flex-1 rounded-full bg-gradient-to-r from-primary to-gold-lt" />
-              </div>
 
-              <div className="mb-5">
-                <label className="block text-[9px] font-bold tracking-[2px] uppercase text-muted-foreground mb-2.5 font-mono">4. Any derogatories or collections on your credit?</label>
-                <OptionGrid options={derogatoryOptions} selected={derogatories} onSelect={setDerogatories} cols={3} />
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-[9px] font-bold tracking-[2px] uppercase text-muted-foreground mb-2.5 font-mono">5. Primary purpose for capital?</label>
-                <OptionGrid options={capitalPurposeOptions} selected={capitalPurpose} onSelect={setCapitalPurpose} />
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-[9px] font-bold tracking-[2px] uppercase text-muted-foreground mb-2.5 font-mono">6. Can you verify your income (tax returns, bank statements)?</label>
-                <YesNoSelect selected={incomeVerifiable} onSelect={setIncomeVerifiable} />
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-[9px] font-bold tracking-[2px] uppercase text-muted-foreground mb-2.5 font-mono">7. Do you have a business plan?</label>
-                <YesNoSelect selected={hasBusinessPlan} onSelect={setHasBusinessPlan} />
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-[9px] font-bold tracking-[2px] uppercase text-muted-foreground mb-2.5 font-mono">8. Do you have financial projections?</label>
-                <YesNoSelect selected={hasProjections} onSelect={setHasProjections} />
-              </div>
-
-              <div>
-                <label className="block text-[9px] font-bold tracking-[2px] uppercase text-muted-foreground mb-2.5 font-mono">9. Your expertise in this industry?</label>
-                <OptionGrid options={[
-                  { label: 'Expert (10+ yrs)', value: 'expert' },
-                  { label: 'Experienced (3–10 yrs)', value: 'experienced' },
-                  { label: 'Some experience', value: 'some' },
-                  { label: 'New to industry', value: 'new' },
-                ]} selected={founderExpertise} onSelect={setFounderExpertise} />
+              <div className="flex gap-3 mt-6">
+                <BackBtn onClick={() => setPhase('contact')} />
+                <PrimaryBtn onClick={() => setPhase('results')} disabled={!creditScore || !revenue || !timeInBusiness}>
+                  See My Score →
+                </PrimaryBtn>
               </div>
             </div>
-            <div className="flex gap-3 mt-5">
-              <BackBtn onClick={() => setPhase('1b-q1')} />
-              <PrimaryBtn onClick={() => setPhase('1b-result')} disabled={!derogatories || !capitalPurpose || !incomeVerifiable}>
-                See My Results →
-              </PrimaryBtn>
-            </div>
-          </div>
-        )}
+          )}
 
-        {/* ─── 1B Result — Score + Funding Route ─── */}
-        {phase === '1b-result' && (
-          <div className="animate-fade-up">
-            <div className="neon-card rounded-2xl p-8 text-center animate-breathe">
-              <div className="mb-2 text-3xl">{scoreInfo.emoji}</div>
-              <h2 className="font-display text-xl font-bold text-foreground mb-6">Your Fundability Likelihood</h2>
+          {/* ═══════ STEP 3: RESULTS — SCORE + CANVAS + INSIGHTS ═══════ */}
+          {phase === 'results' && (
+            <div className="animate-fade-up space-y-6">
+              {/* Score */}
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center">
+                <p className="text-sm text-gray-400 mb-4">Your Fundability Score</p>
+                <div className="relative w-40 h-40 mx-auto mb-4">
+                  <svg viewBox="0 0 128 128" className="w-full h-full" style={{ transform: 'rotate(-90deg)' }}>
+                    <circle cx="64" cy="64" r="54" fill="none" stroke="#f3f4f6" strokeWidth="10" />
+                    <circle cx="64" cy="64" r="54" fill="none" stroke="url(#score-g)" strokeWidth="10" strokeLinecap="round"
+                      strokeDasharray={2 * Math.PI * 54} strokeDashoffset={2 * Math.PI * 54 - (2 * Math.PI * 54 * fundabilityScore) / 100}
+                      className="transition-all duration-1000 ease-out" />
+                    <defs>
+                      <linearGradient id="score-g" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#3b82f6" />
+                        <stop offset="100%" stopColor="#10b981" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-4xl font-bold text-gray-900">{fundabilityScore}%</span>
+                    <span className="text-xs text-gray-400">fundable</span>
+                  </div>
+                </div>
+                <div className={`inline-flex items-center gap-2 ${scoreInfo.bg} ${scoreInfo.color} text-sm font-semibold px-4 py-2 rounded-full`}>
+                  {scoreInfo.emoji} {scoreInfo.tier} — {scoreInfo.text}
+                </div>
+              </div>
 
-              <ScoreRing score={fundabilityScore} />
-
-              <div className={`font-display text-base font-bold mt-5 ${scoreInfo.color}`}>{scoreInfo.text}</div>
-
-              {/* Funding Route Card */}
-              <div className="glass rounded-xl p-4 mt-6 text-left">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-2xl">{fundingRoute.icon}</span>
+              {/* Business Model Canvas */}
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                   <div>
-                    <div className="text-[8px] text-foreground/30 uppercase tracking-[1.5px] font-mono">Recommended Path</div>
-                    <div className={`text-sm font-bold ${fundingRoute.color}`}>{fundingRoute.label}</div>
+                    <h3 className="font-bold text-gray-900 text-base">Your Business Model Canvas</h3>
+                    <p className="text-xs text-gray-400">Auto-generated for {businessName || 'your business'}</p>
                   </div>
+                  <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">FREE</span>
                 </div>
-                <p className="text-[11px] text-foreground/45 leading-relaxed">{fundingRoute.desc}</p>
+                <div className="p-6 grid grid-cols-2 gap-3">
+                  <CanvasSection icon="💎" title="Value Proposition" content={canvas.valueProposition} />
+                  <CanvasSection icon="👥" title="Customer Segments" content={canvas.customerSegments} />
+                  <CanvasSection icon="💵" title="Revenue Streams" content={canvas.revenueStreams} />
+                  <CanvasSection icon="⚙️" title="Key Activities" content={canvas.keyActivities} />
+                  <CanvasSection icon="🏗️" title="Key Resources" content={canvas.keyResources} />
+                  <CanvasSection icon="📡" title="Channels" content={canvas.channels} />
+                  <CanvasSection icon="🚀" title="Growth Opportunities" content={canvas.growthOpportunities} />
+                  <CanvasSection icon="⚠️" title="Gaps / Risks" content={canvas.gapsRisks} />
+                </div>
               </div>
 
-              {/* Breakdown */}
-              <div className="grid grid-cols-3 gap-2 mt-5">
-                {[
-                  { label: 'Credit', val: creditScoreOptions.find(o => o.value === creditScore)?.label },
-                  { label: 'Revenue', val: revenueOptions.find(o => o.value === revenue)?.label },
-                  { label: 'Derogatories', val: derogatoryOptions.find(o => o.value === derogatories)?.label },
-                ].map((item, i) => (
-                  <div key={i} className="glass rounded-xl px-3 py-2">
-                    <div className="text-[8px] text-foreground/30 uppercase tracking-[1.5px] font-mono mb-0.5">{item.label}</div>
-                    <div className="text-[10px] font-bold text-foreground/70">{item.val}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex gap-3 mt-5">
-              <BackBtn onClick={() => setPhase('1b-q2')} />
-              <PrimaryBtn onClick={() => setPhase('pricing')}>
-                Unlock Full Dashboard →
-              </PrimaryBtn>
-            </div>
-          </div>
-        )}
-
-        {/* ─── Pricing ─── */}
-        {phase === 'pricing' && (
-          <div className="animate-fade-up">
-            <div className="text-center mb-6">
-              <h2 className="font-display text-2xl font-extrabold text-foreground mb-2">Unlock <span className="text-gradient-gold">My Fundability</span></h2>
-              <p className="text-xs text-foreground/40">Full access to your dashboard, 5 AI agents, and guided path to funding.</p>
-            </div>
-            <div className="gradient-border rounded-2xl">
-              <div className="bg-[hsl(218_55%_12%)] rounded-2xl p-7">
-                <div className="flex items-baseline gap-1 justify-center mb-1">
-                  <span className="font-display text-4xl font-extrabold text-gradient-gold">$99</span>
-                  <span className="text-sm text-foreground/40 font-medium">/month</span>
-                </div>
-                <p className="text-[11px] text-foreground/30 text-center mb-6">Cancel anytime · No setup fees</p>
-                <div className="space-y-3 mb-7">
-                  {[
-                    '📊 Full Fundability Dashboard & Score',
-                    '🤖 5 AI Agents: Fundability, Capital, Financial, Execution, Growth',
-                    '🔍 Deep assessment with funding program routing',
-                    '💰 AI-powered capital matching by credit & revenue',
-                    '🔧 Credit Sweep Agent — clear derogatories in ~90 days',
-                    '📄 Document tracking & verification',
-                    '🎯 Personalized action plan with checklists',
-                  ].map((feature, i) => (
-                    <div key={i} className="flex items-center gap-3 text-[12px] text-foreground/60">
-                      <span className="text-success text-sm">✓</span>
-                      {feature}
+              {/* Insights */}
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                <h3 className="font-bold text-gray-900 text-base mb-4">💡 Key Insights</h3>
+                <div className="space-y-3">
+                  {insights.map((insight, i) => (
+                    <div key={i} className="flex items-start gap-3 text-sm text-gray-600">
+                      <div className="w-6 h-6 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">{i + 1}</div>
+                      <p className="leading-relaxed">{insight}</p>
                     </div>
                   ))}
                 </div>
-                <button onClick={() => setPhase('signup')}
-                  className="w-full bg-gradient-to-r from-primary to-gold-lt text-primary-foreground border-none font-body text-sm font-bold py-4 cursor-pointer tracking-[1px] uppercase rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_hsl(var(--gold)/0.35)] hover:-translate-y-1 btn-aurora relative overflow-hidden">
-                  <span className="relative">Start My Free Trial →</span>
+              </div>
+
+              {/* CTA */}
+              <div className="bg-gray-900 rounded-2xl p-6 text-center text-white">
+                <p className="text-sm text-gray-300 mb-1">This is your live business dashboard.</p>
+                <p className="font-bold text-base mb-4">Upgrade to unlock step-by-step guidance, funding matches, and AI advisors.</p>
+                <button onClick={() => setPhase('paywall')}
+                  className="bg-white text-gray-900 font-semibold text-sm px-8 py-3.5 rounded-xl cursor-pointer transition-all hover:shadow-lg hover:-translate-y-0.5 border-none">
+                  Unlock AI Advisors →
                 </button>
-                <p className="text-[10px] text-foreground/25 text-center mt-3">7-day free trial · Billed monthly after</p>
               </div>
             </div>
-            <button onClick={() => setPhase('1b-result')} className="w-full text-[11px] text-foreground/30 text-center mt-4 cursor-pointer hover:text-foreground/50 transition-colors bg-transparent border-none">
-              ← Back to my score
-            </button>
-          </div>
-        )}
+          )}
 
-        {/* ─── Sign Up ─── */}
-        {phase === 'signup' && (
-          <div className="animate-fade-up">
-            <div className="glass-card rounded-2xl p-7">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center text-xl">🔐</div>
-                <div>
-                  <h2 className="font-display text-lg font-bold text-foreground">Create Your Account</h2>
-                  <p className="text-[11px] text-foreground/35">Last step — access your personalized dashboard.</p>
-                </div>
-              </div>
-              {!fullName && <InputField label="Full Name" value={fullName} onChange={setFullName} placeholder="e.g. Sarah Johnson" required />}
-              {!companyName && <InputField label="Company Name" value={companyName} onChange={setCompanyName} placeholder="e.g. Johnson's Catering LLC" required />}
-              <InputField label="Email" value={signupEmail} onChange={(v: string) => { setSignupEmail(v); setError(''); }} placeholder="you@company.com" type="email" required />
-              <div className="mb-4">
-                <label className="block text-[9px] font-bold tracking-[2px] uppercase text-muted-foreground mb-1.5 font-mono">Password * (min 6 characters)</label>
-                <input type="password" value={signupPassword} onChange={e => { setSignupPassword(e.target.value); setError(''); }} placeholder="••••••••" minLength={6}
-                  className="w-full bg-background/50 border border-foreground/[0.08] text-foreground font-body text-sm px-4 py-3 outline-none transition-all focus:border-primary focus:ring-1 focus:ring-primary/20 rounded-xl placeholder:text-foreground/20" />
+          {/* ═══════ STEP 4: AGENT PAYWALL ═══════ */}
+          {phase === 'paywall' && (
+            <div className="animate-fade-up space-y-6">
+              <div className="text-center">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Unlock Your AI Business Advisors</h2>
+                <p className="text-sm text-gray-400">You have your Business Model Canvas. Now unlock the systems that help you improve it and get funded.</p>
               </div>
 
-              {/* Score + route preview */}
-              {fundabilityScore > 0 && (
-                <div className="glass rounded-xl p-4 mb-2">
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="w-14 h-14 flex-shrink-0">
-                      <svg viewBox="0 0 128 128" className="w-full h-full" style={{ transform: 'rotate(-90deg)' }}>
-                        <circle cx="64" cy="64" r="54" fill="none" stroke="hsl(var(--foreground) / 0.06)" strokeWidth="6" />
-                        <circle cx="64" cy="64" r="54" fill="none" stroke="hsl(var(--primary))" strokeWidth="6" strokeLinecap="round"
-                          strokeDasharray={2 * Math.PI * 54} strokeDashoffset={2 * Math.PI * 54 - (2 * Math.PI * 54 * fundabilityScore) / 100} />
-                      </svg>
-                    </div>
+              <div className="space-y-3">
+                {agentModules.map(agent => (
+                  <div key={agent.id} className={`rounded-xl border p-4 flex items-start gap-4 ${agent.color}`}>
+                    <span className="text-2xl">{agent.icon}</span>
                     <div>
-                      <div className="text-[9px] text-foreground/30 uppercase tracking-[1.5px] font-mono">Your Fundability</div>
-                      <div className="font-display text-xl font-bold text-gradient-gold">{fundabilityScore}/100</div>
+                      <h4 className="font-bold text-gray-900 text-sm">{agent.name}</h4>
+                      <p className="text-xs text-gray-500 mt-0.5">{agent.desc}</p>
+                    </div>
+                    <div className="ml-auto flex-shrink-0">
+                      <span className="text-xs text-gray-400">🔒</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 text-[11px]">
-                    <span>{fundingRoute.icon}</span>
-                    <span className={`font-bold ${fundingRoute.color}`}>{fundingRoute.label}</span>
+                ))}
+              </div>
+
+              {/* Pricing */}
+              <div className="bg-white rounded-2xl border-2 border-gray-900 shadow-lg p-6 text-center">
+                <div className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-block mb-4">MOST POPULAR</div>
+                <div className="flex items-baseline justify-center gap-1 mb-1">
+                  <span className="text-4xl font-bold text-gray-900">$99</span>
+                  <span className="text-sm text-gray-400">/month</span>
+                </div>
+                <p className="text-xs text-gray-400 mb-6">Full Suite · All 6 AI Agents · Cancel anytime</p>
+                <button onClick={() => setPhase('deep-a')}
+                  className="w-full bg-gray-900 text-white font-semibold text-sm py-4 rounded-xl cursor-pointer transition-all hover:bg-gray-800 hover:shadow-lg border-none mb-3">
+                  Start 7-Day Free Trial →
+                </button>
+                <p className="text-[11px] text-gray-300">No charge for 7 days · $99/mo after · Cancel anytime</p>
+              </div>
+
+              <div className="text-center">
+                <p className="text-xs text-gray-400 mb-2">Or start smaller:</p>
+                <div className="flex gap-3 justify-center">
+                  <div className="bg-gray-50 rounded-xl border border-gray-100 px-5 py-3 text-center">
+                    <div className="font-bold text-gray-900 text-lg">$29</div>
+                    <div className="text-[10px] text-gray-400">1 Agent · /mo</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl border border-gray-100 px-5 py-3 text-center">
+                    <div className="font-bold text-gray-900 text-lg">$49</div>
+                    <div className="text-[10px] text-gray-400">2 Agents · /mo</div>
                   </div>
                 </div>
-              )}
+              </div>
+
+              <button onClick={() => setPhase('results')} className="w-full text-xs text-gray-400 text-center cursor-pointer hover:text-gray-600 transition-colors bg-transparent border-none py-2">
+                ← Back to my results
+              </button>
             </div>
-            <div className="flex gap-3 mt-5">
-              <BackBtn onClick={() => setPhase(fundabilityScore > 0 ? 'pricing' : 'choose')} />
-              <PrimaryBtn onClick={handleSignUp} disabled={loading || !signupEmail.trim() || signupPassword.length < 6 || (!fullName.trim() && !companyName.trim())}>
-                {loading ? '⏳ Creating...' : 'Create Account & Get Started →'}
-              </PrimaryBtn>
+          )}
+
+          {/* ═══════ STEP 5A: BUSINESS DETAILS ═══════ */}
+          {phase === 'deep-a' && (
+            <div className="animate-fade-up">
+              <SectionTitle title="Tell us more about your business" subtitle="Section 1 of 4 — Business Details" />
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">What does your business do?</label>
+                  <textarea value={bizDescription} onChange={e => setBizDescription(e.target.value)} placeholder="Brief description..."
+                    className="w-full bg-white border border-gray-200 text-gray-900 text-sm px-4 py-3 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-100 rounded-xl placeholder:text-gray-300 min-h-[80px] resize-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Where is your business based?</label>
+                  <OptionPill options={businessLocationOpts} selected={bizLocation} onSelect={setBizLocation} />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">What stage are you in?</label>
+                  <OptionPill options={stageOpts} selected={bizStage} onSelect={setBizStage} />
+                </div>
+              </div>
+              <div className="flex gap-3 mt-6">
+                <BackBtn onClick={() => setPhase('paywall')} />
+                <PrimaryBtn onClick={() => setPhase('deep-b')} disabled={!bizLocation || !bizStage}>Continue →</PrimaryBtn>
+              </div>
             </div>
-            {error && <p className="text-[11px] text-destructive text-center mt-3 glass rounded-xl px-3 py-2">{error}</p>}
-            <p className="text-[11px] text-foreground/25 text-center mt-5">
-              Already have an account? <Link to="/auth" className="text-primary font-bold hover:text-gold-lt transition-colors no-underline">Sign In</Link>
-            </p>
-          </div>
-        )}
+          )}
+
+          {/* ═══════ STEP 5B: FINANCIAL DEPTH ═══════ */}
+          {phase === 'deep-b' && (
+            <div className="animate-fade-up">
+              <SectionTitle title="Financial Depth" subtitle="Section 2 of 4 — Understanding your finances" />
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Is your business profitable?</label>
+                  <OptionPill options={profitableOpts} selected={profitable} onSelect={setProfitable} />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">How organized are your financials?</label>
+                  <OptionPill options={financialsOpts} selected={financials} onSelect={setFinancials} />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">What does your cash flow look like?</label>
+                  <OptionPill options={cashflowOpts} selected={cashflow} onSelect={setCashflow} />
+                </div>
+              </div>
+              <div className="flex gap-3 mt-6">
+                <BackBtn onClick={() => setPhase('deep-a')} />
+                <PrimaryBtn onClick={() => setPhase('deep-c')} disabled={!profitable || !financials || !cashflow}>Continue →</PrimaryBtn>
+              </div>
+            </div>
+          )}
+
+          {/* ═══════ STEP 5C: BUSINESS MODEL INTELLIGENCE ═══════ */}
+          {phase === 'deep-c' && (
+            <div className="animate-fade-up">
+              <SectionTitle title="Business Model Intelligence" subtitle="Section 3 of 4 — How you operate" />
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Who are your primary customers?</label>
+                  <OptionPill options={customerOpts} selected={customers} onSelect={setCustomers} />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">What is your main revenue model?</label>
+                  <OptionPill options={revenueModelOpts} selected={revenueModel} onSelect={setRevenueModel} />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">What is your biggest bottleneck?</label>
+                  <OptionPill options={bottleneckOpts} selected={bottleneck} onSelect={setBottleneck} />
+                </div>
+              </div>
+              <div className="flex gap-3 mt-6">
+                <BackBtn onClick={() => setPhase('deep-b')} />
+                <PrimaryBtn onClick={() => setPhase('deep-d')} disabled={!customers || !revenueModel || !bottleneck}>Continue →</PrimaryBtn>
+              </div>
+            </div>
+          )}
+
+          {/* ═══════ STEP 5D: FUNDING + EXECUTION ═══════ */}
+          {phase === 'deep-d' && (
+            <div className="animate-fade-up">
+              <SectionTitle title="Funding & Execution" subtitle="Section 4 of 4 — Almost done!" />
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">What would you use funding for? (select all)</label>
+                  <MultiPill options={fundingPurposeOpts} selected={fundingPurposes} onToggle={toggleFundingPurpose} />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">How soon do you need funding?</label>
+                  <OptionPill options={fundingTimelineOpts} selected={fundingTimeline} onSelect={setFundingTimeline} />
+                </div>
+              </div>
+              <div className="flex gap-3 mt-6">
+                <BackBtn onClick={() => setPhase('deep-c')} />
+                <PrimaryBtn onClick={() => setPhase('signup')} disabled={fundingPurposes.length === 0 || !fundingTimeline}>
+                  Create My Account →
+                </PrimaryBtn>
+              </div>
+            </div>
+          )}
+
+          {/* ═══════ STEP 6: SIGNUP ═══════ */}
+          {phase === 'signup' && (
+            <div className="animate-fade-up">
+              <SectionTitle title="Create your account" subtitle="Last step — access your full AI-powered dashboard" />
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                <div className="flex items-center gap-4 bg-gray-50 rounded-xl p-4 mb-6">
+                  <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+                    <span className="text-2xl font-bold text-blue-600">{fundabilityScore}%</span>
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-gray-900">{firstName} {lastName}</div>
+                    <div className="text-xs text-gray-400">{businessName} · Fundability {scoreInfo.tier}</div>
+                  </div>
+                </div>
+                <InputField label="Email" value={email} onChange={(v: string) => { setEmail(v); setError(''); }} placeholder="you@company.com" type="email" required />
+                <InputField label="Password" value={signupPassword} onChange={(v: string) => { setSignupPassword(v); setError(''); }} placeholder="Min 6 characters" type="password" required />
+              </div>
+              <div className="flex gap-3 mt-6">
+                <BackBtn onClick={() => setPhase('deep-d')} />
+                <PrimaryBtn onClick={handleSignUp} disabled={loading || !email.trim() || signupPassword.length < 6}>
+                  {loading ? 'Creating...' : 'Create Account & Launch Dashboard →'}
+                </PrimaryBtn>
+              </div>
+              {error && <p className="text-sm text-red-600 text-center mt-4 bg-red-50 rounded-xl px-4 py-3">{error}</p>}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
