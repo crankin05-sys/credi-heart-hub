@@ -478,7 +478,7 @@ const OnboardingPage = () => {
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)]" />
                 <div className="text-xs font-semibold text-primary bg-primary/[0.06] px-3 py-1 rounded-full inline-block mb-4">MOST POPULAR</div>
                 <div className="flex items-baseline justify-center gap-1 mb-1">
-                  <span className="text-4xl font-bold text-foreground">$99</span>
+                  <span className="text-4xl font-bold text-foreground">$299</span>
                   <span className="text-sm text-muted-foreground">/month</span>
                 </div>
                 <p className="text-xs text-muted-foreground mb-6">Full Suite · All 6 AI Agents · Cancel anytime</p>
@@ -486,21 +486,16 @@ const OnboardingPage = () => {
                   className="w-full bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white font-semibold text-sm py-4 rounded-xl cursor-pointer transition-all hover:shadow-lg hover:-translate-y-0.5 border-none mb-3 flex items-center justify-center gap-2">
                   <Sparkles className="w-4 h-4" /> Start 7-Day Free Trial
                 </button>
-                <p className="text-[11px] text-muted-foreground/60">No charge for 7 days · $99/mo after · Cancel anytime</p>
+                <p className="text-[11px] text-muted-foreground/60">No charge for 7 days · $299/mo after · Cancel anytime</p>
               </div>
 
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground mb-3">Or start smaller:</p>
-                <div className="flex gap-3 justify-center">
-                  <div className="bg-secondary rounded-xl border border-border px-6 py-3 text-center">
-                    <div className="font-bold text-foreground text-lg">$29</div>
-                    <div className="text-[10px] text-muted-foreground">1 Agent · /mo</div>
-                  </div>
-                  <div className="bg-secondary rounded-xl border border-border px-6 py-3 text-center">
-                    <div className="font-bold text-foreground text-lg">$49</div>
-                    <div className="text-[10px] text-muted-foreground">2 Agents · /mo</div>
-                  </div>
-                </div>
+              {/* Custom Agent CTA */}
+              <div className="bg-secondary/50 rounded-2xl border border-border p-5 text-center">
+                <div className="text-sm font-semibold text-foreground mb-1">Need a Custom Agent?</div>
+                <p className="text-xs text-muted-foreground mb-3">We build tailored AI agents for your specific industry, workflow, or compliance needs.</p>
+                <a href="mailto:hello@credibilitysuite.ai" className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:underline no-underline cursor-pointer">
+                  Tell Us More <ArrowRight className="w-3.5 h-3.5" />
+                </a>
               </div>
 
               <button onClick={() => setPhase('results')} className="w-full text-xs text-muted-foreground text-center cursor-pointer hover:text-foreground transition-colors bg-transparent border-none py-2 flex items-center justify-center gap-1">
