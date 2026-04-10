@@ -46,13 +46,13 @@ const DashboardLayout = () => {
   const pageInfo = pageTitles[activePage] || pageTitles.dashboard;
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-secondary/50">
       {isAdmin ? (
         <Sidebar activePage={activePage} onNavigate={setActivePage} onSignOut={signOut} />
       ) : (
         <ClientSidebar activePage={activePage} onNavigate={setActivePage} onSignOut={signOut} />
       )}
-      <div className="ml-[240px] flex-1 min-h-screen flex flex-col">
+      <div className="ml-[260px] flex-1 min-h-screen flex flex-col">
         <Topbar
           title={pageInfo.title}
           subtitle={pageInfo.subtitle}
