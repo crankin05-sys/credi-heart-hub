@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, type HTMLInputTypeAttribute, type ReactNode } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Brain, Sparkles, ArrowRight, ArrowLeft, Check, Lock, Zap, Target, DollarSign, FileText, TrendingUp, Play, CreditCard } from 'lucide-react';
@@ -119,6 +119,138 @@ const agentModules = [
 ];
 
 type Phase = 'contact' | 'snapshot' | 'results' | 'paywall' | 'deep-a' | 'deep-b' | 'deep-c' | 'deep-d' | 'signup';
+type Option = { label: string; value: string };
+
+interface InputFieldProps {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  type?: HTMLInputTypeAttribute;
+  required?: boolean;
+}
+
+const InputField = ({ label, value, onChange, placeholder, type = 'text', required = false }: InputFieldProps) => (
+  <div className="mb-4">
+    <label className="block text-xs font-semibold text-foreground/70 mb-1.5">{label} {required && <span className="text-destructive">*</span>}</label>
+    <input
+      type={type}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      className="w-full bg-secondary border border-border text-foreground text-sm px-4 py-3 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-xl placeholder:text-muted-foreground/40"
+    />
+  </div>
+);
+
+interface OptionPillProps {
+  options: Option[];
+  selected: string;
+  onSelect: (value: string) => void;
+}
+
+const OptionPill = ({ options, selected, onSelect }: OptionPillProps) => (
+  <div className="flex flex-wrap gap-2">
+    {options.map((opt) => (
+      <button
+        key={opt.value}
+        type="button"
+        onClick={() => onSelect(opt.value)}
+        className={`text-sm font-medium px-4 py-2.5 rounded-xl border transition-all duration-200 cursor-pointer ${
+          selected === opt.value
+            ? 'border-primary bg-primary/[0.08] text-primary shadow-[0_0_0_1px_hsl(var(--primary)/0.15)]'
+            : 'border-border text-muted-foreground hover:border-foreground/20 hover:text-foreground bg-background'
+        }`}
+      >
+        {selected === opt.value && <Check className="w-3 h-3 inline mr-1.5" />}
+        {opt.label}
+      </button>
+    ))}
+  </div>
+);
+
+interface MultiPillProps {
+  options: Option[];
+  selected: string[];
+  onToggle: (value: string) => void;
+}
+
+const MultiPill = ({ options, selected, onToggle }: MultiPillProps) => (
+  <div className="flex flex-wrap gap-2">
+    {options.map((opt) => (
+      <button
+        key={opt.value}
+        type="button"
+        onClick={() => onToggle(opt.value)}
+        className={`text-sm font-medium px-4 py-2.5 rounded-xl border transition-all duration-200 cursor-pointer ${
+          selected.includes(opt.value)
+            ? 'border-primary bg-primary/[0.08] text-primary shadow-[0_0_0_1px_hsl(var(--primary)/0.15)]'
+            : 'border-border text-muted-foreground hover:border-foreground/20 hover:text-foreground bg-background'
+        }`}
+      >
+        {selected.includes(opt.value) && <Check className="w-3 h-3 inline mr-1.5" />}
+        {opt.label}
+      </button>
+    ))}
+  </div>
+);
+
+interface PrimaryBtnProps {
+  onClick: () => void | Promise<void>;
+  disabled?: boolean;
+  children: ReactNode;
+}
+
+const PrimaryBtn = ({ onClick, disabled, children }: PrimaryBtnProps) => (
+  <button
+    onClick={() => void onClick()}
+    disabled={disabled}
+    className="flex-1 bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white border-none text-sm font-semibold py-3.5 cursor-pointer rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none flex items-center justify-center gap-2"
+  >
+    {children}
+  </button>
+);
+
+interface BackBtnProps {
+  onClick: () => void;
+}
+
+const BackBtn = ({ onClick }: BackBtnProps) => (
+  <button
+    onClick={() => onClick()}
+    className="bg-background text-muted-foreground border border-border text-sm font-medium px-5 py-3.5 cursor-pointer rounded-xl transition-all hover:border-foreground/20 hover:text-foreground flex items-center gap-2"
+  >
+    <ArrowLeft className="w-4 h-4" /> Back
+  </button>
+);
+
+interface SectionTitleProps {
+  title: string;
+  subtitle?: string;
+}
+
+const SectionTitle = ({ title, subtitle }: SectionTitleProps) => (
+  <div className="mb-6">
+    <h2 className="text-xl font-bold text-foreground">{title}</h2>
+    {subtitle && <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>}
+  </div>
+);
+
+interface CanvasSectionProps {
+  title: string;
+  icon: ReactNode;
+  content: string;
+}
+
+const CanvasSection = ({ title, icon, content }: CanvasSectionProps) => (
+  <div className="bg-secondary/50 rounded-xl p-4 border border-border hover:border-primary/20 hover:shadow-sm transition-all">
+    <div className="flex items-center gap-2 mb-2">
+      {icon}
+      <span className="text-xs font-bold text-foreground/70 uppercase tracking-wide">{title}</span>
+    </div>
+    <p className="text-sm text-muted-foreground leading-relaxed">{content}</p>
+  </div>
+);
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
@@ -220,75 +352,6 @@ const OnboardingPage = () => {
     { label: 'Account', phase: 'signup' },
   ];
   const stepIndex = { contact: 0, snapshot: 1, results: 2, paywall: 3, 'deep-a': 4, 'deep-b': 4, 'deep-c': 4, 'deep-d': 4, signup: 5 }[phase];
-
-  /* Shared components */
-  const InputField = ({ label, value, onChange, placeholder, type = 'text', required = false }: any) => (
-    <div className="mb-4">
-      <label className="block text-xs font-semibold text-foreground/70 mb-1.5">{label} {required && <span className="text-destructive">*</span>}</label>
-      <input type={type} value={value} onChange={(e: any) => onChange(e.target.value)} placeholder={placeholder}
-        className="w-full bg-secondary border border-border text-foreground text-sm px-4 py-3 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-xl placeholder:text-muted-foreground/40" />
-    </div>
-  );
-
-  const OptionPill = ({ options, selected, onSelect }: { options: { label: string; value: string }[]; selected: string; onSelect: (v: string) => void }) => (
-    <div className="flex flex-wrap gap-2">
-      {options.map(opt => (
-        <button key={opt.value} type="button" onClick={() => onSelect(opt.value)}
-          className={`text-sm font-medium px-4 py-2.5 rounded-xl border transition-all duration-200 cursor-pointer ${
-            selected === opt.value
-              ? 'border-primary bg-primary/[0.08] text-primary shadow-[0_0_0_1px_hsl(var(--primary)/0.15)]'
-              : 'border-border text-muted-foreground hover:border-foreground/20 hover:text-foreground bg-background'
-          }`}>
-          {selected === opt.value && <Check className="w-3 h-3 inline mr-1.5" />}{opt.label}
-        </button>
-      ))}
-    </div>
-  );
-
-  const MultiPill = ({ options, selected, onToggle }: { options: { label: string; value: string }[]; selected: string[]; onToggle: (v: string) => void }) => (
-    <div className="flex flex-wrap gap-2">
-      {options.map(opt => (
-        <button key={opt.value} type="button" onClick={() => onToggle(opt.value)}
-          className={`text-sm font-medium px-4 py-2.5 rounded-xl border transition-all duration-200 cursor-pointer ${
-            selected.includes(opt.value)
-              ? 'border-primary bg-primary/[0.08] text-primary shadow-[0_0_0_1px_hsl(var(--primary)/0.15)]'
-              : 'border-border text-muted-foreground hover:border-foreground/20 hover:text-foreground bg-background'
-          }`}>
-          {selected.includes(opt.value) && <Check className="w-3 h-3 inline mr-1.5" />}{opt.label}
-        </button>
-      ))}
-    </div>
-  );
-
-  const PrimaryBtn = ({ onClick, disabled, children }: any) => (
-    <button onClick={onClick} disabled={disabled}
-      className="flex-1 bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white border-none text-sm font-semibold py-3.5 cursor-pointer rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none flex items-center justify-center gap-2">
-      {children}
-    </button>
-  );
-
-  const BackBtn = ({ onClick }: { onClick: () => void }) => (
-    <button onClick={onClick} className="bg-background text-muted-foreground border border-border text-sm font-medium px-5 py-3.5 cursor-pointer rounded-xl transition-all hover:border-foreground/20 hover:text-foreground flex items-center gap-2">
-      <ArrowLeft className="w-4 h-4" /> Back
-    </button>
-  );
-
-  const SectionTitle = ({ title, subtitle }: { title: string; subtitle?: string }) => (
-    <div className="mb-6">
-      <h2 className="text-xl font-bold text-foreground">{title}</h2>
-      {subtitle && <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>}
-    </div>
-  );
-
-  const CanvasSection = ({ title, icon, content }: { title: string; icon: React.ReactNode; content: string }) => (
-    <div className="bg-secondary/50 rounded-xl p-4 border border-border hover:border-primary/20 hover:shadow-sm transition-all">
-      <div className="flex items-center gap-2 mb-2">
-        {icon}
-        <span className="text-xs font-bold text-foreground/70 uppercase tracking-wide">{title}</span>
-      </div>
-      <p className="text-sm text-muted-foreground leading-relaxed">{content}</p>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
