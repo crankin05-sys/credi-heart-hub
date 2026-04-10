@@ -1,4 +1,5 @@
-import { Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Sparkles, Brain } from 'lucide-react';
 
 interface TopbarProps {
   title: string;
@@ -9,9 +10,16 @@ interface TopbarProps {
 const Topbar = ({ title, subtitle, onLoanQueue }: TopbarProps) => {
   return (
     <header className="bg-background/80 backdrop-blur-xl border-b border-border px-6 py-4 flex justify-between items-center sticky top-0 z-50">
-      <div>
+      <div className="flex items-center gap-4">
+        <Link to="/" className="no-underline flex items-center gap-2 shrink-0 group">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
+            <Brain className="w-4 h-4 text-white" />
+          </div>
+        </Link>
+        <div>
         <h1 className="text-base font-bold text-foreground tracking-tight">{title}</h1>
         {subtitle && <p className="text-[11px] text-muted-foreground mt-0.5">{subtitle}</p>}
+        </div>
       </div>
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2 bg-primary/[0.06] rounded-full text-primary text-[10px] font-semibold px-3.5 py-2">
