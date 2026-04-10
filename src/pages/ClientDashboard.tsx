@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Json } from '@/integrations/supabase/types';
+import { Sparkles, Upload, FileCheck, AlertTriangle, Brain, Target, DollarSign, FileText, TrendingUp, Zap } from 'lucide-react';
 
 interface ChecklistItem { label: string; complete: boolean; }
 interface BusinessRow {
@@ -11,12 +12,12 @@ interface BusinessRow {
 interface Submission { id: string; checklist_key: string; file_name: string; file_url: string; submitted_at: string; verified: boolean; }
 
 const agentDefs = [
-  { id: 'fundability', icon: '📊', name: 'Fundability', desc: 'Score optimization & gap identification', weight: 0.2 },
-  { id: 'capital', icon: '🎯', name: 'Capital Matching', desc: 'Funding program matching & routing', weight: 0.2 },
-  { id: 'financial', icon: '💰', name: 'Financial Health', desc: 'Cash flow & profitability analysis', weight: 0.2 },
-  { id: 'docs', icon: '📄', name: 'Documentation', desc: 'Underwriting preparation', weight: 0.15 },
-  { id: 'growth', icon: '📈', name: 'Growth Strategy', desc: 'Revenue optimization & scaling', weight: 0.15 },
-  { id: 'execution', icon: '⚡', name: 'Execution', desc: 'Weekly action plans & priorities', weight: 0.1 },
+  { id: 'fundability', Icon: Zap, name: 'Fundability', desc: 'Score optimization & gap identification', weight: 0.2, gradient: 'from-blue-500 to-indigo-500' },
+  { id: 'capital', Icon: Target, name: 'Capital Matching', desc: 'Funding program matching & routing', weight: 0.2, gradient: 'from-emerald-500 to-teal-500' },
+  { id: 'financial', Icon: DollarSign, name: 'Financial Health', desc: 'Cash flow & profitability analysis', weight: 0.2, gradient: 'from-amber-500 to-orange-500' },
+  { id: 'docs', Icon: FileText, name: 'Documentation', desc: 'Underwriting preparation', weight: 0.15, gradient: 'from-purple-500 to-violet-500' },
+  { id: 'growth', Icon: TrendingUp, name: 'Growth Strategy', desc: 'Revenue optimization & scaling', weight: 0.15, gradient: 'from-pink-500 to-rose-500' },
+  { id: 'execution', Icon: Brain, name: 'Execution', desc: 'Weekly action plans & priorities', weight: 0.1, gradient: 'from-cyan-500 to-blue-500' },
 ];
 
 const computeAgentScores = (biz: BusinessRow, checklist: ChecklistItem[]) => {
@@ -38,21 +39,18 @@ const computeAgentScores = (biz: BusinessRow, checklist: ChecklistItem[]) => {
   });
 };
 
-/* Canvas generator from notes */
 const parseCanvas = (biz: BusinessRow) => {
   const notes = biz.notes || '';
   const hasRevenue = !notes.includes('Revenue: pre') && !notes.includes('Revenue: under100k');
   const established = notes.includes('Time: 10+') || notes.includes('Time: 2-10');
   return {
-    valueProposition: hasRevenue
-      ? `${biz.name} delivers proven value with an established revenue model and market traction.`
-      : `${biz.name} is positioned to capture market share with a fresh approach and growth potential.`,
+    valueProposition: hasRevenue ? `${biz.name} delivers proven value with an established revenue model.` : `${biz.name} is positioned to capture market share with growth potential.`,
     customerSegments: established ? 'Established customer base with repeat buyers' : 'Early adopters and initial market segment',
     revenueStreams: hasRevenue ? 'Active revenue streams generating consistent income' : 'Revenue model in development',
-    keyActivities: established ? 'Operations, customer fulfillment, scaling systems' : 'Product development, market validation',
+    keyActivities: established ? 'Operations, customer fulfillment, scaling' : 'Product development, market validation',
     keyResources: hasRevenue ? 'Team, technology, customer relationships' : 'Founder expertise, initial capital',
     channels: established ? 'Direct sales, partnerships, digital marketing' : 'Social media, direct outreach',
-    growthOpportunities: hasRevenue ? 'Expand product lines, enter new markets' : 'Validate product-market fit, build customer base',
+    growthOpportunities: hasRevenue ? 'Expand product lines, enter new markets' : 'Validate product-market fit',
     gapsRisks: !hasRevenue ? 'Pre-revenue risk — need to establish cash flow' : 'Scaling risk — systems may need upgrading',
   };
 };
@@ -118,37 +116,38 @@ const ClientDashboard = () => {
 
   if (loading) return (
     <div className="flex items-center justify-center py-20">
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-8 py-6 text-center">
-        <div className="text-2xl mb-2 animate-pulse">✨</div>
-        <div className="text-sm text-gray-400">Loading your dashboard...</div>
+      <div className="bg-background rounded-2xl border border-border shadow-sm px-8 py-6 text-center">
+        <Sparkles className="w-6 h-6 text-primary mx-auto mb-2 animate-pulse" />
+        <div className="text-sm text-muted-foreground">Loading your dashboard...</div>
       </div>
     </div>
   );
 
   if (businesses.length === 0) return (
     <div className="max-w-lg mx-auto mt-12">
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-10 text-center">
-        <div className="text-5xl mb-5">📋</div>
-        <h2 className="text-xl font-bold text-gray-900 mb-3">Welcome to Credibility Suite AI</h2>
-        <p className="text-sm text-gray-400">Your business profile has not been set up yet. Complete the onboarding to get started.</p>
+      <div className="bg-background rounded-2xl border border-border shadow-sm p-10 text-center">
+        <Brain className="w-12 h-12 text-primary mx-auto mb-4" />
+        <h2 className="text-xl font-bold text-foreground mb-3">Welcome to Credibility Suite AI</h2>
+        <p className="text-sm text-muted-foreground">Your business profile has not been set up yet. Complete the onboarding to get started.</p>
       </div>
     </div>
   );
 
-  const CanvasCard = ({ icon, title, content }: { icon: string; title: string; content: string }) => (
-    <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all">
-      <div className="flex items-center gap-2 mb-2">
-        <span>{icon}</span>
-        <span className="text-xs font-bold text-gray-600 uppercase tracking-wide">{title}</span>
-      </div>
-      <p className="text-sm text-gray-600 leading-relaxed">{content}</p>
-    </div>
-  );
+  const canvasItems = canvas ? [
+    { icon: <Sparkles className="w-4 h-4 text-primary" />, title: 'Value Proposition', content: canvas.valueProposition },
+    { icon: <Target className="w-4 h-4 text-primary" />, title: 'Customer Segments', content: canvas.customerSegments },
+    { icon: <DollarSign className="w-4 h-4 text-primary" />, title: 'Revenue Streams', content: canvas.revenueStreams },
+    { icon: <Zap className="w-4 h-4 text-primary" />, title: 'Key Activities', content: canvas.keyActivities },
+    { icon: <FileText className="w-4 h-4 text-primary" />, title: 'Key Resources', content: canvas.keyResources },
+    { icon: <TrendingUp className="w-4 h-4 text-primary" />, title: 'Channels', content: canvas.channels },
+    { icon: <TrendingUp className="w-4 h-4 text-emerald-500" />, title: 'Growth Opportunities', content: canvas.growthOpportunities },
+    { icon: <AlertTriangle className="w-4 h-4 text-amber-500" />, title: 'Gaps / Risks', content: canvas.gapsRisks },
+  ] : [];
 
   const tabs = [
-    { id: 'canvas' as const, label: 'Business Canvas', icon: '🗂️' },
-    { id: 'checklist' as const, label: 'Checklist', icon: '📋' },
-    { id: 'agents' as const, label: 'AI Agents', icon: '🤖' },
+    { id: 'canvas' as const, label: 'Business Canvas', Icon: Brain },
+    { id: 'checklist' as const, label: 'Checklist', Icon: FileCheck },
+    { id: 'agents' as const, label: 'AI Agents', Icon: Sparkles },
   ];
 
   return (
@@ -157,63 +156,66 @@ const ClientDashboard = () => {
 
       {biz && (
         <>
-          {/* Hero: Score + Business Info */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+          {/* Hero */}
+          <div className="bg-background rounded-2xl border border-border shadow-sm p-6">
             <div className="flex items-center gap-6">
               <div className="relative w-24 h-24 flex-shrink-0">
                 <svg viewBox="0 0 100 100" className="w-full h-full" style={{ transform: 'rotate(-90deg)' }}>
-                  <circle cx="50" cy="50" r="42" fill="none" stroke="#f3f4f6" strokeWidth="6" />
-                  <circle cx="50" cy="50" r="42" fill="none" stroke="url(#dg)" strokeWidth="6" strokeLinecap="round"
-                    strokeDasharray={2 * Math.PI * 42} strokeDashoffset={2 * Math.PI * 42 - (2 * Math.PI * 42 * (biz.score)) / 100}
+                  <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--border))" strokeWidth="6" />
+                  <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--primary))" strokeWidth="6" strokeLinecap="round"
+                    strokeDasharray={2 * Math.PI * 42} strokeDashoffset={2 * Math.PI * 42 - (2 * Math.PI * 42 * biz.score) / 100}
                     className="transition-all duration-1000" />
-                  <defs><linearGradient id="dg" x1="0%" y1="0%" x2="100%"><stop offset="0%" stopColor="#3b82f6" /><stop offset="100%" stopColor="#10b981" /></linearGradient></defs>
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-2xl font-bold text-gray-900">{biz.score}%</span>
-                  <span className="text-[10px] text-gray-400">fundable</span>
+                  <span className="text-2xl font-bold text-foreground">{biz.score}%</span>
+                  <span className="text-[10px] text-muted-foreground">fundable</span>
                 </div>
               </div>
               <div className="flex-1 min-w-0">
-                <h2 className="text-lg font-bold text-gray-900 truncate">{biz.name}</h2>
-                <p className="text-xs text-gray-400 mt-0.5">{biz.industry || 'Industry TBD'} · Capital needed: ${(biz.capital_need || 0).toLocaleString()}</p>
+                <h2 className="text-lg font-bold text-foreground truncate">{biz.name}</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">{biz.industry || 'Industry TBD'} · Capital needed: ${(biz.capital_need || 0).toLocaleString()}</p>
                 <div className="flex items-center gap-3 mt-3">
-                  <div className="h-2 flex-1 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-blue-500 rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
+                  <div className="h-2 flex-1 bg-secondary rounded-full overflow-hidden">
+                    <div className="h-full bg-primary rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
                   </div>
-                  <span className="text-xs font-semibold text-gray-500">{complete}/{total}</span>
+                  <span className="text-xs font-semibold text-muted-foreground">{complete}/{total}</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-1 bg-gray-100 p-1 rounded-xl">
+          <div className="flex gap-1 bg-secondary p-1 rounded-xl">
             {tabs.map(tab => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 flex items-center justify-center gap-2 text-sm font-medium py-2.5 rounded-lg transition-all cursor-pointer border-none ${
-                  activeTab === tab.id ? 'bg-white text-gray-900 shadow-sm' : 'bg-transparent text-gray-400 hover:text-gray-600'
+                  activeTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'bg-transparent text-muted-foreground hover:text-foreground'
                 }`}>
-                <span>{tab.icon}</span> {tab.label}
+                <tab.Icon className="w-4 h-4" /> {tab.label}
               </button>
             ))}
           </div>
 
           {/* Canvas Tab */}
           {activeTab === 'canvas' && canvas && (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100">
-                <h3 className="font-bold text-gray-900">Live Business Model Canvas</h3>
-                <p className="text-xs text-gray-400 mt-0.5">Auto-generated based on your profile data</p>
+            <div className="bg-background rounded-2xl border border-border shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-border flex items-center gap-2">
+                <Brain className="w-4 h-4 text-primary" />
+                <div>
+                  <h3 className="font-bold text-foreground">Live Business Model Canvas</h3>
+                  <p className="text-xs text-muted-foreground">Auto-generated based on your profile data</p>
+                </div>
               </div>
               <div className="p-6 grid grid-cols-2 gap-3">
-                <CanvasCard icon="💎" title="Value Proposition" content={canvas.valueProposition} />
-                <CanvasCard icon="👥" title="Customer Segments" content={canvas.customerSegments} />
-                <CanvasCard icon="💵" title="Revenue Streams" content={canvas.revenueStreams} />
-                <CanvasCard icon="⚙️" title="Key Activities" content={canvas.keyActivities} />
-                <CanvasCard icon="🏗️" title="Key Resources" content={canvas.keyResources} />
-                <CanvasCard icon="📡" title="Channels" content={canvas.channels} />
-                <CanvasCard icon="🚀" title="Growth Opportunities" content={canvas.growthOpportunities} />
-                <CanvasCard icon="⚠️" title="Gaps / Risks" content={canvas.gapsRisks} />
+                {canvasItems.map(item => (
+                  <div key={item.title} className="bg-secondary/50 rounded-xl p-4 border border-border hover:border-primary/20 hover:shadow-sm transition-all">
+                    <div className="flex items-center gap-2 mb-2">
+                      {item.icon}
+                      <span className="text-xs font-bold text-foreground/70 uppercase tracking-wide">{item.title}</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{item.content}</p>
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -222,32 +224,36 @@ const ClientDashboard = () => {
           {activeTab === 'agents' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">AI Agent Scores</span>
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wide flex items-center gap-2">
+                  <Sparkles className="w-3.5 h-3.5 text-primary" /> AI Agent Scores
+                </span>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-400">Overall</span>
-                  <span className={`text-lg font-bold ${overallScore >= 70 ? 'text-emerald-600' : overallScore >= 45 ? 'text-amber-500' : 'text-red-500'}`}>{overallScore}</span>
+                  <span className="text-xs text-muted-foreground">Overall</span>
+                  <span className={`text-lg font-bold ${overallScore >= 70 ? 'text-emerald-600' : overallScore >= 45 ? 'text-amber-500' : 'text-destructive'}`}>{overallScore}</span>
                 </div>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {agentScores.map(agent => {
                   const r = 30; const c = 2 * Math.PI * r;
-                  const col = agent.score >= 70 ? 'text-emerald-600' : agent.score >= 45 ? 'text-amber-500' : 'text-red-500';
+                  const color = agent.score >= 70 ? '#10b981' : agent.score >= 45 ? '#f59e0b' : '#ef4444';
                   return (
-                    <div key={agent.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 text-center hover:border-blue-200 hover:shadow transition-all">
+                    <div key={agent.id} className="bg-background rounded-xl border border-border shadow-sm p-4 text-center hover:border-primary/20 hover:shadow transition-all">
+                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${agent.gradient} flex items-center justify-center mx-auto mb-3`}>
+                        <agent.Icon className="w-5 h-5 text-white" />
+                      </div>
                       <div className="relative w-16 h-16 mx-auto mb-2">
                         <svg viewBox="0 0 68 68" className="w-full h-full" style={{ transform: 'rotate(-90deg)' }}>
-                          <circle cx="34" cy="34" r={r} fill="none" stroke="#f3f4f6" strokeWidth="4" />
-                          <circle cx="34" cy="34" r={r} fill="none" stroke={agent.score >= 70 ? '#10b981' : agent.score >= 45 ? '#f59e0b' : '#ef4444'}
+                          <circle cx="34" cy="34" r={r} fill="none" stroke="hsl(var(--border))" strokeWidth="4" />
+                          <circle cx="34" cy="34" r={r} fill="none" stroke={color}
                             strokeWidth="4" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c - (c * agent.score) / 100}
                             className="transition-all duration-1000" />
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <span className={`text-sm font-bold ${col}`}>{agent.score}</span>
+                          <span className="text-sm font-bold text-foreground">{agent.score}</span>
                         </div>
                       </div>
-                      <div className="text-lg mb-1">{agent.icon}</div>
-                      <div className="text-xs font-bold text-gray-700">{agent.name}</div>
-                      <div className="text-[10px] text-gray-400 mt-0.5">{agent.desc}</div>
+                      <div className="text-xs font-bold text-foreground">{agent.name}</div>
+                      <div className="text-[10px] text-muted-foreground mt-0.5">{agent.desc}</div>
                     </div>
                   );
                 })}
@@ -257,37 +263,41 @@ const ClientDashboard = () => {
 
           {/* Checklist Tab */}
           {activeTab === 'checklist' && (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                <div>
-                  <h3 className="font-bold text-gray-900">Fundability Checklist</h3>
-                  <p className="text-xs text-gray-400 mt-0.5">Upload documents to improve your score</p>
+            <div className="bg-background rounded-2xl border border-border shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FileCheck className="w-4 h-4 text-primary" />
+                  <div>
+                    <h3 className="font-bold text-foreground">Fundability Checklist</h3>
+                    <p className="text-xs text-muted-foreground">Upload documents to improve your score</p>
+                  </div>
                 </div>
-                <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">{complete}/{total}</span>
+                <span className="text-xs font-semibold text-primary bg-primary/[0.06] px-3 py-1 rounded-full">{complete}/{total}</span>
               </div>
               <div>
                 {checklist.map((item, i) => {
                   const sub = getSubmission(item.label);
                   const isUploading = uploading === item.label;
                   return (
-                    <div key={i} className={`px-6 py-4 border-b border-gray-50 last:border-b-0 flex items-center gap-4 transition-all ${item.complete ? 'bg-emerald-50/50' : 'hover:bg-gray-50'}`}>
-                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${item.complete ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400'}`}>
+                    <div key={i} className={`px-6 py-4 border-b border-border/50 last:border-b-0 flex items-center gap-4 transition-all ${item.complete ? 'bg-emerald-50/50' : 'hover:bg-secondary/50'}`}>
+                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${item.complete ? 'bg-emerald-100 text-emerald-600' : 'bg-secondary text-muted-foreground'}`}>
                         {item.complete ? '✓' : i + 1}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className={`text-sm font-medium ${item.complete ? 'text-gray-400 line-through' : 'text-gray-900'}`}>{item.label}</div>
+                        <div className={`text-sm font-medium ${item.complete ? 'text-muted-foreground line-through' : 'text-foreground'}`}>{item.label}</div>
                         {sub && (
-                          <div className="text-[11px] text-gray-400 mt-1 flex items-center gap-2">
+                          <div className="text-[11px] text-muted-foreground mt-1 flex items-center gap-2">
                             📎 {sub.file_name}
                             {sub.verified
                               ? <span className="text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full">✓ Verified</span>
-                              : <span className="text-amber-500 bg-amber-50 px-2 py-0.5 rounded-full">Pending</span>}
+                              : <span className="text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">Pending</span>}
                           </div>
                         )}
                       </div>
                       {!item.complete && (
                         <button onClick={() => handleUpload(item.label)} disabled={isUploading}
-                          className="text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-100 px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-100 transition-all disabled:opacity-50 flex-shrink-0">
+                          className="text-xs font-semibold text-primary bg-primary/[0.06] border border-primary/10 px-4 py-2 rounded-lg cursor-pointer hover:bg-primary/10 transition-all disabled:opacity-50 flex-shrink-0 flex items-center gap-1.5">
+                          <Upload className="w-3.5 h-3.5" />
                           {isUploading ? 'Uploading...' : 'Upload'}
                         </button>
                       )}
@@ -300,8 +310,8 @@ const ClientDashboard = () => {
 
           {/* Action items */}
           {biz.top_gap && biz.top_gap !== 'None' && (
-            <div className="bg-amber-50 rounded-xl border border-amber-100 px-5 py-4 text-sm text-amber-700 flex items-center gap-3">
-              <span className="text-lg">⚠️</span>
+            <div className="bg-amber-50 rounded-xl border border-amber-200 px-5 py-4 text-sm text-amber-700 flex items-center gap-3">
+              <AlertTriangle className="w-5 h-5 flex-shrink-0" />
               <div><strong>Top Priority:</strong> {biz.top_gap}</div>
             </div>
           )}
