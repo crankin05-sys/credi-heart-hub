@@ -87,9 +87,12 @@ const HeroSection = () => {
 
           {/* Right: Hero Image */}
           <ScrollReveal delay={0.3} direction="right">
-            <div className="hidden lg:block relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-[0_25px_80px_-15px_hsl(220_80%_20%/0.5)]">
+            <div className="hidden md:block relative">
+              <div className="relative rounded-2xl overflow-hidden">
                 <img src={heroImage} alt="Entrepreneur celebrating business funding approval" width={800} height={1024} className="w-full h-auto object-cover rounded-2xl" />
+                {/* Blend into dark background */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628] via-transparent to-[#0a1628]/40 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0a1628]/60 via-transparent to-[#0a1628]/30 pointer-events-none" />
                 {/* Overlay card */}
                 <div className="absolute bottom-6 left-6 right-6 bg-white/10 backdrop-blur-xl rounded-xl border border-white/15 p-4">
                   <div className="flex items-center gap-4">
