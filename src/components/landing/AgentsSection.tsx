@@ -91,7 +91,7 @@ const AgentsSection = () => {
                     </div>
                   </div>
                   <div className={`text-sm font-bold mb-2 transition-colors duration-300 ${activeAgent === a.id ? 'text-primary' : 'text-foreground group-hover:text-primary'}`}>{a.name}</div>
-                  <div className="text-xs text-foreground/40 leading-[1.7] mb-4">{a.desc}</div>
+                  <div className="text-xs text-foreground/40 leading-[1.7] mb-4 line-clamp-3">{a.desc}</div>
                   <div className="flex flex-col gap-2 pt-3 border-t border-foreground/[0.05]">
                     {a.bullets.map((b, bi) => (
                       <div key={bi} className="text-[11px] text-foreground/50 flex items-center gap-2">
