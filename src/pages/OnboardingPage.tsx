@@ -362,7 +362,7 @@ const OnboardingPage = () => {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] flex items-center justify-center shadow-sm">
               <Brain className="w-4 h-4 text-white" />
             </div>
-            <span className="font-semibold text-foreground text-sm">Credibility Suite <span className="text-gradient-ai">AI</span></span>
+            <span className="font-semibold text-foreground text-sm">Credibility Suite</span>
           </Link>
           <div className="flex items-center gap-2">
             {steps.map((s, i) => (

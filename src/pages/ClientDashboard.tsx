@@ -127,7 +127,7 @@ const ClientDashboard = () => {
     <div className="max-w-lg mx-auto mt-12">
       <div className="bg-background rounded-2xl border border-border shadow-sm p-10 text-center">
         <Brain className="w-12 h-12 text-primary mx-auto mb-4" />
-        <h2 className="text-xl font-bold text-foreground mb-3">Welcome to Credibility Suite AI</h2>
+        <h2 className="text-xl font-bold text-foreground mb-3"><h2 className="text-xl font-bold text-foreground mb-3">Welcome to Credibility Suite</h2></h2>
         <p className="text-sm text-muted-foreground">Your business profile has not been set up yet. Complete the onboarding to get started.</p>
       </div>
     </div>

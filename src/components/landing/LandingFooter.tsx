@@ -9,7 +9,7 @@ const LandingFooter = () => (
             CS
           </div>
           <div className="font-display text-lg font-bold text-foreground">
-            Credibility Suite <span className="text-gradient-gold">AI</span>
+            Credibility Suite
           </div>
         </div>
         <div className="text-[11px] text-foreground/25 font-mono tracking-wide">

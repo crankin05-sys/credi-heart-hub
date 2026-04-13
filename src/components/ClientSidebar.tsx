@@ -31,7 +31,7 @@ const ClientSidebar = ({ activePage, onNavigate, onSignOut }: Props) => {
           </div>
           <div>
             <div className="text-sm font-bold text-foreground leading-tight">
-              Credibility Suite <span className="text-gradient-ai">AI</span>
+              Credibility Suite
             </div>
             <div className="text-[10px] text-muted-foreground tracking-wide">
               Client Portal
