@@ -118,7 +118,7 @@ const agentModules = [
   { id: 'execution', Icon: Play, name: 'Execution Agent', desc: 'Weekly action plan, "what to do next" guidance', gradient: 'from-cyan-500 to-blue-500' },
 ];
 
-type Phase = 'contact' | 'snapshot' | 'results' | 'paywall' | 'deep-a' | 'deep-b' | 'deep-c' | 'deep-d' | 'signup';
+type Phase = 'contact' | 'snapshot' | 'results' | 'booking' | 'paywall' | 'deep-a' | 'deep-b' | 'deep-c' | 'deep-d' | 'signup';
 type Option = { label: string; value: string };
 
 interface InputFieldProps {
