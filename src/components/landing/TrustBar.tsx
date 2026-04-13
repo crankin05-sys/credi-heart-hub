@@ -1,7 +1,7 @@
 const items = [
-  'Fundability Scoring', 'Capital Matching', 'Financial Health Monitoring',
-  'SBA & AR Financing', 'Documentation Compliance', 'Growth Strategy',
-  'Weekly Execution Plans', 'QuickBooks Integration',
+  'Business Snapshot', 'Funding Readiness', 'Growth Guidance',
+  'Financial Health', 'Documentation Support', 'Action Planning',
+  'Business Model Canvas', 'Personalized Coaching',
 ];
 
 const TrustBar = () => (

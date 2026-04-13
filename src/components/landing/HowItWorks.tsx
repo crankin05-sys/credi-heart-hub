@@ -1,17 +1,15 @@
 import ScrollReveal from '@/components/ScrollReveal';
 
 const steps = [
-  { n: '1', title: 'Business Intake', desc: 'Enter website or answer 20 questions. AI generates complete Business Model Canvas and Fundability Score.', icon: '🔍', glow: 'hsl(var(--primary) / 0.15)' },
-  { n: '2', title: 'Agents Assess', desc: 'All 6 agents analyze the business simultaneously — financial health, fundability, documentation, growth.', icon: '🤖', glow: 'hsl(var(--info) / 0.12)' },
-  { n: '3', title: 'Capital Matched', desc: 'The right funding sources are identified and the business is routed to the appropriate lender.', icon: '🎯', glow: 'hsl(var(--success) / 0.12)' },
-  { n: '4', title: 'Business Funded', desc: "Weekly action plans keep the business moving. Score updates in real time. When ready — funded.", icon: '🏆', glow: 'hsl(var(--gold-lt) / 0.15)' },
+  { n: '1', title: 'Tell Us About Your Business', desc: 'Answer a few quick questions — credit score, annual revenue, and time in business. That\'s it.', icon: '💬', glow: 'hsl(var(--primary) / 0.15)' },
+  { n: '2', title: 'Get Your Live Dashboard', desc: 'Instantly receive a completed Business Model Canvas, a funding readiness score, and plain-English insights.', icon: '📊', glow: 'hsl(var(--info) / 0.12)' },
+  { n: '3', title: 'Upgrade for Deeper Guidance', desc: 'Explore your dashboard for free. When you\'re ready, unlock action plans, funding roadmaps, and coaching tools.', icon: '🚀', glow: 'hsl(var(--success) / 0.12)' },
 ];
 
 const HowItWorks = () => (
   <section className="px-6 md:px-10 py-28 relative overflow-hidden">
-    {/* Background */}
     <div className="absolute inset-0 bg-gradient-to-b from-background via-[hsl(218_55%_11%)] to-background" />
-    
+
     <div className="max-w-7xl mx-auto relative z-10">
       <ScrollReveal>
         <div className="text-center mb-16">
@@ -20,16 +18,15 @@ const HowItWorks = () => (
             How It Works
           </div>
           <h2 className="font-display text-[clamp(32px,3.5vw,50px)] font-extrabold text-foreground leading-[1.08] mb-5 tracking-tight">
-            From Intake to Funded.<br /><span className="text-gradient-gold">Fully Automated.</span>
+            Three Simple Steps to<br /><span className="text-gradient-gold">Business Clarity.</span>
           </h2>
         </div>
       </ScrollReveal>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 relative">
-        {/* Connecting line with animated glow */}
-        <div className="absolute top-16 left-[12%] right-[12%] h-px hidden md:block overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+        {/* Connecting line */}
+        <div className="absolute top-16 left-[15%] right-[15%] h-px hidden md:block overflow-hidden">
           <div className="h-full bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-          <div className="absolute inset-0 h-full bg-gradient-to-r from-transparent via-primary to-transparent animate-[shimmer-line_3s_linear_infinite] opacity-40" style={{ backgroundSize: '200% 100%' }} />
         </div>
 
         {steps.map((s, i) => (
@@ -40,12 +37,10 @@ const HowItWorks = () => (
                 style={{ '--step-glow': s.glow } as React.CSSProperties}
               >
                 <span className="group-hover:scale-110 transition-transform duration-300 relative z-10">{s.icon}</span>
-                {/* Pulse ring */}
-                <div className="absolute inset-0 rounded-2xl border-2 border-primary/0 group-hover:border-primary/20 group-hover:scale-[1.3] transition-all duration-700 opacity-0 group-hover:opacity-100" />
               </div>
               <div className="font-mono text-[10px] text-primary/60 tracking-[2px] mb-2 font-bold">STEP {s.n}</div>
               <div className="text-sm font-bold text-foreground mb-2 group-hover:text-primary transition-colors">{s.title}</div>
-              <div className="text-xs text-foreground/40 leading-[1.7] max-w-[200px] mx-auto">{s.desc}</div>
+              <div className="text-xs text-foreground/40 leading-[1.7] max-w-[280px] mx-auto">{s.desc}</div>
             </div>
           </ScrollReveal>
         ))}
