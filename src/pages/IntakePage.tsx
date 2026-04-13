@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Brain, ArrowRight, ArrowLeft, Check, Loader2 } from 'lucide-react';
+import { Brain, ArrowRight, ArrowLeft, Check, Loader2, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import {
@@ -47,9 +47,33 @@ const IntakePage = () => {
     annualRevenue: '',
   });
 
-  const update = (field: keyof FormData, value: string | string[]) => {
-    setForm(prev => ({ ...prev, [field]: value }));
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  const markTouched = (field: string) => setTouched(prev => ({ ...prev, [field]: true }));
+
+  const formatPhone = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 10);
+    if (digits.length <= 3) return digits;
+    if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
   };
+
+  const update = (field: keyof FormData, value: string | string[]) => {
+    if (field === 'phone' && typeof value === 'string') {
+      setForm(prev => ({ ...prev, phone: formatPhone(value) }));
+    } else {
+      setForm(prev => ({ ...prev, [field]: value }));
+    }
+  };
+
+  const validation = useMemo(() => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const phoneDigits = form.phone.replace(/\D/g, '');
+    return {
+      email: !form.email.trim() ? 'Email is required' : !emailRegex.test(form.email.trim()) ? 'Enter a valid email address' : '',
+      phone: form.phone.trim() && phoneDigits.length < 10 ? 'Enter a valid 10-digit phone number' : '',
+    };
+  }, [form.email, form.phone]);
 
   const toggleNeed = (value: string) => {
     setForm(prev => ({
@@ -67,7 +91,7 @@ const IntakePage = () => {
   const canProceed = () => {
     switch (step) {
       case 1:
-        return form.contactName.trim() && form.email.trim() && form.companyName.trim();
+        return form.contactName.trim() && form.email.trim() && form.companyName.trim() && !validation.email && !validation.phone;
       case 2:
         return form.industry && form.naicsCode;
       case 3:
@@ -195,9 +219,28 @@ const IntakePage = () => {
                     type="email"
                     value={form.email}
                     onChange={e => update('email', e.target.value)}
+                    onBlur={() => markTouched('email')}
                     placeholder="jane@mybusiness.com"
-                    className="w-full bg-white/[0.06] border border-white/[0.12] rounded-xl px-4 py-3.5 text-[16px] text-white placeholder:text-white/30 focus:outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/30 transition-all"
+                    className={`w-full bg-white/[0.06] border rounded-xl px-4 py-3.5 text-[16px] text-white placeholder:text-white/30 focus:outline-none focus:ring-1 transition-all ${
+                      touched.email && validation.email
+                        ? 'border-red-500/60 focus:border-red-500/60 focus:ring-red-500/30'
+                        : touched.email && !validation.email && form.email
+                        ? 'border-emerald-500/40 focus:border-emerald-500/50 focus:ring-emerald-500/30'
+                        : 'border-white/[0.12] focus:border-[#2563eb]/50 focus:ring-[#2563eb]/30'
+                    }`}
                   />
+                  {touched.email && validation.email && (
+                    <p className="flex items-center gap-1.5 mt-1.5 text-[13px] text-red-400">
+                      <AlertCircle className="w-3.5 h-3.5" />
+                      {validation.email}
+                    </p>
+                  )}
+                  {touched.email && !validation.email && form.email && (
+                    <p className="flex items-center gap-1.5 mt-1.5 text-[13px] text-emerald-400">
+                      <Check className="w-3.5 h-3.5" />
+                      Valid email
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-[14px] font-semibold text-white/80 mb-2">Phone Number</label>
@@ -205,9 +248,28 @@ const IntakePage = () => {
                     type="tel"
                     value={form.phone}
                     onChange={e => update('phone', e.target.value)}
+                    onBlur={() => markTouched('phone')}
                     placeholder="(555) 123-4567"
-                    className="w-full bg-white/[0.06] border border-white/[0.12] rounded-xl px-4 py-3.5 text-[16px] text-white placeholder:text-white/30 focus:outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/30 transition-all"
+                    className={`w-full bg-white/[0.06] border rounded-xl px-4 py-3.5 text-[16px] text-white placeholder:text-white/30 focus:outline-none focus:ring-1 transition-all ${
+                      touched.phone && validation.phone
+                        ? 'border-red-500/60 focus:border-red-500/60 focus:ring-red-500/30'
+                        : touched.phone && !validation.phone && form.phone
+                        ? 'border-emerald-500/40 focus:border-emerald-500/50 focus:ring-emerald-500/30'
+                        : 'border-white/[0.12] focus:border-[#2563eb]/50 focus:ring-[#2563eb]/30'
+                    }`}
                   />
+                  {touched.phone && validation.phone && (
+                    <p className="flex items-center gap-1.5 mt-1.5 text-[13px] text-red-400">
+                      <AlertCircle className="w-3.5 h-3.5" />
+                      {validation.phone}
+                    </p>
+                  )}
+                  {touched.phone && !validation.phone && form.phone && (
+                    <p className="flex items-center gap-1.5 mt-1.5 text-[13px] text-emerald-400">
+                      <Check className="w-3.5 h-3.5" />
+                      Valid phone number
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-[14px] font-semibold text-white/80 mb-2">Business / Company Name *</label>
