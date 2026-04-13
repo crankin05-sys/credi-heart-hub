@@ -41,7 +41,7 @@ const AuthPage = () => {
             <Brain className="w-5 h-5 text-white" />
           </div>
           <div>
-            <div className="text-lg font-bold text-foreground">Credibility Suite <span className="text-gradient-ai">AI</span></div>
+            <div className="text-lg font-bold text-foreground">Credibility Suite</div>
             <div className="text-[10px] text-muted-foreground">{isSignUp ? 'Create Your Account' : 'Sign In to Dashboard'}</div>
           </div>
         </Link>

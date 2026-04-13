@@ -69,7 +69,7 @@ const SettingsPage = () => {
       <div className="bg-card border border-border p-5">
         <div className="text-[9px] font-bold tracking-[2px] uppercase text-primary font-mono mb-3.5">Platform Info</div>
         <div className="space-y-2 text-xs text-foreground/65">
-          <div>Platform: <span className="text-foreground font-semibold">Credibility Suite AI</span></div>
+          <div>Platform: <span className="text-foreground font-semibold"><div>Platform: <span className="text-foreground font-semibold">Credibility Suite</span></div></span></div>
           <div>Built by: <span className="text-foreground font-semibold">She Wins With AI</span></div>
           <div>Support: <a href="mailto:charisma@shewinswithai.com" className="text-primary font-bold hover:text-gold-lt transition-colors">charisma@shewinswithai.com</a></div>
         </div>
