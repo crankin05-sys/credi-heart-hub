@@ -141,70 +141,7 @@ const IntakePage = () => {
 
   const back = () => setStep(s => Math.max(1, s - 1));
 
-  // Result screen
-  if (result && !showCalendly) {
-    return (
-      <div className="min-h-screen bg-[#0a1628] flex items-center justify-center px-6">
-        <div className="max-w-lg w-full text-center animate-fade-up">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#2563eb] to-[#1d4ed8] flex items-center justify-center mx-auto mb-6">
-            <Check className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-[32px] font-extrabold text-white mb-3">
-            You're in the{' '}
-            <span className="bg-gradient-to-r from-[#4d8fef] to-[#38bdf8] bg-clip-text text-transparent">
-              {result.label}
-            </span>{' '}
-            Path
-          </h1>
-          <p className="text-[17px] text-white/70 leading-[1.7] mb-10 max-w-md mx-auto">
-            {result.description}
-          </p>
-          <p className="text-[15px] text-white/50 mb-6">
-            To access the platform, schedule a quick walkthrough with our team first.
-          </p>
-          <button
-            onClick={() => setShowCalendly(true)}
-            className="bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] text-white text-[16px] font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_hsl(220_80%_50%/0.35)] hover:-translate-y-1 inline-flex items-center justify-center gap-2"
-          >
-            Book My Walkthrough
-            <ArrowRight className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (result && showCalendly) {
-    return (
-      <div className="min-h-screen bg-[#0a1628] flex flex-col items-center px-6 py-10">
-        <div className="max-w-3xl w-full animate-fade-up">
-          <h2 className="text-[28px] font-extrabold text-white text-center mb-2">
-            Schedule Your Walkthrough
-          </h2>
-          <p className="text-[16px] text-white/60 text-center mb-8">
-            Pick a time that works for you. Once confirmed, you'll get full access to the platform.
-          </p>
-          <div className="rounded-2xl overflow-hidden bg-white" style={{ minHeight: 700 }}>
-            <iframe
-              src="https://calendly.com/mauricestewart?hide_gdpr_banner=1&background_color=ffffff&text_color=1a1a2e&primary_color=2563eb"
-              width="100%"
-              height="700"
-              frameBorder="0"
-              title="Schedule a walkthrough"
-            />
-          </div>
-          <p className="text-center mt-6">
-            <button
-              onClick={() => setShowCalendly(false)}
-              className="text-white/50 text-[15px] font-medium hover:text-white/80 transition-colors"
-            >
-              ← Back to results
-            </button>
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // After submission, user is redirected to /onboarding
 
   return (
     <div className="min-h-screen bg-[#0a1628] flex flex-col">
