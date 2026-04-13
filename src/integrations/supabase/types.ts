@@ -106,6 +106,60 @@ export type Database = {
           },
         ]
       }
+      leads: {
+        Row: {
+          amount_seeking: number | null
+          company_name: string
+          contact_name: string
+          created_at: string
+          credit_score_range: string | null
+          email: string
+          funnel: string | null
+          id: string
+          industry: string | null
+          naics_code: string | null
+          needs: string[] | null
+          phone: string | null
+          responses: Json | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount_seeking?: number | null
+          company_name: string
+          contact_name: string
+          created_at?: string
+          credit_score_range?: string | null
+          email: string
+          funnel?: string | null
+          id?: string
+          industry?: string | null
+          naics_code?: string | null
+          needs?: string[] | null
+          phone?: string | null
+          responses?: Json | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_seeking?: number | null
+          company_name?: string
+          contact_name?: string
+          created_at?: string
+          credit_score_range?: string | null
+          email?: string
+          funnel?: string | null
+          id?: string
+          industry?: string | null
+          naics_code?: string | null
+          needs?: string[] | null
+          phone?: string | null
+          responses?: Json | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
