@@ -1,4 +1,4 @@
-import { useState, useMemo, type HTMLInputTypeAttribute, type ReactNode } from 'react';
+import { useState, useMemo, useEffect, type HTMLInputTypeAttribute, type ReactNode } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Brain, Sparkles, ArrowRight, ArrowLeft, Check, Lock, Zap, Target, DollarSign, FileText, TrendingUp, Play, CreditCard } from 'lucide-react';
@@ -118,7 +118,7 @@ const agentModules = [
   { id: 'execution', Icon: Play, name: 'Execution Agent', desc: 'Weekly action plan, "what to do next" guidance', gradient: 'from-cyan-500 to-blue-500' },
 ];
 
-type Phase = 'contact' | 'snapshot' | 'results' | 'paywall' | 'deep-a' | 'deep-b' | 'deep-c' | 'deep-d' | 'signup';
+type Phase = 'contact' | 'snapshot' | 'results' | 'booking' | 'paywall' | 'deep-a' | 'deep-b' | 'deep-c' | 'deep-d' | 'signup';
 type Option = { label: string; value: string };
 
 interface InputFieldProps {
@@ -257,6 +257,7 @@ const OnboardingPage = () => {
   const [phase, setPhase] = useState<Phase>('contact');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [hasLeadData, setHasLeadData] = useState(false);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -265,6 +266,25 @@ const OnboardingPage = () => {
   const [businessName, setBusinessName] = useState('');
   const [website, setWebsite] = useState('');
   const [noWebsite, setNoWebsite] = useState(false);
+
+  // Pre-fill from lead capture data
+  useEffect(() => {
+    const leadJson = sessionStorage.getItem('leadData');
+    if (leadJson) {
+      try {
+        const lead = JSON.parse(leadJson);
+        const nameParts = (lead.contactName || '').split(' ');
+        setFirstName(nameParts[0] || '');
+        setLastName(nameParts.slice(1).join(' ') || '');
+        setEmail(lead.email || '');
+        setPhone(lead.phone || '');
+        setBusinessName(lead.companyName || '');
+        setHasLeadData(true);
+        // Skip contact phase since we already have their info
+        setPhase('snapshot');
+      } catch { /* ignore */ }
+    }
+  }, []);
 
   const [creditScore, setCreditScore] = useState('');
   const [revenue, setRevenue] = useState('');
@@ -347,11 +367,12 @@ const OnboardingPage = () => {
     { label: 'Contact', phase: 'contact' },
     { label: 'Snapshot', phase: 'snapshot' },
     { label: 'Results', phase: 'results' },
+    { label: 'Book', phase: 'booking' },
     { label: 'Upgrade', phase: 'paywall' },
     { label: 'Details', phase: 'deep-a' },
     { label: 'Account', phase: 'signup' },
   ];
-  const stepIndex = { contact: 0, snapshot: 1, results: 2, paywall: 3, 'deep-a': 4, 'deep-b': 4, 'deep-c': 4, 'deep-d': 4, signup: 5 }[phase];
+  const stepIndex = { contact: 0, snapshot: 1, results: 2, booking: 3, paywall: 4, 'deep-a': 5, 'deep-b': 5, 'deep-c': 5, 'deep-d': 5, signup: 6 }[phase];
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -501,19 +522,40 @@ const OnboardingPage = () => {
                 </div>
               </div>
 
-              {/* CTA */}
+              {/* CTA — Book a walkthrough to continue */}
               <div className="bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] rounded-2xl p-6 text-center text-white">
-                <p className="text-sm text-white/70 mb-1">This is your live business dashboard.</p>
-                <p className="font-bold text-base mb-4">Upgrade to unlock step-by-step guidance, funding matches, and AI advisors.</p>
-                <button onClick={() => setPhase('paywall')}
+                <p className="text-sm text-white/70 mb-1">You've seen your Business Model Canvas.</p>
+                <p className="font-bold text-base mb-4">To continue and unlock AI advisors, book a walkthrough with our team.</p>
+                <button onClick={() => setPhase('booking')}
                   className="bg-white text-foreground font-semibold text-sm px-8 py-3.5 rounded-xl cursor-pointer transition-all hover:shadow-lg hover:-translate-y-0.5 border-none flex items-center gap-2 mx-auto">
-                  <Sparkles className="w-4 h-4" /> Unlock AI Advisors
+                  <Sparkles className="w-4 h-4" /> Book My Walkthrough
                 </button>
               </div>
             </div>
           )}
 
-          {/* ═══════ STEP 4: PAYWALL ═══════ */}
+          {/* ═══════ BOOKING WALL ═══════ */}
+          {phase === 'booking' && (
+            <div className="animate-fade-up space-y-6">
+              <div className="text-center">
+                <h2 className="text-2xl font-bold text-foreground mb-2">Schedule Your Walkthrough</h2>
+                <p className="text-sm text-muted-foreground">Pick a time that works for you. Once confirmed, you'll get full access to the platform and AI advisors.</p>
+              </div>
+              <div className="rounded-2xl overflow-hidden bg-white border border-border" style={{ minHeight: 650 }}>
+                <iframe
+                  src="https://calendly.com/mauricestewart?hide_gdpr_banner=1&background_color=ffffff&text_color=1a1a2e&primary_color=2563eb"
+                  width="100%"
+                  height="650"
+                  frameBorder="0"
+                  title="Schedule a walkthrough"
+                />
+              </div>
+              <button onClick={() => setPhase('results')} className="w-full text-xs text-muted-foreground text-center cursor-pointer hover:text-foreground transition-colors bg-transparent border-none py-2 flex items-center justify-center gap-1">
+                <ArrowLeft className="w-3 h-3" /> Back to my results
+              </button>
+            </div>
+          )}
+
           {phase === 'paywall' && (
             <div className="animate-fade-up space-y-6">
               <div className="text-center">
