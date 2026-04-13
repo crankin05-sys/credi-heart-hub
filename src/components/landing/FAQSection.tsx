@@ -2,11 +2,11 @@ import { useState } from 'react';
 import ScrollReveal from '@/components/ScrollReveal';
 
 const faqs = [
-  { q: 'How does the Fundability Score work?', a: "The platform analyzes a business's financial health, credit profile, documentation completeness, and business structure to generate a score from 0–100. A score of 75+ qualifies the business for capital review. The score updates in real time as the business improves." },
-  { q: 'Does it integrate with existing tools?', a: 'Yes. The platform integrates with QuickBooks, HubSpot, and other major business tools via API. Data flows automatically — no manual entry required from the business owner.' },
-  { q: 'How does the capital matching work?', a: "The Capital Matching Agent analyzes each business's profile and matches them to the most appropriate funding source — revolving loan funds, SBA programs, AR financing, or partner lenders." },
-  { q: 'Can organizations white-label the platform?', a: "Yes. Organizations that license the platform can brand it as their own technical assistance program. The underlying AI infrastructure is built and maintained by our team while the client-facing experience reflects the organization's brand." },
-  { q: "What's the implementation timeline?", a: 'Phase 1 (foundation, website, intake, scoring) is live within 30 days. Phase 2 (all 6 AI agents) is complete within 60 days. Full platform launch including capital engine and organization portal is complete within 90 days.' },
+  { q: 'What is the Business Model Canvas?', a: "It's a visual snapshot of your entire business — your customers, revenue streams, key activities, cost structure, and more. We complete it for you based on a few quick questions, and it becomes your live dashboard for understanding and improving your business." },
+  { q: 'How does the funding readiness score work?', a: "We analyze your business profile — credit, revenue, time in business, and documentation — to generate a score from 0–100. A higher score means you're closer to being loan-ready. The score updates as you take action and improve." },
+  { q: 'Is it really free to get started?', a: 'Yes. You can get your completed Business Model Canvas, funding readiness score, and initial insights for free. Paid tools become available when you want deeper guidance, personalized action plans, or funding roadmaps.' },
+  { q: 'What kind of guidance do I get?', a: "Your dashboard includes plain-English insights about your business — what looks strong, what might be limiting growth, and practical next steps. It's like having a knowledgeable business advisor reviewing your situation." },
+  { q: 'Do I need to be tech-savvy to use this?', a: "Not at all. The platform is designed to feel like a conversation, not a complicated software system. Answer a few questions, and we do the rest. Everything is explained in plain language with clear action steps." },
 ];
 
 const FAQSection = () => {
@@ -15,7 +15,7 @@ const FAQSection = () => {
   return (
     <section className="px-6 md:px-10 py-28 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_50%_0%,hsl(var(--primary)/0.03),transparent_60%)]" />
-      
+
       <div className="max-w-7xl mx-auto relative z-10">
         <ScrollReveal>
           <div className="text-center mb-16">

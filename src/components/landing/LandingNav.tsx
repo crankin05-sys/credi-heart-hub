@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Brain, Sparkles, LogIn, LayoutDashboard } from 'lucide-react';
+import { Brain, LogIn, LayoutDashboard, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const LandingNav = () => {
@@ -20,8 +20,8 @@ const LandingNav = () => {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-500 ${
-      scrolled 
-        ? 'bg-white/90 backdrop-blur-xl border-b border-border py-3 shadow-sm' 
+      scrolled
+        ? 'bg-white/90 backdrop-blur-xl border-b border-border py-3 shadow-sm'
         : 'bg-transparent py-5'
     }`}>
       <div className="max-w-7xl mx-auto px-6 md:px-10 flex justify-between items-center">
@@ -35,9 +35,8 @@ const LandingNav = () => {
         </div>
         <div className="hidden md:flex items-center gap-8">
           {[
-            { label: 'Platform', id: 'agents' },
-            { label: 'AI Agents', id: 'agents' },
-            { label: 'Revenue', id: 'revenue' },
+            { label: 'How It Works', id: 'dashboard-preview' },
+            { label: 'Guidance Tools', id: 'support-layers' },
             { label: 'Contact', id: 'cta' },
           ].map(item => (
             <button
@@ -70,7 +69,7 @@ const LandingNav = () => {
                 onClick={() => navigate('/get-started')}
                 className="bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-6 py-2.5 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2"
               >
-                <Sparkles className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5" />
                 Get Started
               </button>
             </div>

@@ -16,7 +16,7 @@ const LandingFooter = () => (
           Powered by She Wins With AI · Atlanta, GA 30309
         </div>
         <div className="neon-card text-primary text-[9px] font-bold px-5 py-2.5 tracking-[2px] uppercase rounded-full hover:border-primary/30 transition-all cursor-pointer">
-          Enterprise Platform
+          Business Guidance Platform
         </div>
       </div>
     </div>
