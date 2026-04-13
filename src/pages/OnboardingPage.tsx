@@ -367,11 +367,12 @@ const OnboardingPage = () => {
     { label: 'Contact', phase: 'contact' },
     { label: 'Snapshot', phase: 'snapshot' },
     { label: 'Results', phase: 'results' },
+    { label: 'Book', phase: 'booking' },
     { label: 'Upgrade', phase: 'paywall' },
     { label: 'Details', phase: 'deep-a' },
     { label: 'Account', phase: 'signup' },
   ];
-  const stepIndex = { contact: 0, snapshot: 1, results: 2, paywall: 3, 'deep-a': 4, 'deep-b': 4, 'deep-c': 4, 'deep-d': 4, signup: 5 }[phase];
+  const stepIndex = { contact: 0, snapshot: 1, results: 2, booking: 3, paywall: 4, 'deep-a': 5, 'deep-b': 5, 'deep-c': 5, 'deep-d': 5, signup: 6 }[phase];
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
