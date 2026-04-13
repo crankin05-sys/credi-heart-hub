@@ -1,4 +1,4 @@
-import { useState, useMemo, type HTMLInputTypeAttribute, type ReactNode } from 'react';
+import { useState, useMemo, useEffect, type HTMLInputTypeAttribute, type ReactNode } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Brain, Sparkles, ArrowRight, ArrowLeft, Check, Lock, Zap, Target, DollarSign, FileText, TrendingUp, Play, CreditCard } from 'lucide-react';
