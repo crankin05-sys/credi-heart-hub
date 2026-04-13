@@ -33,8 +33,6 @@ const IntakePage = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState<{ funnel: string; label: string; description: string } | null>(null);
-  const [showCalendly, setShowCalendly] = useState(false);
   const [form, setForm] = useState<FormData>({
     contactName: '',
     email: '',
