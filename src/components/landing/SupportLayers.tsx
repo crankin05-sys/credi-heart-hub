@@ -15,14 +15,14 @@ const SupportLayers = () => (
     <div className="max-w-7xl mx-auto relative z-10">
       <ScrollReveal>
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 glass rounded-full text-primary text-[10px] font-bold px-4 py-2 tracking-[3px] uppercase mb-5 font-mono">
+          <div className="inline-flex items-center gap-2 glass rounded-full text-primary text-[13px] font-bold px-4 py-2 tracking-[3px] uppercase mb-5 font-mono">
             <span className="w-1.5 h-1.5 bg-primary rounded-full" />
             Optional Guidance
           </div>
           <h2 className="font-display text-[clamp(32px,3.5vw,50px)] font-extrabold text-foreground leading-[1.08] mb-5 tracking-tight">
             Go Deeper When<br /><span className="text-gradient-gold">You're Ready.</span>
           </h2>
-          <p className="text-[15px] text-foreground/45 leading-[1.8] max-w-[540px] mx-auto">
+          <p className="text-[17px] text-foreground/70 leading-[1.8] max-w-[540px] mx-auto">
             Your dashboard is free to explore. When you want more personalized help, these tools are here for you.
           </p>
         </div>
@@ -35,8 +35,8 @@ const SupportLayers = () => (
               <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative z-10">
                 <div className="text-[28px] mb-4 group-hover:scale-110 transition-transform duration-300 inline-block">{l.icon}</div>
-                <div className="text-sm font-bold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">{l.title}</div>
-                <div className="text-[12.5px] text-foreground/40 leading-[1.75]">{l.desc}</div>
+                <div className="text-[16px] font-bold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">{l.title}</div>
+                <div className="text-[15px] text-foreground/65 leading-[1.75]">{l.desc}</div>
               </div>
             </div>
           </ScrollReveal>

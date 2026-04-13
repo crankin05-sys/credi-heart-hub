@@ -25,7 +25,7 @@ const BenefitsSection = () => (
     <div className="max-w-7xl mx-auto relative z-10">
       <ScrollReveal>
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 glass rounded-full text-primary text-[10px] font-bold px-4 py-2 tracking-[3px] uppercase mb-5 font-mono">
+          <div className="inline-flex items-center gap-2 glass rounded-full text-primary text-[13px] font-bold px-4 py-2 tracking-[3px] uppercase mb-5 font-mono">
             <span className="w-1.5 h-1.5 bg-primary rounded-full" />
             What You Get
           </div>
@@ -33,7 +33,7 @@ const BenefitsSection = () => (
             Everything You Need to<br />
             <span className="text-gradient-gold">Understand & Strengthen</span> Your Business.
           </h2>
-          <p className="text-[15px] text-foreground/45 leading-[1.8] max-w-[540px] mx-auto">
+          <p className="text-[17px] text-foreground/70 leading-[1.8] max-w-[540px] mx-auto">
             No complicated systems. No confusing dashboards. Just clear insights and practical guidance.
           </p>
         </div>
@@ -46,8 +46,8 @@ const BenefitsSection = () => (
               <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative z-10">
                 <div className="text-[40px] mb-5 group-hover:scale-110 transition-transform duration-300 inline-block">{b.icon}</div>
-                <div className="text-[16px] font-bold text-foreground mb-3 group-hover:text-primary transition-colors duration-300">{b.title}</div>
-                <div className="text-[13px] text-foreground/45 leading-[1.8]">{b.desc}</div>
+                <div className="text-[18px] font-bold text-foreground mb-3 group-hover:text-primary transition-colors duration-300">{b.title}</div>
+                <div className="text-[15px] text-foreground/70 leading-[1.8]">{b.desc}</div>
               </div>
             </div>
           </ScrollReveal>

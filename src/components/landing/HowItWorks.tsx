@@ -13,7 +13,7 @@ const HowItWorks = () => (
     <div className="max-w-7xl mx-auto relative z-10">
       <ScrollReveal>
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 glass rounded-full text-primary text-[10px] font-bold px-4 py-2 tracking-[3px] uppercase mb-5 font-mono">
+          <div className="inline-flex items-center gap-2 glass rounded-full text-primary text-[13px] font-bold px-4 py-2 tracking-[3px] uppercase mb-5 font-mono">
             <span className="w-1.5 h-1.5 bg-info rounded-full" />
             How It Works
           </div>
@@ -38,9 +38,9 @@ const HowItWorks = () => (
               >
                 <span className="group-hover:scale-110 transition-transform duration-300 relative z-10">{s.icon}</span>
               </div>
-              <div className="font-mono text-[10px] text-primary/60 tracking-[2px] mb-2 font-bold">STEP {s.n}</div>
-              <div className="text-sm font-bold text-foreground mb-2 group-hover:text-primary transition-colors">{s.title}</div>
-              <div className="text-xs text-foreground/40 leading-[1.7] max-w-[280px] mx-auto">{s.desc}</div>
+              <div className="font-mono text-[13px] text-primary/80 tracking-[2px] mb-2 font-bold">STEP {s.n}</div>
+              <div className="text-[16px] font-bold text-foreground mb-2 group-hover:text-primary transition-colors">{s.title}</div>
+              <div className="text-[15px] text-foreground/65 leading-[1.7] max-w-[300px] mx-auto">{s.desc}</div>
             </div>
           </ScrollReveal>
         ))}
