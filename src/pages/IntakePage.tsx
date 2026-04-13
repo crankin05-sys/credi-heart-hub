@@ -113,7 +113,19 @@ const IntakePage = () => {
       });
 
       if (error) throw error;
-      setResult(funnelResult);
+      // Store lead data for onboarding pre-fill
+      sessionStorage.setItem('leadData', JSON.stringify({
+        contactName: form.contactName,
+        email: form.email,
+        phone: form.phone,
+        companyName: form.companyName,
+        industry: form.industry,
+        funnel: funnelResult.funnel,
+        funnelLabel: funnelResult.label,
+        funnelDescription: funnelResult.description,
+      }));
+      sessionStorage.setItem('leadCaptured', 'true');
+      navigate('/onboarding');
     } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {
