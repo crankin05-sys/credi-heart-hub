@@ -521,13 +521,13 @@ const OnboardingPage = () => {
                 </div>
               </div>
 
-              {/* CTA */}
+              {/* CTA — Book a walkthrough to continue */}
               <div className="bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] rounded-2xl p-6 text-center text-white">
-                <p className="text-sm text-white/70 mb-1">This is your live business dashboard.</p>
-                <p className="font-bold text-base mb-4">Upgrade to unlock step-by-step guidance, funding matches, and AI advisors.</p>
-                <button onClick={() => setPhase('paywall')}
+                <p className="text-sm text-white/70 mb-1">You've seen your Business Model Canvas.</p>
+                <p className="font-bold text-base mb-4">To continue and unlock AI advisors, book a walkthrough with our team.</p>
+                <button onClick={() => setPhase('booking')}
                   className="bg-white text-foreground font-semibold text-sm px-8 py-3.5 rounded-xl cursor-pointer transition-all hover:shadow-lg hover:-translate-y-0.5 border-none flex items-center gap-2 mx-auto">
-                  <Sparkles className="w-4 h-4" /> Unlock AI Advisors
+                  <Sparkles className="w-4 h-4" /> Book My Walkthrough
                 </button>
               </div>
             </div>
