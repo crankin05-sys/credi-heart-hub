@@ -127,10 +127,28 @@ const TechChatWidget = () => {
           {/* Messages */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
             {messages.length === 0 && (
-              <div className="text-center py-8">
-                <div className="text-3xl mb-3">🤖</div>
-                <p className="text-sm font-semibold text-foreground mb-1">Hi! I'm your Technical Assistant.</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">Ask me about fundability, AI agents, loan products, or anything about the platform.</p>
+              <div className="py-4">
+                <div className="text-center mb-5">
+                  <div className="text-3xl mb-2">🧠</div>
+                  <p className="text-sm font-bold text-foreground mb-1">Credibility Suite AI Advisor</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Expert-level funding, credit & business strategy — ask anything.</p>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    "How do I build business credit from scratch?",
+                    "What SBA loan do I qualify for?",
+                    "How to improve my fundability score fast?",
+                    "Compare revenue-based financing vs SBA loans",
+                  ].map((q) => (
+                    <button
+                      key={q}
+                      onClick={() => { setInput(q); }}
+                      className="w-full text-left text-[11px] text-foreground/70 bg-muted/30 hover:bg-muted/50 border border-border/20 rounded-lg px-3 py-2 transition-colors"
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
             {messages.map((m, i) => (
