@@ -257,6 +257,7 @@ const OnboardingPage = () => {
   const [phase, setPhase] = useState<Phase>('contact');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [hasLeadData, setHasLeadData] = useState(false);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -265,6 +266,25 @@ const OnboardingPage = () => {
   const [businessName, setBusinessName] = useState('');
   const [website, setWebsite] = useState('');
   const [noWebsite, setNoWebsite] = useState(false);
+
+  // Pre-fill from lead capture data
+  useEffect(() => {
+    const leadJson = sessionStorage.getItem('leadData');
+    if (leadJson) {
+      try {
+        const lead = JSON.parse(leadJson);
+        const nameParts = (lead.contactName || '').split(' ');
+        setFirstName(nameParts[0] || '');
+        setLastName(nameParts.slice(1).join(' ') || '');
+        setEmail(lead.email || '');
+        setPhone(lead.phone || '');
+        setBusinessName(lead.companyName || '');
+        setHasLeadData(true);
+        // Skip contact phase since we already have their info
+        setPhase('snapshot');
+      } catch { /* ignore */ }
+    }
+  }, []);
 
   const [creditScore, setCreditScore] = useState('');
   const [revenue, setRevenue] = useState('');
