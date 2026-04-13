@@ -9,6 +9,7 @@ import TrustSection from '@/components/landing/TrustSection';
 import CTASection from '@/components/landing/CTASection';
 import FAQSection from '@/components/landing/FAQSection';
 import LandingFooter from '@/components/landing/LandingFooter';
+import TechChatWidget from '@/components/TechChatWidget';
 
 const LandingPage = () => {
   return (
@@ -24,6 +25,7 @@ const LandingPage = () => {
       <CTASection />
       <FAQSection />
       <LandingFooter />
+      <TechChatWidget />
     </div>
   );
 };
