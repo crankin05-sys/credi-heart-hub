@@ -19,7 +19,7 @@ const FAQSection = () => {
       <div className="max-w-7xl mx-auto relative z-10">
         <ScrollReveal>
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 glass rounded-full text-primary text-[10px] font-bold px-4 py-2 tracking-[3px] uppercase mb-5 font-mono">
+            <div className="inline-flex items-center gap-2 glass rounded-full text-primary text-[13px] font-bold px-4 py-2 tracking-[3px] uppercase mb-5 font-mono">
               <span className="w-1.5 h-1.5 bg-primary rounded-full" />
               FAQ
             </div>
@@ -32,11 +32,11 @@ const FAQSection = () => {
         <div className="max-w-[700px] mx-auto">
           {faqs.map((f, i) => (
             <ScrollReveal key={i} delay={i * 0.05}>
-              <div className="border-b border-foreground/[0.06]">
+              <div className="border-b border-foreground/[0.08]">
                 <button
                   onClick={() => setOpenIdx(openIdx === i ? null : i)}
-                  className={`w-full bg-transparent border-none text-left font-body text-sm font-semibold py-6 cursor-pointer flex justify-between items-center gap-4 transition-all duration-300 ${
-                    openIdx === i ? 'text-primary' : 'text-foreground/70 hover:text-foreground'
+                  className={`w-full bg-transparent border-none text-left font-body text-[16px] font-semibold py-6 cursor-pointer flex justify-between items-center gap-4 transition-all duration-300 ${
+                    openIdx === i ? 'text-primary' : 'text-foreground/85 hover:text-foreground'
                   }`}
                 >
                   {f.q}
@@ -47,7 +47,7 @@ const FAQSection = () => {
                   </span>
                 </button>
                 <div className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${openIdx === i ? 'max-h-[300px] pb-6' : 'max-h-0'}`}>
-                  <p className="text-[13.5px] text-foreground/45 leading-[1.85]">{f.a}</p>
+                  <p className="text-[15px] text-foreground/70 leading-[1.85]">{f.a}</p>
                 </div>
               </div>
             </ScrollReveal>
