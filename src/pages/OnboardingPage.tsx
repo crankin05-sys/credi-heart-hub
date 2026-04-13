@@ -533,7 +533,28 @@ const OnboardingPage = () => {
             </div>
           )}
 
-          {/* ═══════ STEP 4: PAYWALL ═══════ */}
+          {/* ═══════ BOOKING WALL ═══════ */}
+          {phase === 'booking' && (
+            <div className="animate-fade-up space-y-6">
+              <div className="text-center">
+                <h2 className="text-2xl font-bold text-foreground mb-2">Schedule Your Walkthrough</h2>
+                <p className="text-sm text-muted-foreground">Pick a time that works for you. Once confirmed, you'll get full access to the platform and AI advisors.</p>
+              </div>
+              <div className="rounded-2xl overflow-hidden bg-white border border-border" style={{ minHeight: 650 }}>
+                <iframe
+                  src="https://calendly.com/mauricestewart?hide_gdpr_banner=1&background_color=ffffff&text_color=1a1a2e&primary_color=2563eb"
+                  width="100%"
+                  height="650"
+                  frameBorder="0"
+                  title="Schedule a walkthrough"
+                />
+              </div>
+              <button onClick={() => setPhase('results')} className="w-full text-xs text-muted-foreground text-center cursor-pointer hover:text-foreground transition-colors bg-transparent border-none py-2 flex items-center justify-center gap-1">
+                <ArrowLeft className="w-3 h-3" /> Back to my results
+              </button>
+            </div>
+          )}
+
           {phase === 'paywall' && (
             <div className="animate-fade-up space-y-6">
               <div className="text-center">
