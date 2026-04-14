@@ -48,23 +48,23 @@ const DashboardPreview = () => (
             </div>
 
             {/* Canvas grid */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3">
               {canvasSections.map((section, i) => (
                 <div
                   key={section}
-                  className={`group rounded-xl border border-foreground/[0.15] bg-foreground/[0.04] p-4 hover:border-primary/40 hover:bg-primary/[0.08] transition-all duration-300 cursor-pointer ${
+                  className={`group rounded-lg md:rounded-xl border border-foreground/[0.15] bg-foreground/[0.04] p-2.5 md:p-4 hover:border-primary/40 hover:bg-primary/[0.08] transition-all duration-300 cursor-pointer ${
                     i >= 8 ? 'md:col-span-2 col-span-1' : ''
                   } ${i === 9 ? 'md:col-span-1' : ''}`}
                 >
-                  <div className="text-[13px] font-bold text-foreground/90 group-hover:text-primary transition-colors mb-2">
+                  <div className="text-[12px] md:text-[13px] font-bold text-foreground/90 group-hover:text-primary transition-colors mb-1.5">
                     {section}
                   </div>
-                  <div className="space-y-1.5">
-                    <div className="h-2 bg-foreground/[0.12] rounded-full w-full" />
-                    <div className="h-2 bg-foreground/[0.12] rounded-full w-3/4" />
-                    <div className="h-2 bg-foreground/[0.08] rounded-full w-1/2" />
+                  <div className="space-y-1">
+                    <div className="h-1.5 md:h-2 bg-foreground/[0.12] rounded-full w-full" />
+                    <div className="h-1.5 md:h-2 bg-foreground/[0.12] rounded-full w-3/4" />
+                    <div className="h-1.5 md:h-2 bg-foreground/[0.08] rounded-full w-1/2" />
                   </div>
-                  <div className="mt-3 text-[11px] text-primary/0 group-hover:text-primary/80 transition-colors font-medium">
+                  <div className="mt-2 md:mt-3 text-[10px] md:text-[11px] text-primary/0 group-hover:text-primary/80 transition-colors font-medium">
                     Click to explore →
                   </div>
                 </div>
