@@ -29,19 +29,19 @@ const DashboardPreview = () => (
       {/* Canvas mockup */}
       <ScrollReveal delay={0.15}>
         <div className="max-w-4xl mx-auto">
-          <div className="neon-card rounded-2xl p-6 md:p-8 relative overflow-hidden">
+          <div className="neon-card rounded-2xl p-6 md:p-8 relative overflow-hidden bg-[hsl(220_30%_12%)]">
             {/* Top bar */}
-            <div className="flex items-center justify-between mb-6 pb-4 border-b border-foreground/[0.08]">
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-foreground/[0.15]">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-[hsl(260_70%_60%)] flex items-center justify-center text-[15px] font-bold text-white">
                   78
                 </div>
                 <div>
                   <div className="text-[15px] font-bold text-foreground">Your Business Canvas</div>
-                  <div className="text-[13px] text-foreground/55">Funding Readiness: Strong</div>
+                  <div className="text-[13px] text-foreground/70">Funding Readiness: Strong</div>
                 </div>
               </div>
-              <div className="hidden md:flex items-center gap-2 text-[13px] text-foreground/50 font-mono">
+              <div className="hidden md:flex items-center gap-2 text-[13px] text-foreground/60 font-mono">
                 <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
                 Live · Updated today
               </div>
@@ -52,19 +52,19 @@ const DashboardPreview = () => (
               {canvasSections.map((section, i) => (
                 <div
                   key={section}
-                  className={`group rounded-xl border border-foreground/[0.08] p-4 hover:border-primary/30 hover:bg-primary/[0.04] transition-all duration-300 cursor-pointer ${
+                  className={`group rounded-xl border border-foreground/[0.15] bg-foreground/[0.04] p-4 hover:border-primary/40 hover:bg-primary/[0.08] transition-all duration-300 cursor-pointer ${
                     i >= 8 ? 'md:col-span-2 col-span-1' : ''
                   } ${i === 9 ? 'md:col-span-1' : ''}`}
                 >
-                  <div className="text-[13px] font-bold text-foreground/75 group-hover:text-primary transition-colors mb-2">
+                  <div className="text-[13px] font-bold text-foreground/90 group-hover:text-primary transition-colors mb-2">
                     {section}
                   </div>
                   <div className="space-y-1.5">
-                    <div className="h-2 bg-foreground/[0.07] rounded-full w-full" />
-                    <div className="h-2 bg-foreground/[0.07] rounded-full w-3/4" />
-                    <div className="h-2 bg-foreground/[0.05] rounded-full w-1/2" />
+                    <div className="h-2 bg-foreground/[0.12] rounded-full w-full" />
+                    <div className="h-2 bg-foreground/[0.12] rounded-full w-3/4" />
+                    <div className="h-2 bg-foreground/[0.08] rounded-full w-1/2" />
                   </div>
-                  <div className="mt-3 text-[11px] text-primary/0 group-hover:text-primary/70 transition-colors font-medium">
+                  <div className="mt-3 text-[11px] text-primary/0 group-hover:text-primary/80 transition-colors font-medium">
                     Click to explore →
                   </div>
                 </div>
