@@ -278,6 +278,7 @@ const GetStartedPage = () => {
                   placeholder="(555) 123-4567"
                   className="w-full bg-white/[0.06] border border-white/[0.12] rounded-xl px-4 py-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/30 transition-all text-sm"
                 />
+              </div>
               <div>
                 <label className="block text-xs font-semibold text-white/70 mb-2">Website URL <span className="text-white/30">(optional)</span></label>
                 <div className="relative">
