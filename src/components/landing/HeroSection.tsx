@@ -1,9 +1,24 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ScrollReveal from '@/components/ScrollReveal';
-import { ArrowRight, CheckCircle2, Shield } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Shield, ChevronDown } from 'lucide-react';
+
+const goalOptions = [
+  { label: 'Get a business loan', value: 'loan' },
+  { label: 'Check my fundability score', value: 'fundability' },
+  { label: 'Improve my credit', value: 'credit' },
+  { label: 'Grow my business', value: 'grow' },
+  { label: 'Just exploring', value: 'exploring' },
+];
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+
+  const handleSelect = (value: string) => {
+    setOpen(false);
+    navigate(`/get-started?goal=${value}`);
+  };
 
   return (
     <section className="min-h-[85vh] flex items-center px-5 md:px-10 pt-20 pb-16 relative overflow-hidden bg-[#0a1628]">
@@ -40,13 +55,33 @@ const HeroSection = () => {
         </ScrollReveal>
 
         <ScrollReveal delay={0.25}>
-          <button
-            onClick={() => navigate('/get-started')}
-            className="group relative bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] text-white text-base font-bold px-10 py-4.5 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_hsl(220_80%_50%/0.35)] hover:-translate-y-0.5 inline-flex items-center gap-2.5"
-          >
-            Check My Fundability Score
-            <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
-          </button>
+          <div className="relative inline-block">
+            <button
+              onClick={() => setOpen(!open)}
+              className="group relative bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] text-white text-base font-bold px-10 py-4.5 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_hsl(220_80%_50%/0.35)] hover:-translate-y-0.5 inline-flex items-center gap-2.5"
+            >
+              What are you here for?
+              <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+            </button>
+
+            {open && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+                <div className="absolute left-1/2 -translate-x-1/2 mt-3 w-72 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 animate-fade-up">
+                  {goalOptions.map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => handleSelect(opt.value)}
+                      className="w-full text-left px-5 py-3.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors border-none bg-transparent cursor-pointer flex items-center justify-between group"
+                    >
+                      {opt.label}
+                      <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-blue-500" />
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </ScrollReveal>
 
         <ScrollReveal delay={0.35}>
