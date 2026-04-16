@@ -43,6 +43,7 @@ interface SavedProgress {
   phase: Phase;
   name: string;
   email: string;
+  phone: string;
   website: string;
   selectedGoals: string[];
   routedPath: string;
@@ -79,6 +80,7 @@ const GetStartedPage = () => {
   const [phase, setPhase] = useState<Phase>('welcome');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [website, setWebsite] = useState('');
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [routedPath, setRoutedPath] = useState('');
@@ -97,14 +99,15 @@ const GetStartedPage = () => {
   // Save progress on phase/data changes (skip welcome & routing)
   useEffect(() => {
     if (phase === 'welcome' || phase === 'routing') return;
-    saveProgress({ phase, name, email, website, selectedGoals, routedPath, routingMessage });
-  }, [phase, name, email, website, selectedGoals, routedPath, routingMessage]);
+    saveProgress({ phase, name, email, phone, website, selectedGoals, routedPath, routingMessage });
+  }, [phase, name, email, phone, website, selectedGoals, routedPath, routingMessage]);
 
   const resumeProgress = () => {
     const saved = loadProgress();
     if (!saved) return;
     setName(saved.name);
     setEmail(saved.email);
+    setPhone(saved.phone || '');
     setWebsite(saved.website);
     setSelectedGoals(saved.selectedGoals);
     setRoutedPath(saved.routedPath);
@@ -136,7 +139,8 @@ const GetStartedPage = () => {
       await supabase.from('leads').insert({
         contact_name: name.trim(),
         email: email.trim(),
-        company_name: name.trim(), // use name as placeholder
+        phone: phone.trim() || null,
+        company_name: name.trim(),
         needs: selectedGoals,
         responses: { website: website.trim() },
         status: 'new',
@@ -179,7 +183,7 @@ const GetStartedPage = () => {
     return 'advisory';
   };
 
-  const leadData = { name: name.trim(), email: email.trim(), website: website.trim(), goals: selectedGoals };
+  const leadData = { name: name.trim(), email: email.trim(), phone: phone.trim(), website: website.trim(), goals: selectedGoals };
 
   // Welcome phase
   if (phase === 'welcome') {
@@ -268,6 +272,14 @@ const GetStartedPage = () => {
                     <AlertCircle className="w-3.5 h-3.5" /> Enter a valid email
                   </p>
                 )}
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-white/70 mb-2">Phone Number <span className="text-white/30">(optional)</span></label>
+                <input
+                  type="tel" value={phone} onChange={e => setPhone(e.target.value)}
+                  placeholder="(555) 123-4567"
+                  className="w-full bg-white/[0.06] border border-white/[0.12] rounded-xl px-4 py-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/30 transition-all text-sm"
+                />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-white/70 mb-2">Website URL <span className="text-white/30">(optional)</span></label>
