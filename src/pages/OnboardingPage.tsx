@@ -520,8 +520,26 @@ const OnboardingPage = () => {
                 </div>
               </div>
 
+              {/* Business Model Canvas Snapshot */}
+              <div className="bg-background rounded-2xl border border-border shadow-sm overflow-hidden">
+                <div className="px-6 py-4 border-b border-border flex items-center gap-2">
+                  <Brain className="w-4 h-4 text-primary" />
+                  <div>
+                    <h3 className="font-bold text-foreground text-base">Your Business Snapshot</h3>
+                    <p className="text-xs text-muted-foreground">Auto-generated from your answers</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-border">
+                  {generateCanvasSnapshot(businessName || 'Your Business', revenue, timeInBusiness, creditScore).map((item, i) => (
+                    <div key={item.title} className={`px-5 py-4 ${i >= 2 ? 'border-t border-border' : ''} hover:bg-secondary/30 transition-colors`}>
+                      <div className="text-xs font-bold text-primary mb-1">{item.title}</div>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{item.content}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-              {/* Insights */}
+
               <div className="bg-background rounded-2xl border border-border shadow-sm p-6">
                 <h3 className="font-bold text-foreground text-base mb-4 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-primary" /> Key Insights
