@@ -43,6 +43,7 @@ interface SavedProgress {
   phase: Phase;
   name: string;
   email: string;
+  phone: string;
   website: string;
   selectedGoals: string[];
   routedPath: string;
@@ -106,6 +107,7 @@ const GetStartedPage = () => {
     if (!saved) return;
     setName(saved.name);
     setEmail(saved.email);
+    setPhone(saved.phone || '');
     setWebsite(saved.website);
     setSelectedGoals(saved.selectedGoals);
     setRoutedPath(saved.routedPath);
