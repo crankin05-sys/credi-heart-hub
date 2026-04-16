@@ -34,22 +34,6 @@ const getScoreLabel = (s: number) => {
   return { text: 'Getting Started — We can help', tier: 'Tier 4', color: 'text-gray-500', bg: 'bg-gray-100', ring: '#9ca3af' };
 };
 
-const generateCanvas = (revenue: string, time: string, businessName: string) => {
-  const isEstablished = ['10+', '2-10'].includes(time);
-  const hasRevenue = !['pre', 'under100k'].includes(revenue);
-  return {
-    valueProposition: hasRevenue
-      ? `${businessName} delivers proven value with an established revenue model and market traction.`
-      : `${businessName} is positioned to capture market share with a fresh approach and growth potential.`,
-    customerSegments: isEstablished ? 'Established customer base with repeat buyers and referral networks' : 'Early adopters and initial market segment — room to expand',
-    revenueStreams: hasRevenue ? 'Active revenue streams generating consistent income' : 'Revenue model in development — focus on first sales and validation',
-    keyActivities: isEstablished ? 'Operations, customer fulfillment, scaling systems' : 'Product development, market validation, customer acquisition',
-    keyResources: hasRevenue ? 'Team, technology, customer relationships, brand equity' : 'Founder expertise, initial capital, development tools',
-    channels: isEstablished ? 'Direct sales, partnerships, digital marketing, referrals' : 'Social media, direct outreach, online presence building',
-    growthOpportunities: hasRevenue ? 'Expand product lines, enter new markets, build recurring revenue' : 'Validate product-market fit, build initial customer base, secure funding',
-    gapsRisks: !hasRevenue ? 'Pre-revenue risk — need to establish cash flow quickly' : isEstablished ? 'Scaling risk — systems may need upgrading for next growth phase' : 'Growth stage risk — capital allocation and operational efficiency',
-  };
-};
 
 const generateInsights = (credit: string, revenue: string, time: string) => {
   const insights: string[] = [];
@@ -236,21 +220,6 @@ const SectionTitle = ({ title, subtitle }: SectionTitleProps) => (
   </div>
 );
 
-interface CanvasSectionProps {
-  title: string;
-  icon: ReactNode;
-  content: string;
-}
-
-const CanvasSection = ({ title, icon, content }: CanvasSectionProps) => (
-  <div className="bg-secondary/50 rounded-xl p-4 border border-border hover:border-primary/20 hover:shadow-sm transition-all">
-    <div className="flex items-center gap-2 mb-2">
-      {icon}
-      <span className="text-xs font-bold text-foreground/70 uppercase tracking-wide">{title}</span>
-    </div>
-    <p className="text-sm text-muted-foreground leading-relaxed">{content}</p>
-  </div>
-);
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
@@ -343,7 +312,6 @@ const OnboardingPage = () => {
   }, [creditScore, revenue, timeInBusiness]);
 
   const scoreInfo = getScoreLabel(fundabilityScore);
-  const canvas = useMemo(() => generateCanvas(revenue, timeInBusiness, businessName || 'Your Business'), [revenue, timeInBusiness, businessName]);
   const insights = useMemo(() => generateInsights(creditScore, revenue, timeInBusiness), [creditScore, revenue, timeInBusiness]);
 
   const handleSignUp = async () => {
@@ -518,26 +486,6 @@ const OnboardingPage = () => {
                 </div>
               </div>
 
-              {/* Canvas */}
-              <div className="bg-background rounded-2xl border border-border shadow-sm overflow-hidden">
-                <div className="px-6 py-4 border-b border-border flex items-center justify-between">
-                  <div>
-                    <h3 className="font-bold text-foreground text-base">Your Business Model Canvas</h3>
-                    <p className="text-xs text-muted-foreground">Auto-generated for {businessName || 'your business'}</p>
-                  </div>
-                  <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">FREE</span>
-                </div>
-                <div className="p-6 grid grid-cols-2 gap-3">
-                  <CanvasSection icon={<Sparkles className="w-4 h-4 text-primary" />} title="Value Proposition" content={canvas.valueProposition} />
-                  <CanvasSection icon={<Target className="w-4 h-4 text-primary" />} title="Customer Segments" content={canvas.customerSegments} />
-                  <CanvasSection icon={<DollarSign className="w-4 h-4 text-primary" />} title="Revenue Streams" content={canvas.revenueStreams} />
-                  <CanvasSection icon={<Zap className="w-4 h-4 text-primary" />} title="Key Activities" content={canvas.keyActivities} />
-                  <CanvasSection icon={<FileText className="w-4 h-4 text-primary" />} title="Key Resources" content={canvas.keyResources} />
-                  <CanvasSection icon={<TrendingUp className="w-4 h-4 text-primary" />} title="Channels" content={canvas.channels} />
-                  <CanvasSection icon={<Play className="w-4 h-4 text-emerald-500" />} title="Growth Opportunities" content={canvas.growthOpportunities} />
-                  <CanvasSection icon={<Lock className="w-4 h-4 text-amber-500" />} title="Gaps / Risks" content={canvas.gapsRisks} />
-                </div>
-              </div>
 
               {/* Insights */}
               <div className="bg-background rounded-2xl border border-border shadow-sm p-6">
@@ -556,8 +504,8 @@ const OnboardingPage = () => {
 
               {/* CTA — Book a walkthrough to continue */}
               <div className="bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] rounded-2xl p-6 text-center text-white">
-                <p className="text-sm text-white/70 mb-1">You've seen your Business Model Canvas.</p>
-                <p className="font-bold text-base mb-4">To continue and unlock AI advisors, book a walkthrough with our team.</p>
+                <p className="text-sm text-white/70 mb-1">You've seen your fundability score.</p>
+                <p className="font-bold text-base mb-4">Book a walkthrough to get a personalized action plan and unlock AI advisors.</p>
                 <button onClick={() => setPhase('booking')}
                   className="bg-white text-foreground font-semibold text-sm px-8 py-3.5 rounded-xl cursor-pointer transition-all hover:shadow-lg hover:-translate-y-0.5 border-none flex items-center gap-2 mx-auto">
                   <Sparkles className="w-4 h-4" /> Book My Walkthrough
