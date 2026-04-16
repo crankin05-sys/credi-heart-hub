@@ -8,7 +8,7 @@ const AboutPage = () => {
     <div className="min-h-screen bg-background">
       <PublicNav />
 
-      <div className="pt-24 pb-20 px-6">
+      <div className="pt-20 pb-20 px-6">
         <div className="max-w-5xl mx-auto">
           {/* Hero */}
           <div className="text-center mb-12">
