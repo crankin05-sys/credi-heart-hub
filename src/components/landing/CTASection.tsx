@@ -29,7 +29,7 @@ const CTASection = () => {
       <ScrollReveal>
         <div className="relative z-10 max-w-2xl mx-auto bg-gradient-to-br from-primary to-[hsl(260,70%,55%)] rounded-2xl p-8 md:p-12 text-center">
           <h2 className="text-2xl md:text-3xl font-extrabold text-white leading-tight mb-4">
-            What Are You Here For?
+            Tell Us About Your Goals
           </h2>
           <p className="text-sm md:text-base text-white/80 max-w-md mx-auto mb-8 leading-relaxed">
             Tell us your goal and we'll point you in the right direction. It's free and takes 3 minutes.
