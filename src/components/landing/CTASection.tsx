@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import ScrollReveal from '@/components/ScrollReveal';
-import { ArrowRight, Phone } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 const CTASection = () => {
   const navigate = useNavigate();
@@ -10,24 +10,18 @@ const CTASection = () => {
       <ScrollReveal>
         <div className="relative z-10 max-w-2xl mx-auto bg-gradient-to-br from-primary to-[hsl(260,70%,55%)] rounded-2xl p-8 md:p-12 text-center">
           <h2 className="text-2xl md:text-3xl font-extrabold text-white leading-tight mb-4">
-            Ready to See Your Business<br />Snapshot?
+            Ready to Check Your Score?
           </h2>
           <p className="text-sm md:text-base text-white/80 max-w-md mx-auto mb-8 leading-relaxed">
-            Get your free Business Model Canvas, fundability score, and personalized insights. It takes less than 3 minutes.
+            It's free, takes 3 minutes, and won't affect your credit. See where you stand today.
           </p>
-          <div className="flex gap-3 justify-center flex-wrap">
-            <button
-              onClick={() => navigate('/get-started')}
-              className="group bg-white text-primary text-sm font-bold px-6 py-3 border-none cursor-pointer rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 inline-flex items-center gap-2"
-            >
-              Get My Business Snapshot
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-            </button>
-            <button className="bg-white/15 text-white border border-white/25 text-sm font-semibold px-6 py-3 cursor-pointer rounded-xl transition-all hover:bg-white/25 inline-flex items-center gap-2">
-              <Phone className="w-4 h-4" />
-              Schedule a Call
-            </button>
-          </div>
+          <button
+            onClick={() => navigate('/get-started')}
+            className="group bg-white text-primary text-sm font-bold px-8 py-3.5 border-none cursor-pointer rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 inline-flex items-center gap-2"
+          >
+            Get My Free Score
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+          </button>
         </div>
       </ScrollReveal>
     </section>
