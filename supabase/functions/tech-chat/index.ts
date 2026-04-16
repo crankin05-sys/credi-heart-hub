@@ -63,12 +63,42 @@ const SYSTEM_PROMPT = `You are the Credibility Suite AI — the most knowledgeab
 
 You should answer better than any Google search, any generic blog, or any basic AI chatbot. You are a SPECIALIST. Act like one.`;
 
+// Simple in-memory per-IP rate limiter (best-effort; resets on cold start)
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 10;
+const ipHits = new Map<string, { count: number; resetAt: number }>();
+
+function rateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = ipHits.get(ip);
+  if (!entry || now > entry.resetAt) {
+    ipHits.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return true;
+  }
+  if (entry.count >= RATE_LIMIT_MAX) return false;
+  entry.count++;
+  return true;
+}
+
+const MAX_MESSAGES = 20;
+const MAX_MSG_LEN = 2000;
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+
+    // Rate limit per IP
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim()
+      || req.headers.get("cf-connecting-ip")
+      || "unknown";
+    if (!rateLimit(ip)) {
+      return new Response(JSON.stringify({ error: "Too many requests. Please wait a minute and try again." }), {
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const { messages } = await req.json();
 
@@ -78,11 +108,38 @@ serve(async (req) => {
       });
     }
 
+    if (messages.length > MAX_MESSAGES) {
+      return new Response(JSON.stringify({ error: `Too many messages (max ${MAX_MESSAGES}).` }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Validate every message: only user/assistant roles allowed, length-bound content
+    const sanitized = [];
+    for (const m of messages) {
+      if (!m || typeof m !== "object") {
+        return new Response(JSON.stringify({ error: "Invalid message format." }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (!["user", "assistant"].includes(m.role)) {
+        return new Response(JSON.stringify({ error: "Invalid message role." }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (typeof m.content !== "string" || m.content.length === 0 || m.content.length > MAX_MSG_LEN) {
+        return new Response(JSON.stringify({ error: `Message content must be 1-${MAX_MSG_LEN} characters.` }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      sanitized.push({ role: m.role, content: m.content });
+    }
+
     // Use a stronger model for complex/educational questions
-    const lastMsg = messages[messages.length - 1]?.content?.toLowerCase() || "";
-    const isComplex = lastMsg.length > 80 || 
+    const lastMsg = sanitized[sanitized.length - 1]?.content?.toLowerCase() || "";
+    const isComplex = lastMsg.length > 80 ||
       /how|why|explain|compare|strategy|plan|step|guide|detail|difference|which is better/i.test(lastMsg);
-    
+
     const model = isComplex ? "google/gemini-2.5-flash" : "google/gemini-3-flash-preview";
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -95,7 +152,7 @@ serve(async (req) => {
         model,
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
-          ...messages,
+          ...sanitized,
         ],
         stream: true,
       }),
@@ -122,7 +179,7 @@ serve(async (req) => {
     });
   } catch (e) {
     console.error("tech-chat error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
+    return new Response(JSON.stringify({ error: "Unable to process request." }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
