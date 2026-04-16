@@ -255,6 +255,14 @@ const SectionTitle = ({ title, subtitle }: SectionTitleProps) => (
 );
 
 
+const goalOptions: Option[] = [
+  { label: 'Get a business loan', value: 'loan' },
+  { label: 'Check my fundability', value: 'fundability' },
+  { label: 'Improve my credit', value: 'credit' },
+  { label: 'Grow my business', value: 'grow' },
+  { label: 'Just exploring', value: 'exploring' },
+];
+
 const OnboardingPage = () => {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>('contact');
@@ -262,6 +270,7 @@ const OnboardingPage = () => {
   const [loading, setLoading] = useState(false);
   const [hasLeadData, setHasLeadData] = useState(false);
 
+  const [goal, setGoal] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -445,22 +454,28 @@ const OnboardingPage = () => {
                 <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Get your personalized<br />business snapshot</h1>
                 <p className="text-sm text-muted-foreground">Quick info so we can tailor everything to you.</p>
               </div>
-              <div className="bg-background rounded-2xl border border-border shadow-sm p-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <InputField label="First Name" value={firstName} onChange={setFirstName} placeholder="Sarah" required />
-                  <InputField label="Last Name" value={lastName} onChange={setLastName} placeholder="Johnson" required />
+              <div className="bg-background rounded-2xl border border-border shadow-sm p-6 space-y-6">
+                <div>
+                  <label className="block text-sm font-semibold text-foreground/80 mb-3">What are you here for? <span className="text-destructive">*</span></label>
+                  <OptionPill options={goalOptions} selected={goal} onSelect={setGoal} />
                 </div>
-                <InputField label="Email Address" value={email} onChange={setEmail} placeholder="you@company.com" type="email" required />
-                <InputField label="Mobile Phone" value={phone} onChange={setPhone} placeholder="(404) 555-1234" type="tel" />
-                <InputField label="Business Name" value={businessName} onChange={setBusinessName} placeholder="Johnson's Catering LLC" required />
-                {!noWebsite && <InputField label="Business Website" value={website} onChange={setWebsite} placeholder="www.example.com" />}
-                <label className="flex items-center gap-2 cursor-pointer mt-1">
-                  <input type="checkbox" checked={noWebsite} onChange={() => setNoWebsite(!noWebsite)} className="w-4 h-4 rounded border-border text-primary focus:ring-primary/20" />
-                  <span className="text-xs text-muted-foreground">I don't have a website</span>
-                </label>
+                <div className="space-y-0">
+                  <div className="grid grid-cols-2 gap-4">
+                    <InputField label="First Name" value={firstName} onChange={setFirstName} placeholder="Sarah" required />
+                    <InputField label="Last Name" value={lastName} onChange={setLastName} placeholder="Johnson" required />
+                  </div>
+                  <InputField label="Email Address" value={email} onChange={setEmail} placeholder="you@company.com" type="email" required />
+                  <InputField label="Mobile Phone" value={phone} onChange={setPhone} placeholder="(404) 555-1234" type="tel" />
+                  <InputField label="Business Name" value={businessName} onChange={setBusinessName} placeholder="Johnson's Catering LLC" required />
+                  {!noWebsite && <InputField label="Business Website" value={website} onChange={setWebsite} placeholder="www.example.com" />}
+                  <label className="flex items-center gap-2 cursor-pointer mt-1">
+                    <input type="checkbox" checked={noWebsite} onChange={() => setNoWebsite(!noWebsite)} className="w-4 h-4 rounded border-border text-primary focus:ring-primary/20" />
+                    <span className="text-xs text-muted-foreground">I don't have a website</span>
+                  </label>
+                </div>
               </div>
               <div className="flex gap-3 mt-6">
-                <PrimaryBtn onClick={() => setPhase('snapshot')} disabled={!firstName.trim() || !lastName.trim() || !email.trim() || !businessName.trim()}>
+                <PrimaryBtn onClick={() => setPhase('snapshot')} disabled={!goal || !firstName.trim() || !lastName.trim() || !email.trim() || !businessName.trim()}>
                   Continue <ArrowRight className="w-4 h-4" />
                 </PrimaryBtn>
               </div>
