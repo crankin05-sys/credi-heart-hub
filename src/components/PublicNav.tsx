@@ -87,7 +87,7 @@ const PublicNav = () => {
                   onClick={() => navigate('/auth')}
                   className="text-[13px] font-medium text-foreground/80 hover:text-foreground bg-transparent border-none cursor-pointer px-3 py-1.5 rounded-lg hover:bg-muted flex items-center gap-1.5 whitespace-nowrap"
                 >
-                  <LogIn className="w-3.5 h-3.5" /> Login
+                  <LogIn className="w-3.5 h-3.5" /> Client Login
                 </button>
                 <button
                   onClick={() => navigate('/get-started')}
@@ -95,6 +95,13 @@ const PublicNav = () => {
                 >
                   Check My Score <ArrowRight className="w-3.5 h-3.5" />
                 </button>
+                <Link
+                  to="/agent-login"
+                  className="ml-1 text-[10px] font-medium text-muted-foreground/60 hover:text-foreground no-underline px-2 py-1 rounded-md hover:bg-muted flex items-center gap-1 whitespace-nowrap"
+                  title="Agent / Admin Portal"
+                >
+                  <Shield className="w-3 h-3" /> Agent
+                </Link>
               </>
             )}
           </div>
