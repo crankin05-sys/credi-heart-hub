@@ -73,7 +73,7 @@ const HeroSection = () => {
                   <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
                 <button
-                  onClick={() => document.getElementById('dashboard-preview')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={() => navigate('/dashboard')}
                   className="group bg-white/[0.08] text-white/90 border border-white/15 text-sm font-semibold px-5 py-3.5 cursor-pointer rounded-xl transition-all duration-300 hover:border-white/30 hover:text-white hover:bg-white/[0.12]"
                 >
                   <span className="inline-flex items-center gap-2">
