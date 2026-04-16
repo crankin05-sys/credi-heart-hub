@@ -1,24 +1,12 @@
 import { Link } from 'react-router-dom';
-import { Brain, ArrowLeft, Users, Target, Briefcase, Globe, Heart, Sparkles } from 'lucide-react';
+import { Brain, Users, Target, Briefcase, Globe, Heart, Sparkles } from 'lucide-react';
 import teamPhoto from '@/assets/team.jpg';
+import PublicNav from '@/components/PublicNav';
 
 const AboutPage = () => {
   return (
     <div className="min-h-screen bg-background">
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-border py-3">
-        <div className="max-w-5xl mx-auto px-6 flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-3 no-underline">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] flex items-center justify-center shadow-md">
-              <Brain className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-lg font-bold text-foreground">Credibility Suite</span>
-          </Link>
-          <Link to="/" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors no-underline">
-            <ArrowLeft className="w-4 h-4" /> Back to Home
-          </Link>
-        </div>
-      </nav>
+      <PublicNav />
 
       <div className="pt-24 pb-20 px-6">
         <div className="max-w-5xl mx-auto">

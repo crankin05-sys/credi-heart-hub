@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import { Brain, ArrowRight, Calendar, Sparkles, RefreshCw } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { ArrowRight, Calendar, Sparkles, RefreshCw } from 'lucide-react';
 import AdviceRenderer from '@/components/journeys/AdviceRenderer';
 import ScanningLoader from '@/components/journeys/ScanningLoader';
+import PublicNav from '@/components/PublicNav';
 
 const goalLabels: Record<string, string> = {
   loan: 'Getting a Business Loan',
@@ -88,19 +89,9 @@ const GoalAdvicePage = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Top bar */}
-      <div className="border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-2xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="no-underline flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] flex items-center justify-center shadow-sm">
-              <Brain className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-semibold text-foreground text-sm">Credibility Suite</span>
-          </Link>
-        </div>
-      </div>
+      <PublicNav />
 
-      <div className="flex-1 flex items-start justify-center py-10 px-6 overflow-auto">
+      <div className="flex-1 flex items-start justify-center py-10 px-6 overflow-auto pt-24">
         <div className="w-full max-w-lg space-y-6 animate-fade-up">
           {/* Header */}
           <div className="text-center">
