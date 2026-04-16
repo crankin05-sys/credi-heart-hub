@@ -17,7 +17,11 @@ const HeroSection = () => {
 
   const handleSelect = (value: string) => {
     setOpen(false);
-    navigate(`/get-started?goal=${value}`);
+    if (value === 'fundability') {
+      navigate('/get-started');
+    } else {
+      navigate(`/advice?goal=${value}`);
+    }
   };
 
   return (
