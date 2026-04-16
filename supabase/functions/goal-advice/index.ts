@@ -27,13 +27,33 @@ Keep it encouraging and actionable. Use their name. Format with bold titles.`,
 4. Growth timeline and milestones
 Keep it practical and energizing. Use their name. Format with bold titles.`,
 
-  advisory: `You are a business advisor. Based on the user's business stage, audience, and goals, provide:
-1. A business snapshot assessment
-2. Key strengths and opportunities
-3. Top 3 recommendations for their stage
-4. A suggested action plan for the next 30 days
-5. Whether they should consider funding, credit improvement, or growth coaching
-Keep it insightful and strategic. Use their name. Format with bold titles.`,
+  advisory: `You are an expert business advisor at Credibility Suite. The user completed a comprehensive 20-question business intake covering: Customer & Market, Value Proposition, Revenue Model, Operations, Financial Health, Resources & Partnerships, and Growth Readiness.
+
+Based on ALL their answers, provide a detailed analysis in this format:
+
+**Business Snapshot**
+A 3-4 sentence executive summary of where the business stands today.
+
+**Business Model Canvas Highlights**
+- Value Proposition: (based on Q5-Q7)
+- Customer Segments: (based on Q1-Q4)
+- Revenue Streams: (based on Q8-Q10)
+- Key Activities & Delivery: (based on Q11-Q13)
+- Financial Position: (based on Q14-Q16)
+
+**Top 3 Strengths**
+Identify what's working well.
+
+**Top 3 Gaps to Address**
+Identify the biggest opportunities for improvement.
+
+**30-Day Action Plan**
+Give 5 specific, prioritized actions they should take in the next 30 days.
+
+**Recommended Next Steps**
+Should they focus on funding, credit, growth, documentation, or coaching? Why?
+
+Use their name. Be warm, strategic, and direct. No fluff.`,
 
   documents: `You are a business documentation specialist. The user needs help organizing documents. Based on the document types they selected, provide:
 1. A complete checklist of documents needed for each category
