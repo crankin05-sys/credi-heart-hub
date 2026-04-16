@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Brain, ArrowLeft, Award, Users, Target, Briefcase, Globe } from 'lucide-react';
+import { Brain, ArrowLeft, Award, Users, Target, Briefcase, Globe, Heart, Sparkles } from 'lucide-react';
+import teamPhoto from '@/assets/team.jpg';
 
 const AboutPage = () => {
   return (
@@ -20,18 +21,18 @@ const AboutPage = () => {
       </nav>
 
       <div className="pt-24 pb-20 px-6">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           {/* Hero */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-primary/[0.06] border border-primary/20 rounded-full px-4 py-1.5 mb-6">
-              <Award className="w-4 h-4 text-primary" />
-              <span className="text-xs font-semibold text-primary">Founder & CEO</span>
+              <Users className="w-4 h-4 text-primary" />
+              <span className="text-xs font-semibold text-primary">Meet the Team</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 font-display">
-              Maurice Stewart
+              The People Behind Credibility Suite
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Empowering businesses to build credibility, access capital, and achieve sustainable growth through AI-driven solutions.
+              A diverse team of strategists, technologists, and coaches building the future of business credibility and capital readiness.
             </p>
             <a
               href="https://credibilitysuits.com"
@@ -43,29 +44,71 @@ const AboutPage = () => {
             </a>
           </div>
 
-          {/* Bio sections */}
+          {/* Team photo */}
+          <div className="relative rounded-3xl overflow-hidden mb-14 shadow-xl border border-border">
+            <img
+              src={teamPhoto}
+              alt="Credibility Suite team — diverse group of professionals in branded polos"
+              width={1920}
+              height={1080}
+              className="w-full h-auto object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute bottom-6 left-6 right-6 md:bottom-8 md:left-8">
+              <div className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-sm rounded-full px-4 py-1.5 mb-2 shadow-lg">
+                <Sparkles className="w-3.5 h-3.5 text-primary" />
+                <span className="text-xs font-semibold text-foreground">Atlanta, GA</span>
+              </div>
+              <h2 className="text-white text-2xl md:text-3xl font-bold drop-shadow-lg">
+                One mission. Many stories.
+              </h2>
+            </div>
+          </div>
+
+          {/* Company bio */}
+          <div className="bg-card border border-border rounded-2xl p-8 md:p-10 mb-12">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] flex items-center justify-center shadow-md">
+                <Brain className="w-5 h-5 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-foreground">About Credibility Suite</h2>
+            </div>
+            <div className="space-y-4 text-muted-foreground leading-relaxed">
+              <p>
+                <strong className="text-foreground">Credibility Suite</strong> is an AI-powered platform built to help small businesses, entrepreneurs, and founders get fundable — and stay fundable. We combine intelligent agents, expert coaching, and a step-by-step capital readiness framework so business owners can stop guessing and start executing.
+              </p>
+              <p>
+                We believe access to capital should never be reserved for the well-connected. Whether you're applying for an SBA loan, building business credit, or preparing for your first round of funding, our suite of AI tools assesses your fundability, identifies the gaps lenders care about, and walks you through fixing them — in plain language.
+              </p>
+              <p>
+                Behind the technology is a team of credit experts, financial coaches, software engineers, and operators who've walked the path themselves. We're proud to be powered by <strong className="text-foreground">She Wins With AI</strong> and headquartered in Atlanta, GA.
+              </p>
+            </div>
+          </div>
+
+          {/* Pillars */}
           <div className="grid md:grid-cols-2 gap-6 mb-12">
             <div className="bg-card border border-border rounded-2xl p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Target className="w-5 h-5 text-primary" />
                 </div>
-                <h2 className="text-lg font-bold text-foreground">Our Mission</h2>
+                <h3 className="text-lg font-bold text-foreground">Our Mission</h3>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Maurice Stewart founded Credibility Suite with a clear mission: to bridge the gap between underserved businesses and the capital they need to thrive. By leveraging AI technology and deep financial expertise, Credibility Suite transforms how businesses prepare for and access funding opportunities.
+                Bridge the gap between underserved businesses and the capital they need to thrive — through AI, expertise, and radical transparency.
               </p>
             </div>
 
             <div className="bg-card border border-border rounded-2xl p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Briefcase className="w-5 h-5 text-primary" />
+                  <Heart className="w-5 h-5 text-primary" />
                 </div>
-                <h2 className="text-lg font-bold text-foreground">Background</h2>
+                <h3 className="text-lg font-bold text-foreground">Our Values</h3>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                With years of experience in business development, financial consulting, and technology innovation, Maurice has helped countless entrepreneurs navigate the complex landscape of business funding. His approach combines hands-on coaching with cutting-edge AI tools to deliver measurable results.
+                Inclusion. Honesty. Speed. We meet business owners where they are — and move them forward without jargon, gatekeeping, or empty promises.
               </p>
             </div>
 
@@ -74,24 +117,36 @@ const AboutPage = () => {
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Users className="w-5 h-5 text-primary" />
                 </div>
-                <h2 className="text-lg font-bold text-foreground">Who We Serve</h2>
+                <h3 className="text-lg font-bold text-foreground">Who We Serve</h3>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Credibility Suite serves small business owners, entrepreneurs, and startups who need guidance preparing for funding. From SBA loans to lines of credit, our platform assesses fundability, identifies gaps, and creates actionable roadmaps to capital readiness.
+                Small business owners, solo founders, and growing companies preparing for funding — from SBA loans to lines of credit and equipment financing.
               </p>
             </div>
 
             <div className="bg-card border border-border rounded-2xl p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Brain className="w-5 h-5 text-primary" />
+                  <Briefcase className="w-5 h-5 text-primary" />
                 </div>
-                <h2 className="text-lg font-bold text-foreground">The Technology</h2>
+                <h3 className="text-lg font-bold text-foreground">How We Work</h3>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Credibility Suite AI uses intelligent agents to analyze business documents, assess credit readiness, and provide real-time coaching. Our platform automates the tedious parts of funding preparation so business owners can focus on what they do best — running their business.
+                AI agents handle the heavy lifting — document review, eligibility scans, and personalized guidance — while our human coaches provide strategy when it matters most.
               </p>
             </div>
+          </div>
+
+          {/* Founder strip */}
+          <div className="bg-card border border-border rounded-2xl p-6 md:p-8 mb-12">
+            <div className="flex items-center gap-2 mb-3">
+              <Award className="w-4 h-4 text-primary" />
+              <span className="text-xs font-semibold text-primary uppercase tracking-wider">Founder & CEO</span>
+            </div>
+            <h3 className="text-2xl font-bold text-foreground mb-2">Maurice Stewart</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Maurice founded Credibility Suite to bring transparency, technology, and real coaching to a funding industry that too often leaves small businesses behind. With years of experience in business development, financial consulting, and AI innovation, he leads the team in building tools that actually move the needle.
+            </p>
           </div>
 
           {/* Stats */}
