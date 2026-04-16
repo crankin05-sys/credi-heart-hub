@@ -8,6 +8,7 @@ import Index from "./pages/Index.tsx";
 import AuthPage from "./pages/AuthPage.tsx";
 import OnboardingPage from "./pages/OnboardingPage.tsx";
 import IntakePage from "./pages/IntakePage.tsx";
+import GoalAdvicePage from "./pages/GoalAdvicePage.tsx";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.tsx";
 import AboutPage from "./pages/AboutPage.tsx";
 import DashboardLayout from "./pages/DashboardLayout.tsx";
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/get-started" element={<IntakePage />} />
+            <Route path="/advice" element={<GoalAdvicePage />} />
             <Route path="/onboarding" element={<OnboardingPage />} />
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/about" element={<AboutPage />} />
