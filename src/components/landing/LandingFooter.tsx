@@ -12,7 +12,7 @@ const LandingFooter = () => (
           <span className="text-base font-bold text-foreground">Credibility Suite</span>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
-          <span>Powered by She Wins With AI · Atlanta, GA</span>
+          <span>Credibility Suite · Atlanta, GA</span>
           <span className="hidden md:inline text-border">·</span>
           <Link to="/privacy" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Privacy Policy</Link>
           <span className="text-border">·</span>

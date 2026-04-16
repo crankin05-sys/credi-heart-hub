@@ -63,13 +63,13 @@ const AboutPage = () => {
             </div>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                <strong className="text-foreground">Credibility Suite</strong> is an AI-powered platform built to help small businesses, entrepreneurs, and founders get fundable — and stay fundable. We combine intelligent agents, expert coaching, and a step-by-step capital readiness framework so business owners can stop guessing and start executing.
+                <strong className="text-foreground">Credibility Suite</strong> is an enterprise-grade platform engineered to help small businesses, entrepreneurs, and founders achieve and maintain capital readiness. We integrate intelligent automation, advisory expertise, and a structured fundability framework that enables business owners to execute with clarity and precision.
               </p>
               <p>
-                We believe access to capital should never be reserved for the well-connected. Whether you're applying for an SBA loan, building business credit, or preparing for your first round of funding, our suite of AI tools assesses your fundability, identifies the gaps lenders care about, and walks you through fixing them — in plain language.
+                We believe equitable access to capital is foundational to economic growth. Whether you are pursuing an SBA loan, establishing business credit, or preparing for institutional funding, our platform evaluates your fundability profile, identifies the criteria lenders prioritize, and provides a clear remediation path — communicated in straightforward, actionable terms.
               </p>
               <p>
-                Behind the technology is a team of credit experts, financial coaches, software engineers, and operators who've walked the path themselves. We're proud to be powered by <strong className="text-foreground">She Wins With AI</strong> and headquartered in Atlanta, GA.
+                Our team brings together credit specialists, financial advisors, software engineers, and seasoned operators with firsthand experience guiding businesses through the funding lifecycle. Credibility Suite is headquartered in Atlanta, GA.
               </p>
             </div>
           </div>
