@@ -423,7 +423,7 @@ const OnboardingPage = () => {
       <PublicNav />
 
       {/* Step indicator */}
-      <div className="border-b border-border bg-background/80 backdrop-blur-xl sticky top-[57px] z-40">
+      <div className="border-b border-border bg-background/80 backdrop-blur-xl mt-[60px]">
         <div className="max-w-2xl mx-auto px-6 py-3 flex items-center justify-center">
           <div className="flex items-center gap-2">
             {steps.map((s, i) => (
@@ -438,7 +438,7 @@ const OnboardingPage = () => {
         </div>
       </div>
 
-      <div className="flex-1 flex items-start justify-center py-10 px-6 overflow-auto pt-24">
+      <div className="flex-1 flex items-start justify-center py-10 px-6 overflow-auto">
         <div className="w-full max-w-lg">
 
           {/* ═══════ STEP 1: CONTACT ═══════ */}
