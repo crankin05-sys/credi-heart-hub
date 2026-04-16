@@ -44,25 +44,25 @@ const PublicNav = () => {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-300 bg-background/95 backdrop-blur-xl border-b border-border ${
-          scrolled ? 'py-2 shadow-md' : 'py-3 shadow-sm'
+        className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-300 bg-background/95 backdrop-blur-xl border-b border-border h-14 flex items-center ${
+          scrolled ? 'shadow-md' : 'shadow-sm'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-5 md:px-8 flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-2.5 no-underline">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-[hsl(260,70%,60%)] flex items-center justify-center shadow-md">
+        <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center gap-3">
+          <Link to="/" className="flex items-center gap-2 no-underline min-w-0 shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-[hsl(260,70%,60%)] flex items-center justify-center shadow-md shrink-0">
               <Brain className="w-4 h-4 text-white" />
             </div>
-            <span className="text-base font-bold text-foreground">Credibility Suite</span>
+            <span className="text-sm sm:text-base font-bold text-foreground truncate">Credibility Suite</span>
           </Link>
 
           {/* Desktop */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-1 shrink-0">
             {NAV.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
-                className={`text-[13px] font-medium px-3 py-2 rounded-lg transition-all no-underline ${
+                className={`text-[13px] font-medium px-3 py-1.5 rounded-lg transition-all no-underline whitespace-nowrap ${
                   isActive(item.to)
                     ? 'text-primary bg-primary/[0.08]'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted'
@@ -77,7 +77,7 @@ const PublicNav = () => {
             {user ? (
               <button
                 onClick={() => navigate('/dashboard')}
-                className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-5 py-2 border-none cursor-pointer rounded-lg transition-all hover:shadow-md hover:-translate-y-0.5 flex items-center gap-1.5"
+                className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-4 py-2 border-none cursor-pointer rounded-lg transition-all hover:shadow-md hover:-translate-y-0.5 flex items-center gap-1.5 whitespace-nowrap"
               >
                 <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
               </button>
@@ -85,13 +85,13 @@ const PublicNav = () => {
               <>
                 <button
                   onClick={() => navigate('/auth')}
-                  className="text-[13px] font-medium text-foreground/80 hover:text-foreground bg-transparent border-none cursor-pointer px-3 py-2 rounded-lg hover:bg-muted flex items-center gap-1.5"
+                  className="text-[13px] font-medium text-foreground/80 hover:text-foreground bg-transparent border-none cursor-pointer px-3 py-1.5 rounded-lg hover:bg-muted flex items-center gap-1.5 whitespace-nowrap"
                 >
                   <LogIn className="w-3.5 h-3.5" /> Login
                 </button>
                 <button
                   onClick={() => navigate('/get-started')}
-                  className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-5 py-2 border-none cursor-pointer rounded-lg transition-all hover:shadow-md hover:-translate-y-0.5 flex items-center gap-1.5"
+                  className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-4 py-2 border-none cursor-pointer rounded-lg transition-all hover:shadow-md hover:-translate-y-0.5 flex items-center gap-1.5 whitespace-nowrap"
                 >
                   Check My Score <ArrowRight className="w-3.5 h-3.5" />
                 </button>
@@ -99,9 +99,35 @@ const PublicNav = () => {
             )}
           </div>
 
+          {/* Tablet — compact CTA only */}
+          <div className="hidden md:flex lg:hidden items-center gap-2 shrink-0">
+            {user ? (
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-3.5 py-2 border-none cursor-pointer rounded-lg flex items-center gap-1.5 whitespace-nowrap"
+              >
+                <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate('/get-started')}
+                className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-3.5 py-2 border-none cursor-pointer rounded-lg flex items-center gap-1.5 whitespace-nowrap"
+              >
+                Check My Score <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            )}
+            <button
+              className="bg-transparent border-none cursor-pointer p-2 rounded-lg text-foreground hover:bg-muted"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            >
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+
           {/* Mobile hamburger */}
           <button
-            className="md:hidden bg-transparent border-none cursor-pointer p-2 rounded-lg text-foreground hover:bg-muted"
+            className="md:hidden bg-transparent border-none cursor-pointer p-2 rounded-lg text-foreground hover:bg-muted shrink-0"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           >
@@ -112,7 +138,7 @@ const PublicNav = () => {
 
       {/* Mobile sheet */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-[199] bg-background pt-16 px-5 overflow-y-auto md:hidden animate-fade-in">
+        <div className="fixed inset-0 z-[199] bg-background pt-14 px-5 overflow-y-auto md:hidden animate-fade-in">
           <div className="space-y-1 mb-6 mt-4">
             {NAV.map((item) => {
               const Icon = item.icon;

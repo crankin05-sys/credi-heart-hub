@@ -91,7 +91,7 @@ const GoalAdvicePage = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <PublicNav />
 
-      <div className="flex-1 flex items-start justify-center py-10 px-6 overflow-auto pt-24">
+      <div className="flex-1 flex items-start justify-center py-10 px-6 overflow-auto pt-20">
         <div className="w-full max-w-lg space-y-6 animate-fade-up">
           {/* Header */}
           <div className="text-center">
