@@ -540,7 +540,7 @@ const OnboardingPage = () => {
             <div className="animate-fade-up space-y-6">
               <div className="text-center">
                 <h2 className="text-2xl font-bold text-foreground mb-2">Unlock Your AI Business Advisors</h2>
-                <p className="text-sm text-muted-foreground">You have your Business Model Canvas. Now unlock the systems that help you improve it and get funded.</p>
+                <p className="text-sm text-muted-foreground">You have your fundability score. Now unlock the AI systems that help you improve it and get funded.</p>
               </div>
 
               <div className="space-y-3">
