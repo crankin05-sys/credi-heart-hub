@@ -202,7 +202,7 @@ const LeadsCRMPage = () => {
 
       {/* Lead detail modal */}
       {selectedLead && (
-        <div className="fixed inset-0 bg-black/50 z-[300] flex items-center justify-center p-4" onClick={() => setSelectedLead(null)}>
+        <div className="fixed inset-0 bg-black/50 z-[300] flex items-center justify-center p-4" onClick={() => { setSelectedLead(null); setGeneratedCode(null); setCopied(false); }}>
           <div className="bg-card border border-border rounded-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-start mb-4">
               <div>
