@@ -250,6 +250,38 @@ const LeadsCRMPage = () => {
                 </div>
               )}
 
+              {/* Approval code section */}
+              <div className="pt-3 border-t border-border">
+                <div className="text-[10px] text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <KeyRound className="w-3 h-3" /> Client Portal Access
+                </div>
+                {generatedCode ? (
+                  <div className="bg-success/10 border border-success/30 rounded-xl p-3 space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <code className="text-base font-mono font-bold text-foreground tracking-widest">{generatedCode}</code>
+                      <button
+                        onClick={copyCode}
+                        className="text-[10px] font-bold bg-background border border-border rounded-lg px-2.5 py-1.5 cursor-pointer hover:border-primary text-foreground flex items-center gap-1"
+                      >
+                        {copied ? <><Check className="w-3 h-3" /> Copied</> : <><Copy className="w-3 h-3" /> Copy</>}
+                      </button>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground leading-relaxed">
+                      Share this code with <strong>{selectedLead.email}</strong>. They'll use it on the Client Login page to activate their account. Single-use.
+                    </p>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => generateCode(selectedLead)}
+                    disabled={generatingCode}
+                    className="w-full bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-bold py-2.5 rounded-xl border-none cursor-pointer hover:shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-1.5"
+                  >
+                    <KeyRound className="w-3.5 h-3.5" />
+                    {generatingCode ? 'Generating...' : 'Approve & Generate Access Code'}
+                  </button>
+                )}
+              </div>
+
               <div className="pt-3 border-t border-border flex gap-2">
                 <select
                   value={selectedLead.status}
