@@ -180,7 +180,7 @@ const PublicNav = () => {
                   onClick={() => { setMobileOpen(false); navigate('/auth'); }}
                   className="w-full bg-muted text-foreground font-semibold text-sm py-3.5 rounded-xl border border-border cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <LogIn className="w-4 h-4" /> Login
+                  <LogIn className="w-4 h-4" /> Client Login
                 </button>
                 <button
                   onClick={() => { setMobileOpen(false); navigate('/get-started'); }}
@@ -188,6 +188,13 @@ const PublicNav = () => {
                 >
                   Check My Score <ArrowRight className="w-4 h-4" />
                 </button>
+                <Link
+                  to="/agent-login"
+                  onClick={() => setMobileOpen(false)}
+                  className="w-full text-muted-foreground hover:text-foreground font-medium text-xs py-3 rounded-xl border border-dashed border-border cursor-pointer flex items-center justify-center gap-2 no-underline"
+                >
+                  <Shield className="w-3.5 h-3.5" /> Agent Portal
+                </Link>
               </>
             )}
           </div>
