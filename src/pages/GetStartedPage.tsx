@@ -197,12 +197,29 @@ const GetStartedPage = () => {
             <p className="text-base text-white/60 leading-relaxed mb-8 max-w-md mx-auto">
               Whether you're chasing funding, building credit, or ready to scale — you're in the right place. Let's figure out your next move together.
             </p>
-            <button
-              onClick={() => setPhase('capture')}
-              className="bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] text-white text-base font-bold px-10 py-4 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_hsl(220_80%_50%/0.35)] hover:-translate-y-0.5 inline-flex items-center gap-2.5"
-            >
-              Get Started <ArrowRight className="w-5 h-5" />
-            </button>
+            {hasSavedProgress ? (
+              <div className="space-y-3">
+                <button
+                  onClick={resumeProgress}
+                  className="bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] text-white text-base font-bold px-10 py-4 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_hsl(220_80%_50%/0.35)] hover:-translate-y-0.5 inline-flex items-center gap-2.5 w-full justify-center"
+                >
+                  Continue Where You Left Off <ArrowRight className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={startFresh}
+                  className="text-sm text-white/40 hover:text-white/70 bg-transparent border-none cursor-pointer transition-colors mx-auto block"
+                >
+                  Or start fresh →
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setPhase('capture')}
+                className="bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] text-white text-base font-bold px-10 py-4 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_hsl(220_80%_50%/0.35)] hover:-translate-y-0.5 inline-flex items-center gap-2.5"
+              >
+                Get Started <ArrowRight className="w-5 h-5" />
+              </button>
+            )}
             <div className="flex items-center justify-center gap-2 mt-5 text-xs text-white/40">
               <Shield className="w-3.5 h-3.5" />
               Your information is secure and never shared without your permission.
