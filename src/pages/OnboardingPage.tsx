@@ -521,18 +521,32 @@ const OnboardingPage = () => {
                 <h2 className="text-2xl font-bold text-foreground mb-2">Schedule Your Walkthrough</h2>
                 <p className="text-sm text-muted-foreground">Pick a time that works for you. Once confirmed, you'll get full access to the platform and AI advisors.</p>
               </div>
-              <div className="rounded-2xl overflow-hidden bg-white border border-border" style={{ minHeight: 650 }}>
+              <div className="rounded-2xl overflow-hidden bg-white border border-border relative" style={{ minHeight: 650 }}>
+                {/* Loading state while Calendly loads */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-10 peer-[.loaded]:hidden" id="calendly-loader">
+                  <div className="w-8 h-8 border-3 border-primary/20 border-t-primary rounded-full animate-spin mb-3" />
+                  <p className="text-sm text-muted-foreground">Loading scheduler…</p>
+                </div>
                 <iframe
                   src="https://calendly.com/mauricestewart?hide_gdpr_banner=1&background_color=ffffff&text_color=1a1a2e&primary_color=2563eb"
                   width="100%"
                   height="650"
                   frameBorder="0"
                   title="Schedule a walkthrough"
+                  onLoad={() => {
+                    const loader = document.getElementById('calendly-loader');
+                    if (loader) loader.style.display = 'none';
+                  }}
                 />
               </div>
-              <button onClick={() => setPhase('results')} className="w-full text-xs text-muted-foreground text-center cursor-pointer hover:text-foreground transition-colors bg-transparent border-none py-2 flex items-center justify-center gap-1">
-                <ArrowLeft className="w-3 h-3" /> Back to my results
-              </button>
+              <div className="flex gap-3">
+                <button onClick={() => setPhase('results')} className="flex-1 text-xs text-muted-foreground text-center cursor-pointer hover:text-foreground transition-colors bg-transparent border-none py-2 flex items-center justify-center gap-1">
+                  <ArrowLeft className="w-3 h-3" /> Back to my results
+                </button>
+                <button onClick={() => setPhase('paywall')} className="flex-1 bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white font-semibold text-sm py-3 rounded-xl cursor-pointer transition-all hover:shadow-lg border-none flex items-center justify-center gap-2">
+                  Skip — Continue to Platform <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           )}
 
