@@ -1,9 +1,16 @@
 import ScrollReveal from '@/components/ScrollReveal';
 
 const canvasSections = [
-  'Customers', 'Value Proposition', 'Revenue Streams', 'Channels',
-  'Key Activities', 'Key Resources', 'Key Partners', 'Cost Structure',
-  'Growth Opportunities', 'Funding Readiness',
+  { title: 'Customers', content: 'Small business owners, entrepreneurs, startups seeking funding' },
+  { title: 'Value Proposition', content: 'AI-powered fundability scoring & personalized guidance' },
+  { title: 'Revenue Streams', content: 'SaaS subscriptions, coaching fees, capital referrals' },
+  { title: 'Channels', content: 'Website, AI chatbot, email campaigns, partner referrals' },
+  { title: 'Key Activities', content: 'Credit analysis, document review, lender matching' },
+  { title: 'Key Resources', content: 'AI agents, funding network, coaching team' },
+  { title: 'Key Partners', content: 'SBA lenders, credit bureaus, financial advisors' },
+  { title: 'Cost Structure', content: 'AI infrastructure, team, marketing, compliance' },
+  { title: 'Growth Opportunities', content: 'New lending partners, expanded coaching, premium tiers' },
+  { title: 'Funding Readiness', content: 'Score: 78/100 — Strong. 3 action items remaining' },
 ];
 
 const DashboardPreview = () => (
@@ -12,7 +19,7 @@ const DashboardPreview = () => (
       <ScrollReveal>
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-white/[0.08] border border-white/10 rounded-full text-[#7db4ff] text-xs font-bold px-4 py-1.5 tracking-wider uppercase mb-4">
-            <span className="w-1.5 h-1.5 bg-info rounded-full" />
+            <span className="w-1.5 h-1.5 bg-[#7db4ff] rounded-full" />
             Your Dashboard
           </div>
           <h2 className="text-[clamp(24px,3.5vw,42px)] font-extrabold text-white leading-tight mb-3 tracking-tight">
@@ -26,50 +33,52 @@ const DashboardPreview = () => (
 
       <ScrollReveal delay={0.15}>
         <div className="max-w-3xl mx-auto">
-          <div className="rounded-2xl p-4 md:p-6 relative overflow-hidden bg-white/[0.05] border border-white/15 shadow-lg">
+          <div className="rounded-2xl p-4 md:p-6 relative overflow-hidden bg-[hsl(220,30%,14%)] border border-white/20 shadow-[0_8px_40px_rgba(0,0,0,0.4)]">
             {/* Top bar */}
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/15">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#2563eb] to-[hsl(260,70%,60%)] flex items-center justify-center text-sm font-bold text-white">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#2563eb] to-[hsl(260,70%,60%)] flex items-center justify-center text-base font-bold text-white shadow-md">
                   78
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-white">Your Business Canvas</div>
-                  <div className="text-[11px] text-white/55">Funding Readiness: Strong</div>
+                  <div className="text-sm font-bold text-white">Your Business Canvas</div>
+                  <div className="text-xs text-emerald-400 font-medium">Funding Readiness: Strong</div>
                 </div>
               </div>
-              <div className="hidden md:flex items-center gap-1.5 text-xs text-white/50">
-                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
-                Live
+              <div className="hidden md:flex items-center gap-1.5 text-xs text-white/60">
+                <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                Live · Updated today
               </div>
             </div>
 
             {/* Canvas grid */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-1.5 md:gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-2.5">
               {canvasSections.map((section, i) => (
                 <div
-                  key={section}
-                  className={`group rounded-lg border border-white/10 bg-white/[0.05] p-2.5 md:p-3 hover:border-[#4d8fef]/50 hover:bg-[#4d8fef]/10 transition-all cursor-pointer ${
+                  key={section.title}
+                  className={`group rounded-lg border border-white/15 bg-white/[0.06] p-3 md:p-3.5 hover:border-[#4d8fef]/50 hover:bg-[#4d8fef]/10 transition-all cursor-pointer ${
                     i >= 8 ? 'md:col-span-2 col-span-1' : ''
                   } ${i === 9 ? 'md:col-span-1' : ''}`}
                 >
-                  <div className="text-[11px] md:text-xs font-bold text-white/80 group-hover:text-[#7db4ff] transition-colors mb-1">
-                    {section}
+                  <div className="text-[11px] md:text-xs font-bold text-white group-hover:text-[#7db4ff] transition-colors mb-1.5">
+                    {section.title}
                   </div>
-                  <div className="space-y-1">
-                    <div className="h-1 bg-white/15 rounded-full w-full" />
-                    <div className="h-1 bg-white/10 rounded-full w-3/4" />
+                  <div className="text-[10px] md:text-[11px] text-white/50 leading-relaxed line-clamp-2">
+                    {section.content}
+                  </div>
+                  <div className="mt-2 text-[9px] md:text-[10px] text-[#4d8fef]/0 group-hover:text-[#4d8fef] transition-colors font-medium">
+                    Explore →
                   </div>
                 </div>
               ))}
             </div>
 
             {/* Bottom prompt */}
-            <div className="mt-3 pt-3 border-t border-white/10 flex items-center gap-2">
-              <div className="flex-1 rounded-lg bg-white/[0.05] border border-white/10 px-3 py-2 text-xs text-white/40">
+            <div className="mt-4 pt-3 border-t border-white/12 flex items-center gap-2">
+              <div className="flex-1 rounded-lg bg-white/[0.06] border border-white/12 px-3 py-2.5 text-xs text-white/40">
                 Ask about your business...
               </div>
-              <div className="w-8 h-8 rounded-lg bg-[#2563eb]/20 border border-[#2563eb]/30 flex items-center justify-center text-[#7db4ff] text-xs">
+              <div className="w-9 h-9 rounded-lg bg-[#2563eb]/30 border border-[#2563eb]/40 flex items-center justify-center text-[#7db4ff] text-sm shadow-sm">
                 →
               </div>
             </div>
