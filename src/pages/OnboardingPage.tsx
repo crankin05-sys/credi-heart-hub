@@ -280,8 +280,40 @@ const OnboardingPage = () => {
         setPhone(lead.phone || '');
         setBusinessName(lead.companyName || '');
         setHasLeadData(true);
-        // Skip contact phase since we already have their info
-        setPhase('snapshot');
+
+        // Map intake credit score to onboarding values
+        const creditMap: Record<string, string> = {
+          'excellent': '780+', 'good': '740-779', 'fair': '680-739',
+          'below-average': '600-680', 'poor': '<600', 'unsure': '<600',
+        };
+        if (lead.creditScore && creditMap[lead.creditScore]) {
+          setCreditScore(creditMap[lead.creditScore]);
+        }
+
+        // Map intake revenue to onboarding values
+        const revMap: Record<string, string> = {
+          'pre-revenue': 'pre', 'under-50k': 'under100k', '50k-100k': 'under100k',
+          '100k-250k': '100k-250k', '250k-500k': '250k-1m', '500k-1m': '250k-1m', '1m-plus': '1m+',
+        };
+        if (lead.annualRevenue && revMap[lead.annualRevenue]) {
+          setRevenue(revMap[lead.annualRevenue]);
+        }
+
+        // Map intake time in business to onboarding values
+        const timeMap: Record<string, string> = {
+          'pre-revenue': 'not-started', 'under-1': '<2', '1-2': '<2',
+          '3-5': '2-10', '5-plus': '10+',
+        };
+        if (lead.timeInBusiness && timeMap[lead.timeInBusiness]) {
+          setTimeInBusiness(timeMap[lead.timeInBusiness]);
+        }
+
+        // Skip straight to results since we have all the data
+        if (lead.creditScore && lead.annualRevenue && lead.timeInBusiness) {
+          setPhase('results');
+        } else {
+          setPhase('snapshot');
+        }
       } catch { /* ignore */ }
     }
   }, []);
