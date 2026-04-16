@@ -1,24 +1,158 @@
 export const NAICS_INDUSTRIES = [
-  { code: '11', label: 'Agriculture, Forestry, Fishing & Hunting' },
-  { code: '21', label: 'Mining, Quarrying & Oil/Gas Extraction' },
-  { code: '22', label: 'Utilities' },
-  { code: '23', label: 'Construction' },
-  { code: '31-33', label: 'Manufacturing' },
-  { code: '42', label: 'Wholesale Trade' },
-  { code: '44-45', label: 'Retail Trade' },
-  { code: '48-49', label: 'Transportation & Warehousing' },
-  { code: '51', label: 'Information & Technology' },
-  { code: '52', label: 'Finance & Insurance' },
-  { code: '53', label: 'Real Estate & Rental/Leasing' },
-  { code: '54', label: 'Professional, Scientific & Technical Services' },
-  { code: '55', label: 'Management of Companies' },
-  { code: '56', label: 'Administrative & Support Services' },
-  { code: '61', label: 'Educational Services' },
-  { code: '62', label: 'Health Care & Social Assistance' },
-  { code: '71', label: 'Arts, Entertainment & Recreation' },
-  { code: '72', label: 'Accommodation & Food Services' },
-  { code: '81', label: 'Other Services (Repair, Personal, etc.)' },
-  { code: '92', label: 'Public Administration' },
+  // Agriculture, Forestry, Fishing & Hunting (11)
+  { code: '111', label: 'Crop Production' },
+  { code: '112', label: 'Animal Production & Aquaculture' },
+  { code: '113', label: 'Forestry & Logging' },
+  { code: '114', label: 'Fishing, Hunting & Trapping' },
+  { code: '115', label: 'Agriculture & Forestry Support Activities' },
+
+  // Mining, Quarrying & Oil/Gas (21)
+  { code: '211', label: 'Oil & Gas Extraction' },
+  { code: '212', label: 'Mining (except Oil & Gas)' },
+  { code: '213', label: 'Mining Support Activities' },
+
+  // Utilities (22)
+  { code: '2211', label: 'Electric Power Generation & Distribution' },
+  { code: '2212', label: 'Natural Gas Distribution' },
+  { code: '2213', label: 'Water, Sewage & Other Systems' },
+
+  // Construction (23)
+  { code: '236', label: 'Construction of Buildings' },
+  { code: '237', label: 'Heavy & Civil Engineering Construction' },
+  { code: '238', label: 'Specialty Trade Contractors' },
+
+  // Manufacturing (31-33)
+  { code: '311', label: 'Food Manufacturing' },
+  { code: '312', label: 'Beverage & Tobacco Manufacturing' },
+  { code: '313', label: 'Textile Mills' },
+  { code: '314', label: 'Textile Product Mills' },
+  { code: '315', label: 'Apparel Manufacturing' },
+  { code: '316', label: 'Leather & Allied Product Manufacturing' },
+  { code: '321', label: 'Wood Product Manufacturing' },
+  { code: '322', label: 'Paper Manufacturing' },
+  { code: '323', label: 'Printing & Related Support' },
+  { code: '324', label: 'Petroleum & Coal Products Manufacturing' },
+  { code: '325', label: 'Chemical Manufacturing' },
+  { code: '326', label: 'Plastics & Rubber Products Manufacturing' },
+  { code: '327', label: 'Nonmetallic Mineral Product Manufacturing' },
+  { code: '331', label: 'Primary Metal Manufacturing' },
+  { code: '332', label: 'Fabricated Metal Product Manufacturing' },
+  { code: '333', label: 'Machinery Manufacturing' },
+  { code: '334', label: 'Computer & Electronic Product Manufacturing' },
+  { code: '335', label: 'Electrical Equipment & Appliance Manufacturing' },
+  { code: '336', label: 'Transportation Equipment Manufacturing' },
+  { code: '337', label: 'Furniture & Related Product Manufacturing' },
+  { code: '339', label: 'Miscellaneous Manufacturing' },
+
+  // Wholesale Trade (42)
+  { code: '423', label: 'Merchant Wholesalers, Durable Goods' },
+  { code: '424', label: 'Merchant Wholesalers, Nondurable Goods' },
+  { code: '425', label: 'Wholesale Electronic Markets & Agents/Brokers' },
+
+  // Retail Trade (44-45)
+  { code: '441', label: 'Motor Vehicle & Parts Dealers' },
+  { code: '442', label: 'Furniture & Home Furnishings Stores' },
+  { code: '443', label: 'Electronics & Appliance Stores' },
+  { code: '444', label: 'Building Material & Garden Equipment Stores' },
+  { code: '445', label: 'Food & Beverage Stores' },
+  { code: '446', label: 'Health & Personal Care Stores' },
+  { code: '447', label: 'Gasoline Stations' },
+  { code: '448', label: 'Clothing & Clothing Accessories Stores' },
+  { code: '451', label: 'Sporting Goods, Hobby, Book & Music Stores' },
+  { code: '452', label: 'General Merchandise Stores' },
+  { code: '453', label: 'Miscellaneous Store Retailers' },
+  { code: '454', label: 'Nonstore Retailers (E-Commerce)' },
+
+  // Transportation & Warehousing (48-49)
+  { code: '481', label: 'Air Transportation' },
+  { code: '482', label: 'Rail Transportation' },
+  { code: '483', label: 'Water Transportation' },
+  { code: '484', label: 'Truck Transportation' },
+  { code: '485', label: 'Transit & Ground Passenger Transportation' },
+  { code: '486', label: 'Pipeline Transportation' },
+  { code: '487', label: 'Scenic & Sightseeing Transportation' },
+  { code: '488', label: 'Transportation Support Activities' },
+  { code: '491', label: 'Postal Service' },
+  { code: '492', label: 'Couriers & Messengers' },
+  { code: '493', label: 'Warehousing & Storage' },
+
+  // Information (51)
+  { code: '511', label: 'Publishing Industries (except Internet)' },
+  { code: '512', label: 'Motion Picture & Sound Recording' },
+  { code: '515', label: 'Broadcasting (except Internet)' },
+  { code: '517', label: 'Telecommunications' },
+  { code: '518', label: 'Data Processing, Hosting & Related Services' },
+  { code: '519', label: 'Other Information Services & Internet Publishing' },
+
+  // Finance & Insurance (52)
+  { code: '521', label: 'Monetary Authorities (Central Bank)' },
+  { code: '522', label: 'Credit Intermediation & Related Activities' },
+  { code: '523', label: 'Securities, Commodity Contracts & Investments' },
+  { code: '524', label: 'Insurance Carriers & Related Activities' },
+  { code: '525', label: 'Funds, Trusts & Other Financial Vehicles' },
+
+  // Real Estate (53)
+  { code: '531', label: 'Real Estate' },
+  { code: '532', label: 'Rental & Leasing Services' },
+  { code: '533', label: 'Lessors of Nonfinancial Intangible Assets' },
+
+  // Professional, Scientific & Technical (54)
+  { code: '5411', label: 'Legal Services' },
+  { code: '5412', label: 'Accounting, Tax & Payroll Services' },
+  { code: '5413', label: 'Architectural, Engineering & Related Services' },
+  { code: '5414', label: 'Specialized Design Services' },
+  { code: '5415', label: 'Computer Systems Design & Related Services' },
+  { code: '5416', label: 'Management, Scientific & Technical Consulting' },
+  { code: '5417', label: 'Scientific Research & Development' },
+  { code: '5418', label: 'Advertising, PR & Related Services' },
+  { code: '5419', label: 'Other Professional, Scientific & Technical Services' },
+
+  // Management of Companies (55)
+  { code: '551', label: 'Management of Companies & Enterprises' },
+
+  // Administrative & Support (56)
+  { code: '561', label: 'Administrative & Support Services' },
+  { code: '562', label: 'Waste Management & Remediation Services' },
+
+  // Educational Services (61)
+  { code: '6111', label: 'Elementary & Secondary Schools' },
+  { code: '6112', label: 'Junior Colleges' },
+  { code: '6113', label: 'Colleges, Universities & Professional Schools' },
+  { code: '6114', label: 'Business Schools & Training' },
+  { code: '6115', label: 'Technical & Trade Schools' },
+  { code: '6116', label: 'Other Schools & Instruction' },
+  { code: '6117', label: 'Educational Support Services' },
+
+  // Health Care & Social Assistance (62)
+  { code: '621', label: 'Ambulatory Health Care Services' },
+  { code: '622', label: 'Hospitals' },
+  { code: '623', label: 'Nursing & Residential Care Facilities' },
+  { code: '624', label: 'Social Assistance' },
+
+  // Arts, Entertainment & Recreation (71)
+  { code: '711', label: 'Performing Arts, Spectator Sports & Related' },
+  { code: '712', label: 'Museums, Historical Sites & Similar' },
+  { code: '713', label: 'Amusement, Gambling & Recreation Industries' },
+
+  // Accommodation & Food Services (72)
+  { code: '721', label: 'Accommodation (Hotels, Motels, B&Bs)' },
+  { code: '722', label: 'Food Services & Drinking Places (Restaurants, Bars)' },
+
+  // Other Services (81)
+  { code: '811', label: 'Repair & Maintenance' },
+  { code: '812', label: 'Personal & Laundry Services' },
+  { code: '813', label: 'Religious, Grantmaking, Civic & Professional Organizations' },
+  { code: '814', label: 'Private Households' },
+
+  // Public Administration (92)
+  { code: '921', label: 'Executive, Legislative & General Government' },
+  { code: '922', label: 'Justice, Public Order & Safety Activities' },
+  { code: '923', label: 'Administration of Human Resource Programs' },
+  { code: '924', label: 'Administration of Environmental Programs' },
+  { code: '925', label: 'Community & Housing Program Administration' },
+  { code: '926', label: 'Administration of Economic Programs' },
+  { code: '927', label: 'Space Research & Technology' },
+  { code: '928', label: 'National Security & International Affairs' },
 ];
 
 export const CREDIT_SCORE_RANGES = [
