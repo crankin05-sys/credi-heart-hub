@@ -104,8 +104,15 @@ const PrivacyPolicyPage = () => (
         </section>
 
         <section>
-          <h2 className="text-lg font-bold text-foreground mb-3">11. Contact Us</h2>
-          <p>If you have questions about this Privacy Policy, please contact us at:</p>
+          <h2 className="text-lg font-bold text-foreground mb-3">11. Disclaimer</h2>
+          <p>The information, tools, scores, and recommendations provided through Credibility Suite AI are for general informational and educational purposes only. <strong className="text-foreground">This platform does not provide financial, legal, or tax advice.</strong> Nothing on this platform should be construed as professional advice or a guarantee of funding, credit approval, or business outcomes.</p>
+          <p className="mt-2">AI-generated content, including scores, insights, and recommendations, is produced by automated systems and may not reflect your complete financial picture. Always consult with a licensed financial advisor, attorney, or tax professional before making significant business or financial decisions.</p>
+          <p className="mt-2">Credibility Suite AI, She Wins With AI, and their affiliates are not responsible for any actions taken based on the information provided through this platform.</p>
+        </section>
+
+        <section>
+          <h2 className="text-lg font-bold text-foreground mb-3">12. Contact Us</h2>
+          <p>If you have questions about this Privacy Policy or our Disclaimer, please contact us at:</p>
           <p className="mt-2">
             <strong className="text-foreground">Credibility Suite AI</strong><br />
             Email: <a href="mailto:privacy@credibilitysuite.ai" className="text-primary hover:underline no-underline">privacy@credibilitysuite.ai</a>
