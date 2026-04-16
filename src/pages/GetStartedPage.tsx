@@ -79,6 +79,7 @@ const GetStartedPage = () => {
   const [phase, setPhase] = useState<Phase>('welcome');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [website, setWebsite] = useState('');
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [routedPath, setRoutedPath] = useState('');
