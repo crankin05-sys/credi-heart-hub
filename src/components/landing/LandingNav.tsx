@@ -119,23 +119,12 @@ const LandingNav = ({ onProductClick }: LandingNavProps) => {
                 My Dashboard
               </button>
             ) : (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => navigate('/auth')}
-                  className={`text-[13px] font-semibold transition-all duration-300 bg-transparent border-none cursor-pointer flex items-center gap-1.5 px-3 py-2 rounded-lg ${
-                    scrolled ? 'text-foreground hover:text-primary' : 'text-white/80 hover:text-white'
-                  }`}
-                >
-                  <LogIn className="w-3.5 h-3.5" />
-                  Log In
-                </button>
-                <button
-                  onClick={() => navigate('/get-started')}
-                  className="bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-5 py-2.5 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2"
-                >
-                  Get Started <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
+              <button
+                onClick={() => navigate('/get-started')}
+                className="bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-5 py-2.5 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2"
+              >
+                Get Started <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             )}
           </div>
 
@@ -209,20 +198,12 @@ const LandingNav = ({ onProductClick }: LandingNavProps) => {
                 <LayoutDashboard className="w-4 h-4" /> My Dashboard
               </button>
             ) : (
-              <>
-                <button
-                  onClick={() => { setMobileOpen(false); navigate('/get-started'); }}
-                  className="w-full bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white font-semibold text-[15px] py-4 rounded-xl border-none cursor-pointer flex items-center justify-center gap-2"
-                >
-                  Get Started <ArrowRight className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => { setMobileOpen(false); navigate('/auth'); }}
-                  className="w-full text-white/70 font-semibold text-[15px] py-3 rounded-xl border border-white/15 bg-transparent cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <LogIn className="w-4 h-4" /> Log In
-                </button>
-              </>
+              <button
+                onClick={() => { setMobileOpen(false); navigate('/get-started'); }}
+                className="w-full bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white font-semibold text-[15px] py-4 rounded-xl border-none cursor-pointer flex items-center justify-center gap-2"
+              >
+                Get Started <ArrowRight className="w-4 h-4" />
+              </button>
             )}
           </div>
         </div>

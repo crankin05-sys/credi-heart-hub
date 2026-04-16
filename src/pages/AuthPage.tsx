@@ -17,9 +17,18 @@ const AuthPage = () => {
 
   if (!authLoading && user) return <Navigate to="/dashboard" replace />;
 
+  const ALLOWED_EMAILS = ['mauricestewart@gmail.com', 'crankin05@gmail.com'];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(''); setMessage(''); setLoading(true);
+
+    if (!ALLOWED_EMAILS.includes(email.toLowerCase().trim())) {
+      setError('Access denied. This login is restricted to authorized administrators only.');
+      setLoading(false);
+      return;
+    }
+
     if (isSignUp) {
       const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: fullName }, emailRedirectTo: window.location.origin } });
       if (error) setError(error.message);
