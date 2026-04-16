@@ -12,10 +12,16 @@ import AnalyticsPage from './AnalyticsPage';
 import SettingsPage from './SettingsPage';
 import AgentsPage from './AgentsPage';
 import ClientDashboard from './ClientDashboard';
+import LeadsCRMPage from './LeadsCRMPage';
+import NurtureBotPage from './NurtureBotPage';
+import CRMEmailPage from './CRMEmailPage';
 
 const adminPageTitles: Record<string, { title: string; subtitle?: string }> = {
   dashboard: { title: 'Fund Manager Dashboard' },
   businesses: { title: 'All Businesses — Complete Fundability View', subtitle: '10 businesses tracked' },
+  leads: { title: 'Leads CRM', subtitle: 'Manage and nurture your leads' },
+  'nurture-bot': { title: 'Lead Nurture Bot', subtitle: 'AI-powered lead nurturing assistant' },
+  'crm-email': { title: 'Email Outreach', subtitle: 'Send personalized emails to leads' },
   pipeline: { title: 'Fundability Pipeline', subtitle: 'Pipeline view of all businesses' },
   loans: { title: 'Loan Approval Queue', subtitle: 'Review and approve loan applications' },
   agents: { title: 'AI Agents', subtitle: 'Run AI-powered analysis on your businesses' },
@@ -63,6 +69,9 @@ const DashboardLayout = () => {
             <>
               {activePage === 'dashboard' && <DashboardPage onNavigate={setActivePage} />}
               {activePage === 'businesses' && <BusinessesPage />}
+              {activePage === 'leads' && <LeadsCRMPage />}
+              {activePage === 'nurture-bot' && <NurtureBotPage />}
+              {activePage === 'crm-email' && <CRMEmailPage />}
               {activePage === 'pipeline' && <PipelinePage />}
               {activePage === 'loans' && <LoansPage />}
               {activePage === 'agents' && <AgentsPage />}
