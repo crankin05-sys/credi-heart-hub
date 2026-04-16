@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Brain, LogIn, LayoutDashboard, ArrowRight, ChevronDown, Menu, X } from 'lucide-react';
+import { Brain, LayoutDashboard, ArrowRight, ChevronDown, Menu, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const PRODUCTS = [
@@ -28,14 +28,17 @@ const LandingNav = ({ onProductClick }: LandingNavProps) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileOpen]);
+
   const handleProductSelect = (productId: string) => {
     setShowProducts(false);
     setMobileOpen(false);
-    if (onProductClick) {
-      onProductClick(productId);
-    } else {
-      navigate('/get-started');
-    }
+    if (onProductClick) onProductClick(productId);
+    else navigate('/get-started');
   };
 
   const scrollTo = (id: string) => {
@@ -45,47 +48,43 @@ const LandingNav = ({ onProductClick }: LandingNavProps) => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-500 ${
+      <nav className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-400 ${
         scrolled
-          ? 'bg-white/90 backdrop-blur-xl border-b border-border py-2 shadow-sm'
+          ? 'bg-background/95 backdrop-blur-xl border-b border-border py-2 shadow-sm'
           : 'bg-transparent py-3'
       }`}>
-        {/* Main nav row */}
-        <div className="max-w-7xl mx-auto px-6 md:px-10 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] flex items-center justify-center shadow-md">
+        <div className="max-w-7xl mx-auto px-5 md:px-10 flex justify-between items-center">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-[hsl(260,70%,60%)] flex items-center justify-center shadow-md">
               <Brain className="w-4 h-4 text-white" />
             </div>
-            <div className={`text-lg font-bold transition-colors ${scrolled ? 'text-foreground' : 'text-white'}`}>
+            <div className={`text-base font-bold transition-colors ${scrolled ? 'text-foreground' : 'text-white'}`}>
               Credibility Suite
             </div>
           </div>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-1">
-            {/* Products dropdown */}
+          <div className="hidden md:flex items-center gap-0.5">
             <div className="relative"
               onMouseEnter={() => setShowProducts(true)}
               onMouseLeave={() => setShowProducts(false)}
             >
-              <button
-                className={`text-[13px] font-semibold transition-all duration-300 bg-transparent border-none cursor-pointer px-4 py-2 rounded-lg flex items-center gap-1.5 ${
-                  scrolled ? 'text-foreground hover:bg-foreground/5' : 'text-white/80 hover:text-white hover:bg-white/10'
-                }`}
-              >
+              <button className={`text-[13px] font-medium transition-all bg-transparent border-none cursor-pointer px-3 py-2 rounded-lg flex items-center gap-1.5 ${
+                scrolled ? 'text-foreground hover:bg-muted' : 'text-white/80 hover:text-white hover:bg-white/10'
+              }`}>
                 Products <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showProducts ? 'rotate-180' : ''}`} />
               </button>
 
               {showProducts && (
-                <div className="absolute top-full left-0 mt-1 w-[320px] bg-white rounded-xl border border-border shadow-xl overflow-hidden animate-fade-up">
+                <div className="absolute top-full left-0 mt-1 w-[300px] bg-card rounded-xl border border-border shadow-xl overflow-hidden animate-fade-up">
                   {PRODUCTS.map((p) => (
                     <button
                       key={p.id}
                       onClick={() => handleProductSelect(p.id)}
-                      className="w-full text-left px-5 py-3.5 hover:bg-primary/[0.04] transition-colors border-none bg-transparent cursor-pointer group"
+                      className="w-full text-left px-4 py-3 hover:bg-muted transition-colors border-none bg-transparent cursor-pointer group"
                     >
-                      <div className="text-[14px] font-semibold text-foreground group-hover:text-primary transition-colors">{p.label}</div>
-                      <div className="text-[12px] text-muted-foreground mt-0.5">{p.desc}</div>
+                      <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">{p.label}</div>
+                      <div className="text-xs text-muted-foreground mt-0.5">{p.desc}</div>
                     </button>
                   ))}
                 </div>
@@ -94,34 +93,34 @@ const LandingNav = ({ onProductClick }: LandingNavProps) => {
 
             {[
               { label: 'How It Works', id: 'dashboard-preview' },
-              { label: 'Guidance Tools', id: 'support-layers' },
+              { label: 'Guidance', id: 'support-layers' },
               { label: 'Contact', id: 'cta' },
             ].map(item => (
               <button
                 key={item.label}
                 onClick={() => scrollTo(item.id)}
-                className={`text-[13px] font-medium transition-all duration-300 bg-transparent border-none cursor-pointer px-4 py-2 rounded-lg ${
-                  scrolled ? 'text-muted-foreground hover:text-foreground hover:bg-foreground/5' : 'text-white/60 hover:text-white hover:bg-white/10'
+                className={`text-[13px] font-medium transition-all bg-transparent border-none cursor-pointer px-3 py-2 rounded-lg ${
+                  scrolled ? 'text-muted-foreground hover:text-foreground hover:bg-muted' : 'text-white/60 hover:text-white hover:bg-white/10'
                 }`}
               >
                 {item.label}
               </button>
             ))}
 
-            <div className="w-px h-6 bg-white/10 mx-2" />
+            <div className={`w-px h-5 mx-2 ${scrolled ? 'bg-border' : 'bg-white/15'}`} />
 
             {user ? (
               <button
                 onClick={() => navigate('/dashboard')}
-                className="bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-6 py-2.5 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2"
+                className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-5 py-2 border-none cursor-pointer rounded-lg transition-all hover:shadow-md hover:-translate-y-0.5 flex items-center gap-1.5"
               >
                 <LayoutDashboard className="w-3.5 h-3.5" />
-                My Dashboard
+                Dashboard
               </button>
             ) : (
               <button
                 onClick={() => navigate('/get-started')}
-                className="bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-5 py-2.5 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2"
+                className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-5 py-2 border-none cursor-pointer rounded-lg transition-all hover:shadow-md hover:-translate-y-0.5 flex items-center gap-1.5"
               >
                 Get Started <ArrowRight className="w-3.5 h-3.5" />
               </button>
@@ -130,50 +129,36 @@ const LandingNav = ({ onProductClick }: LandingNavProps) => {
 
           {/* Mobile hamburger */}
           <button
-            className={`md:hidden bg-transparent border-none cursor-pointer p-2 ${scrolled ? 'text-foreground' : 'text-white'}`}
+            className={`md:hidden bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors ${
+              scrolled ? 'text-foreground hover:bg-muted' : 'text-white hover:bg-white/10'
+            }`}
             onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           >
-            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
-
-        {/* Product strip under nav on desktop */}
-        {scrolled && (
-          <div className="hidden md:block border-t border-border/50 bg-white/60 backdrop-blur-sm">
-            <div className="max-w-7xl mx-auto px-6 md:px-10 flex items-center gap-1 py-1">
-              {PRODUCTS.map(p => (
-                <button
-                  key={p.id}
-                  onClick={() => handleProductSelect(p.id)}
-                  className="text-[12px] font-medium text-muted-foreground hover:text-primary hover:bg-primary/[0.04] transition-all bg-transparent border-none cursor-pointer px-3 py-1.5 rounded-lg"
-                >
-                  {p.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </nav>
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-[199] bg-[#0a1628]/95 backdrop-blur-xl pt-20 px-6 overflow-y-auto md:hidden">
-          <div className="space-y-1 mb-8">
-            <div className="text-[11px] font-bold text-white/40 uppercase tracking-[2px] px-4 mb-3">Products</div>
+        <div className="fixed inset-0 z-[199] bg-[#0a1628] pt-16 px-5 overflow-y-auto md:hidden animate-fade-in">
+          <div className="space-y-1 mb-6 mt-4">
+            <div className="text-[10px] font-bold text-white/40 uppercase tracking-[2px] px-3 mb-2">Products</div>
             {PRODUCTS.map(p => (
               <button
                 key={p.id}
                 onClick={() => handleProductSelect(p.id)}
-                className="w-full text-left px-4 py-3.5 rounded-xl text-white/80 hover:bg-white/[0.08] transition-colors bg-transparent border-none cursor-pointer"
+                className="w-full text-left px-3 py-3 rounded-xl text-white/80 hover:bg-white/[0.08] transition-colors bg-transparent border-none cursor-pointer"
               >
-                <div className="text-[15px] font-semibold">{p.label}</div>
-                <div className="text-[12px] text-white/40 mt-0.5">{p.desc}</div>
+                <div className="text-sm font-semibold">{p.label}</div>
+                <div className="text-xs text-white/40 mt-0.5">{p.desc}</div>
               </button>
             ))}
           </div>
 
-          <div className="space-y-1 mb-8">
-            <div className="text-[11px] font-bold text-white/40 uppercase tracking-[2px] px-4 mb-3">Navigate</div>
+          <div className="space-y-1 mb-6">
+            <div className="text-[10px] font-bold text-white/40 uppercase tracking-[2px] px-3 mb-2">Navigate</div>
             {[
               { label: 'How It Works', id: 'dashboard-preview' },
               { label: 'Guidance Tools', id: 'support-layers' },
@@ -182,25 +167,25 @@ const LandingNav = ({ onProductClick }: LandingNavProps) => {
               <button
                 key={item.label}
                 onClick={() => scrollTo(item.id)}
-                className="w-full text-left px-4 py-3 rounded-xl text-white/60 hover:text-white hover:bg-white/[0.08] transition-colors bg-transparent border-none cursor-pointer text-[15px]"
+                className="w-full text-left px-3 py-2.5 rounded-xl text-white/60 hover:text-white hover:bg-white/[0.08] transition-colors bg-transparent border-none cursor-pointer text-sm"
               >
                 {item.label}
               </button>
             ))}
           </div>
 
-          <div className="space-y-3 pb-10">
+          <div className="pb-8">
             {user ? (
               <button
                 onClick={() => { setMobileOpen(false); navigate('/dashboard'); }}
-                className="w-full bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white font-semibold text-[15px] py-4 rounded-xl border-none cursor-pointer flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white font-semibold text-sm py-3.5 rounded-xl border-none cursor-pointer flex items-center justify-center gap-2"
               >
                 <LayoutDashboard className="w-4 h-4" /> My Dashboard
               </button>
             ) : (
               <button
                 onClick={() => { setMobileOpen(false); navigate('/get-started'); }}
-                className="w-full bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] text-white font-semibold text-[15px] py-4 rounded-xl border-none cursor-pointer flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white font-semibold text-sm py-3.5 rounded-xl border-none cursor-pointer flex items-center justify-center gap-2"
               >
                 Get Started <ArrowRight className="w-4 h-4" />
               </button>
