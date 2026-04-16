@@ -37,6 +37,43 @@ const GOAL_TO_PATH: Record<string, string> = {
 
 type Phase = 'welcome' | 'capture' | 'goals' | 'routing' | 'journey';
 
+const STORAGE_KEY = 'cs_get_started_progress';
+
+interface SavedProgress {
+  phase: Phase;
+  name: string;
+  email: string;
+  website: string;
+  selectedGoals: string[];
+  routedPath: string;
+  routingMessage: string;
+  savedAt: number;
+}
+
+const saveProgress = (data: Omit<SavedProgress, 'savedAt'>) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...data, savedAt: Date.now() }));
+  } catch { /* ignore */ }
+};
+
+const loadProgress = (): SavedProgress | null => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw) as SavedProgress;
+    // Expire after 7 days
+    if (Date.now() - data.savedAt > 7 * 24 * 60 * 60 * 1000) {
+      localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+    return data;
+  } catch { return null; }
+};
+
+const clearProgress = () => {
+  try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
+};
+
 const GetStartedPage = () => {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>('welcome');
@@ -47,6 +84,41 @@ const GetStartedPage = () => {
   const [routedPath, setRoutedPath] = useState('');
   const [routingMessage, setRoutingMessage] = useState('');
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [hasSavedProgress, setHasSavedProgress] = useState(false);
+
+  // Check for saved progress on mount
+  useEffect(() => {
+    const saved = loadProgress();
+    if (saved && saved.phase !== 'welcome') {
+      setHasSavedProgress(true);
+    }
+  }, []);
+
+  // Save progress on phase/data changes (skip welcome & routing)
+  useEffect(() => {
+    if (phase === 'welcome' || phase === 'routing') return;
+    saveProgress({ phase, name, email, website, selectedGoals, routedPath, routingMessage });
+  }, [phase, name, email, website, selectedGoals, routedPath, routingMessage]);
+
+  const resumeProgress = () => {
+    const saved = loadProgress();
+    if (!saved) return;
+    setName(saved.name);
+    setEmail(saved.email);
+    setWebsite(saved.website);
+    setSelectedGoals(saved.selectedGoals);
+    setRoutedPath(saved.routedPath);
+    setRoutingMessage(saved.routingMessage);
+    // If they were on the journey phase, restore it; otherwise go to their last phase
+    setPhase(saved.phase === 'routing' ? 'goals' : saved.phase);
+    setHasSavedProgress(false);
+  };
+
+  const startFresh = () => {
+    clearProgress();
+    setHasSavedProgress(false);
+    setPhase('capture');
+  };
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
 
