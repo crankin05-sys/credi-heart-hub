@@ -29,6 +29,30 @@ interface FormData {
   annualRevenue: string;
 }
 
+// Group NAICS by sector for browsable categories
+const NAICS_SECTORS = [
+  { header: '🖥️ Technology & Software', codes: ['511210','518210','519130','541511','541512','541513','541519','541611','541618','541690'] },
+  { header: '🏗️ Construction & Trades', codes: ['236','237','238'] },
+  { header: '🍽️ Food & Restaurants', codes: ['311','312','445','722','721'] },
+  { header: '🏥 Healthcare & Social Services', codes: ['621','622','623','624'] },
+  { header: '🏪 Retail & E-Commerce', codes: ['441','442','443','444','446','447','448','451','452','453','454'] },
+  { header: '🚛 Transportation & Logistics', codes: ['481','482','483','484','485','486','487','488','491','492','493'] },
+  { header: '💰 Finance & Insurance', codes: ['521','522','523','524','525'] },
+  { header: '🏠 Real Estate', codes: ['531','532','533'] },
+  { header: '⚖️ Professional Services', codes: ['5411','5412','5418','5419','541715'] },
+  { header: '🎓 Education', codes: ['6111','6112','6113','6114','6115','6116','6117'] },
+  { header: '🎭 Arts, Entertainment & Recreation', codes: ['711','712','713'] },
+  { header: '🏭 Manufacturing', codes: ['313','314','315','316','321','322','323','324','325','326','327','331','332','333','334','335','336','337','339'] },
+  { header: '📡 Telecom & Media', codes: ['512','515','517'] },
+  { header: '🌾 Agriculture & Natural Resources', codes: ['111','112','113','114','115','211','212','213'] },
+  { header: '⚡ Utilities', codes: ['2211','2212','2213'] },
+  { header: '🛒 Wholesale Trade', codes: ['423','424','425'] },
+  { header: '🔧 Other Services', codes: ['811','812','813','814','551','561','562'] },
+  { header: '🏛️ Government & Public Admin', codes: ['921','922','923','924','925','926','927','928'] },
+];
+
+const naicsLookup = Object.fromEntries(NAICS_INDUSTRIES.map(i => [i.code, i]));
+
 const NaicsDropdownStep = ({ selectedCode, selectedLabel, onSelect }: {
   selectedCode: string;
   selectedLabel: string;
@@ -48,18 +72,20 @@ const NaicsDropdownStep = ({ selectedCode, selectedLabel, onSelect }: {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  const filtered = useMemo(() => {
-    if (!search.trim()) return NAICS_INDUSTRIES;
-    const q = search.toLowerCase();
+  const isSearching = search.trim().length > 0;
+  const q = search.toLowerCase();
+
+  const filteredFlat = useMemo(() => {
+    if (!isSearching) return [];
     return NAICS_INDUSTRIES.filter(
       ind => ind.label.toLowerCase().includes(q) || ind.code.includes(q)
     );
-  }, [search]);
+  }, [search, isSearching, q]);
 
   return (
     <div>
       <h2 className="text-[28px] font-extrabold text-white mb-2">What industry are you in?</h2>
-      <p className="text-[16px] text-white/60 mb-8">Select the category that best fits your business.</p>
+      <p className="text-[16px] text-white/60 mb-8">Browse categories or search to find your industry.</p>
 
       <div ref={dropdownRef} className="relative">
         <button
@@ -72,7 +98,7 @@ const NaicsDropdownStep = ({ selectedCode, selectedLabel, onSelect }: {
           }`}
         >
           <span className="text-[15px] truncate">
-            {selectedCode ? `${selectedLabel} (NAICS ${selectedCode})` : 'Select your industry…'}
+            {selectedCode ? `${selectedLabel}` : 'Select your industry…'}
           </span>
           <ChevronDown className={`w-5 h-5 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
         </button>
@@ -86,37 +112,54 @@ const NaicsDropdownStep = ({ selectedCode, selectedLabel, onSelect }: {
                   type="text"
                   value={search}
                   onChange={e => setSearch(e.target.value)}
-                  placeholder="Search industries…"
+                  placeholder="Search (e.g. restaurant, software, trucking…)"
                   autoFocus
                   className="w-full bg-white/[0.06] border border-white/[0.1] rounded-lg pl-9 pr-3 py-2.5 text-[14px] text-white placeholder:text-white/30 focus:outline-none focus:border-[#2563eb]/50"
                 />
               </div>
             </div>
-            <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
-              {filtered.length === 0 ? (
-                <div className="px-4 py-6 text-center text-white/40 text-[14px]">No industries found</div>
+            <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+              {isSearching ? (
+                filteredFlat.length === 0 ? (
+                  <div className="px-4 py-6 text-center text-white/40 text-[14px]">No industries found</div>
+                ) : (
+                  filteredFlat.map(ind => (
+                    <button
+                      key={ind.code}
+                      onClick={() => { onSelect(ind.code, ind.label); setOpen(false); setSearch(''); }}
+                      className={`w-full text-left px-4 py-3 flex items-center justify-between gap-3 transition-colors ${
+                        selectedCode === ind.code ? 'bg-[#2563eb]/15 text-white' : 'text-white/70 hover:bg-white/[0.06]'
+                      }`}
+                    >
+                      <span className="text-[14px] font-medium">{ind.label}</span>
+                      {selectedCode === ind.code && <Check className="w-4 h-4 text-[#2563eb]" />}
+                    </button>
+                  ))
+                )
               ) : (
-                filtered.map(ind => (
-                  <button
-                    key={ind.code}
-                    onClick={() => {
-                      onSelect(ind.code, ind.label);
-                      setOpen(false);
-                      setSearch('');
-                    }}
-                    className={`w-full text-left px-4 py-3 flex items-center justify-between gap-3 transition-colors ${
-                      selectedCode === ind.code
-                        ? 'bg-[#2563eb]/15 text-white'
-                        : 'text-white/70 hover:bg-white/[0.06]'
-                    }`}
-                  >
-                    <div>
-                      <div className="text-[14px] font-medium">{ind.label}</div>
-                      <div className="text-[12px] text-white/35">NAICS {ind.code}</div>
+                NAICS_SECTORS.map(sector => {
+                  const items = sector.codes.map(c => naicsLookup[c]).filter(Boolean);
+                  if (items.length === 0) return null;
+                  return (
+                    <div key={sector.header}>
+                      <div className="px-4 py-2.5 text-[13px] font-bold text-white/50 bg-white/[0.03] sticky top-0">
+                        {sector.header}
+                      </div>
+                      {items.map(ind => (
+                        <button
+                          key={ind.code}
+                          onClick={() => { onSelect(ind.code, ind.label); setOpen(false); setSearch(''); }}
+                          className={`w-full text-left px-6 py-2.5 flex items-center justify-between gap-3 transition-colors ${
+                            selectedCode === ind.code ? 'bg-[#2563eb]/15 text-white' : 'text-white/60 hover:bg-white/[0.06] hover:text-white/80'
+                          }`}
+                        >
+                          <span className="text-[14px]">{ind.label}</span>
+                          {selectedCode === ind.code && <Check className="w-4 h-4 text-[#2563eb]" />}
+                        </button>
+                      ))}
                     </div>
-                    {selectedCode === ind.code && <Check className="w-4 h-4 text-[#2563eb]" />}
-                  </button>
-                ))
+                  );
+                })
               )}
             </div>
           </div>
