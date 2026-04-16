@@ -595,7 +595,7 @@ const OnboardingPage = () => {
                   <p className="text-sm text-muted-foreground">Loading scheduler…</p>
                 </div>
                 <iframe
-                  src="https://calendly.com/mauricestewart?hide_gdpr_banner=1&background_color=ffffff&text_color=1a1a2e&primary_color=2563eb"
+                  src="https://calendly.com/taylor?hide_gdpr_banner=1&background_color=ffffff&text_color=1a1a2e&primary_color=2563eb"
                   width="100%"
                   height="650"
                   frameBorder="0"
