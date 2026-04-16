@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Filter, Plus, Mail, Phone, Building2, ChevronDown, Eye } from 'lucide-react';
+import { Search, Filter, Plus, Mail, Phone, Building2, ChevronDown, Eye, KeyRound, Copy, Check } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Lead {
   id: string;
