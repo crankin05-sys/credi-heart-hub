@@ -52,6 +52,40 @@ const generateInsights = (credit: string, revenue: string, time: string) => {
   return insights;
 };
 
+const generateCanvasSnapshot = (businessName: string, revenue: string, time: string, credit: string) => {
+  const hasRevenue = !['pre', 'under100k'].includes(revenue);
+  const established = ['10+', '2-10'].includes(time);
+  const highCredit = ['780+', '740-779'].includes(credit);
+  return [
+    { title: 'Value Proposition', content: hasRevenue
+      ? `${businessName} delivers proven value with an established revenue model.`
+      : `${businessName} is positioned to capture market share with strong growth potential.` },
+    { title: 'Customer Segments', content: established
+      ? 'Established customer base with repeat buyers and referrals.'
+      : 'Early adopters and initial target market — growth opportunity ahead.' },
+    { title: 'Revenue Streams', content: hasRevenue
+      ? 'Active revenue streams generating consistent income.'
+      : 'Revenue model in development — focus on first paying customers.' },
+    { title: 'Key Activities', content: established
+      ? 'Operations, customer fulfillment, and scaling systems.'
+      : 'Product development, market validation, and customer acquisition.' },
+    { title: 'Key Resources', content: hasRevenue
+      ? 'Team, technology, customer relationships, and brand equity.'
+      : 'Founder expertise, initial capital, and early partnerships.' },
+    { title: 'Channels', content: established
+      ? 'Direct sales, partnerships, digital marketing, and referrals.'
+      : 'Social media, direct outreach, and community building.' },
+    { title: 'Growth Opportunities', content: hasRevenue
+      ? 'Expand product lines, enter new markets, and optimize pricing.'
+      : 'Validate product-market fit, build recurring revenue.' },
+    { title: 'Gaps & Risks', content: !highCredit && !hasRevenue
+      ? 'Pre-revenue with credit challenges — prioritize revenue and credit building.'
+      : !hasRevenue ? 'Pre-revenue risk — establish cash flow quickly.'
+      : !highCredit ? 'Credit score limiting funding options — credit repair recommended.'
+      : 'Scaling risk — systems and team may need upgrading.' },
+  ];
+};
+
 /* Deep question options */
 const businessLocationOpts = [
   { label: 'Home', value: 'home' }, { label: 'Commercial', value: 'commercial' },
