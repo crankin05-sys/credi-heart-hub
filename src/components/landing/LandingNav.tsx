@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Brain, LayoutDashboard, ArrowRight, Menu, X } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Brain, LayoutDashboard, ArrowRight, Menu, X, LogIn, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+
+const sectionLinks = [
+  { label: 'How It Works', id: 'how-it-works' },
+  { label: 'FAQ', id: 'faq' },
+  { label: 'Contact', id: 'cta' },
+];
 
 const LandingNav = () => {
   const navigate = useNavigate();
@@ -43,12 +49,8 @@ const LandingNav = () => {
           </div>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-0.5">
-            {[
-              { label: 'How It Works', id: 'how-it-works' },
-              { label: 'FAQ', id: 'faq' },
-              { label: 'Contact', id: 'cta' },
-            ].map(item => (
+          <div className="hidden min-[900px]:flex items-center gap-0.5">
+            {sectionLinks.map(item => (
               <button
                 key={item.label}
                 onClick={() => scrollTo(item.id)}
@@ -59,6 +61,15 @@ const LandingNav = () => {
                 {item.label}
               </button>
             ))}
+
+            <Link
+              to="/about"
+              className={`text-[13px] font-medium transition-all no-underline px-3 py-2 rounded-lg ${
+                scrolled ? 'text-muted-foreground hover:text-foreground hover:bg-muted' : 'text-white/60 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              About
+            </Link>
 
             <div className={`w-px h-5 mx-2 ${scrolled ? 'bg-border' : 'bg-white/15'}`} />
 
@@ -71,13 +82,79 @@ const LandingNav = () => {
                 Dashboard
               </button>
             ) : (
-              <button
-                onClick={() => navigate('/get-started')}
-                className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-5 py-2 border-none cursor-pointer rounded-lg transition-all hover:shadow-md hover:-translate-y-0.5 flex items-center gap-1.5"
-              >
-                Check My Score <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              <>
+                <button
+                  onClick={() => navigate('/auth')}
+                  className={`text-[13px] font-medium transition-all bg-transparent border-none cursor-pointer px-3 py-2 rounded-lg flex items-center gap-1.5 ${
+                    scrolled ? 'text-foreground/80 hover:text-foreground hover:bg-muted' : 'text-white/75 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <LogIn className="w-3.5 h-3.5" /> Client Login
+                </button>
+                <button
+                  onClick={() => navigate('/get-started')}
+                  className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-5 py-2 border-none cursor-pointer rounded-lg transition-all hover:shadow-md hover:-translate-y-0.5 flex items-center gap-1.5"
+                >
+                  Check My Score <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+                <Link
+                  to="/agent-login"
+                  className={`ml-1 text-[10px] font-medium no-underline px-2 py-1 rounded-md flex items-center gap-1 whitespace-nowrap ${
+                    scrolled ? 'text-muted-foreground/60 hover:text-foreground hover:bg-muted' : 'text-white/55 hover:text-white hover:bg-white/10'
+                  }`}
+                  title="Agent / Admin Portal"
+                >
+                  <Shield className="w-3 h-3" /> Agent
+                </Link>
+              </>
             )}
+          </div>
+
+          {/* Tablet nav */}
+          <div className="hidden md:flex min-[900px]:hidden items-center gap-2">
+            {user ? (
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-3.5 py-2 border-none cursor-pointer rounded-lg flex items-center gap-1.5 whitespace-nowrap"
+              >
+                <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => navigate('/auth')}
+                  className={`text-[12px] font-medium transition-all bg-transparent border-none cursor-pointer px-2.5 py-2 rounded-lg flex items-center gap-1.5 whitespace-nowrap ${
+                    scrolled ? 'text-foreground/80 hover:text-foreground hover:bg-muted' : 'text-white/75 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <LogIn className="w-3.5 h-3.5" /> Client Login
+                </button>
+                <button
+                  onClick={() => navigate('/get-started')}
+                  className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-[11px] font-semibold px-3.5 py-2 border-none cursor-pointer rounded-lg flex items-center gap-1.5 whitespace-nowrap"
+                >
+                  Check My Score <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+                <Link
+                  to="/agent-login"
+                  className={`text-[11px] font-medium no-underline px-2 py-2 rounded-md flex items-center gap-1 whitespace-nowrap ${
+                    scrolled ? 'text-muted-foreground/70 hover:text-foreground hover:bg-muted' : 'text-white/55 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <Shield className="w-3 h-3" /> Agent
+                </Link>
+              </>
+            )}
+
+            <button
+              className={`bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors ${
+                scrolled ? 'text-foreground hover:bg-muted' : 'text-white hover:bg-white/10'
+              }`}
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            >
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
 
           {/* Mobile hamburger */}
@@ -93,15 +170,19 @@ const LandingNav = () => {
         </div>
       </nav>
 
-      {/* Mobile menu */}
+      {/* Mobile / tablet menu */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-[199] bg-[#0a1628] pt-16 px-5 overflow-y-auto md:hidden animate-fade-in">
+        <div className="fixed inset-0 z-[199] bg-[#0a1628] pt-16 px-5 overflow-y-auto min-[900px]:hidden animate-fade-in">
           <div className="space-y-1 mb-6 mt-4">
-            {[
-              { label: 'How It Works', id: 'how-it-works' },
-              { label: 'FAQ', id: 'faq' },
-              { label: 'Contact', id: 'cta' },
-            ].map(item => (
+            <Link
+              to="/about"
+              onClick={() => setMobileOpen(false)}
+              className="block w-full text-left px-3 py-2.5 rounded-xl text-white/60 hover:text-white hover:bg-white/[0.08] transition-colors no-underline text-sm"
+            >
+              About
+            </Link>
+
+            {sectionLinks.map(item => (
               <button
                 key={item.label}
                 onClick={() => scrollTo(item.id)}
@@ -121,12 +202,27 @@ const LandingNav = () => {
                 <LayoutDashboard className="w-4 h-4" /> My Dashboard
               </button>
             ) : (
-              <button
-                onClick={() => { setMobileOpen(false); navigate('/get-started'); }}
-                className="w-full bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white font-semibold text-sm py-3.5 rounded-xl border-none cursor-pointer flex items-center justify-center gap-2"
-              >
-                Check My Score — Free <ArrowRight className="w-4 h-4" />
-              </button>
+              <div className="space-y-2">
+                <button
+                  onClick={() => { setMobileOpen(false); navigate('/auth'); }}
+                  className="w-full bg-white/[0.06] text-white font-semibold text-sm py-3.5 rounded-xl border border-white/[0.12] cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <LogIn className="w-4 h-4" /> Client Login
+                </button>
+                <button
+                  onClick={() => { setMobileOpen(false); navigate('/get-started'); }}
+                  className="w-full bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white font-semibold text-sm py-3.5 rounded-xl border-none cursor-pointer flex items-center justify-center gap-2"
+                >
+                  Check My Score — Free <ArrowRight className="w-4 h-4" />
+                </button>
+                <Link
+                  to="/agent-login"
+                  onClick={() => setMobileOpen(false)}
+                  className="w-full text-white/70 hover:text-white font-medium text-xs py-3 rounded-xl border border-dashed border-white/[0.15] cursor-pointer flex items-center justify-center gap-2 no-underline"
+                >
+                  <Shield className="w-3.5 h-3.5" /> Agent Portal
+                </Link>
+              </div>
             )}
           </div>
         </div>
