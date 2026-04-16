@@ -1,28 +1,22 @@
 import { Link } from 'react-router-dom';
+import { Brain } from 'lucide-react';
 
 const LandingFooter = () => (
-  <footer className="relative overflow-hidden">
-    <div className="section-glow-divider" />
-    <div className="px-6 md:px-10 py-12 relative">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_80%_at_50%_100%,hsl(var(--primary)/0.04),transparent_60%)]" />
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-5 relative z-10">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-gradient-to-br from-primary to-gold-lt flex items-center justify-center text-[15px] font-black text-primary-foreground rounded-lg font-display shadow-[0_4px_16px_hsl(var(--gold)/0.2)]">
-            CS
+  <footer className="border-t border-border bg-muted/30">
+    <div className="max-w-7xl mx-auto px-5 md:px-10 py-8">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 bg-gradient-to-br from-primary to-[hsl(260,70%,60%)] flex items-center justify-center text-sm font-bold text-white rounded-lg">
+            <Brain className="w-4 h-4" />
           </div>
-          <div className="font-display text-lg font-bold text-foreground">
-            Credibility Suite
-          </div>
+          <span className="text-base font-bold text-foreground">Credibility Suite</span>
         </div>
-        <div className="flex items-center gap-4 text-[13px] text-foreground/45">
-          <span className="font-mono tracking-wide">Powered by She Wins With AI · Atlanta, GA 30309</span>
-          <span className="text-foreground/20">·</span>
-          <Link to="/privacy" className="hover:text-foreground transition-colors no-underline text-foreground/45">Privacy Policy</Link>
-          <span className="text-foreground/20">·</span>
-          <Link to="/about" className="hover:text-foreground transition-colors no-underline text-foreground/45">About</Link>
-        </div>
-        <div className="neon-card text-primary text-[12px] font-bold px-5 py-2.5 tracking-[2px] uppercase rounded-full hover:border-primary/30 transition-all cursor-pointer">
-          Business Guidance Platform
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
+          <span>Powered by She Wins With AI · Atlanta, GA</span>
+          <span className="hidden md:inline text-border">·</span>
+          <Link to="/privacy" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Privacy Policy</Link>
+          <span className="text-border">·</span>
+          <Link to="/about" className="hover:text-foreground transition-colors no-underline text-muted-foreground">About</Link>
         </div>
       </div>
     </div>
