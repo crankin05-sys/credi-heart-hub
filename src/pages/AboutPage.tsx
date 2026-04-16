@@ -137,18 +137,6 @@ const AboutPage = () => {
             </div>
           </div>
 
-          {/* Founder strip */}
-          <div className="bg-card border border-border rounded-2xl p-6 md:p-8 mb-12">
-            <div className="flex items-center gap-2 mb-3">
-              <Award className="w-4 h-4 text-primary" />
-              <span className="text-xs font-semibold text-primary uppercase tracking-wider">Founder & CEO</span>
-            </div>
-            <h3 className="text-2xl font-bold text-foreground mb-2">Maurice Stewart</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Maurice founded Credibility Suite to bring transparency, technology, and real coaching to a funding industry that too often leaves small businesses behind. With years of experience in business development, financial consulting, and AI innovation, he leads the team in building tools that actually move the needle.
-            </p>
-          </div>
-
           {/* Stats */}
           <div className="bg-gradient-to-r from-[hsl(230,80%,56%)] to-[hsl(260,70%,60%)] rounded-2xl p-8 text-center">
             <h3 className="text-white text-xl font-bold mb-6">Impact by the Numbers</h3>
