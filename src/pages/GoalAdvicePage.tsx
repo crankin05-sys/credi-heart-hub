@@ -84,15 +84,6 @@ const GoalAdvicePage = () => {
     fetchAdvice();
   }, [goal]);
 
-  // Simple markdown-like bold parsing
-  const formatAdvice = (text: string) => {
-    return text.split('\n').filter(l => l.trim()).map((line, i) => {
-      const formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      return (
-        <p key={i} className="text-sm text-muted-foreground leading-relaxed mb-3" dangerouslySetInnerHTML={{ __html: formatted }} />
-      );
-    });
-  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -141,8 +132,8 @@ const GoalAdvicePage = () => {
 
             {advice && (
               <div>
-                {formatAdvice(advice)}
-                {loading && <span className="inline-block w-2 h-4 bg-primary/60 animate-pulse rounded-sm" />}
+                <AdviceRenderer text={advice} variant="themed" />
+                {loading && <span className="inline-block w-2 h-4 bg-primary/60 animate-pulse rounded-sm mt-1" />}
               </div>
             )}
           </div>
