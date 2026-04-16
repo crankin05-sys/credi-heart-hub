@@ -76,13 +76,13 @@ export const NAICS_INDUSTRIES = [
   { code: '492', label: 'Couriers & Messengers' },
   { code: '493', label: 'Warehousing & Storage' },
 
-  // Information (51)
-  { code: '511', label: 'Publishing Industries (except Internet)' },
+  // Information & Technology (51)
+  { code: '511210', label: 'Software Publishers (SaaS, Apps, Enterprise Software)' },
   { code: '512', label: 'Motion Picture & Sound Recording' },
   { code: '515', label: 'Broadcasting (except Internet)' },
-  { code: '517', label: 'Telecommunications' },
-  { code: '518', label: 'Data Processing, Hosting & Related Services' },
-  { code: '519', label: 'Other Information Services & Internet Publishing' },
+  { code: '517', label: 'Telecommunications, ISPs & Wireless Carriers' },
+  { code: '518210', label: 'Cloud Hosting, Data Centers & SaaS Infrastructure' },
+  { code: '519130', label: 'Internet Publishing, Streaming & Web Portals' },
 
   // Finance & Insurance (52)
   { code: '521', label: 'Monetary Authorities (Central Bank)' },
@@ -99,13 +99,16 @@ export const NAICS_INDUSTRIES = [
   // Professional, Scientific & Technical (54)
   { code: '5411', label: 'Legal Services' },
   { code: '5412', label: 'Accounting, Tax & Payroll Services' },
-  { code: '5413', label: 'Architectural, Engineering & Related Services' },
-  { code: '5414', label: 'Specialized Design Services' },
-  { code: '5415', label: 'Computer Systems Design & Related Services' },
-  { code: '5416', label: 'Management, Scientific & Technical Consulting' },
-  { code: '5417', label: 'Scientific Research & Development' },
-  { code: '5418', label: 'Advertising, PR & Related Services' },
-  { code: '5419', label: 'Other Professional, Scientific & Technical Services' },
+  { code: '541511', label: 'Custom Software Development & Mobile Apps' },
+  { code: '541512', label: 'Computer Systems Design & Integration' },
+  { code: '541513', label: 'Managed IT Services & Tech Support' },
+  { code: '541519', label: 'Web Design, Development & Digital Agencies' },
+  { code: '541611', label: 'AI, Machine Learning & Data Science Consulting' },
+  { code: '541618', label: 'Cybersecurity & Information Security Services' },
+  { code: '541690', label: 'Hardware Engineering, IoT & Robotics Development' },
+  { code: '541715', label: 'Research & Development in Physical Sciences' },
+  { code: '5418', label: 'Advertising, PR & Digital Marketing' },
+  { code: '5419', label: 'Other Professional & Technical Services' },
 
   // Management of Companies (55)
   { code: '551', label: 'Management of Companies & Enterprises' },
