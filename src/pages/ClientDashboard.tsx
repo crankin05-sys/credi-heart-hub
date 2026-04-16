@@ -199,21 +199,21 @@ const ClientDashboard = () => {
           {/* Canvas Tab */}
           {activeTab === 'canvas' && canvas && (
             <div className="bg-background rounded-2xl border border-border shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-border flex items-center gap-2">
+              <div className="px-5 py-3 border-b border-border flex items-center gap-2">
                 <Brain className="w-4 h-4 text-primary" />
                 <div>
-                  <h3 className="font-bold text-foreground">Live Business Model Canvas</h3>
-                  <p className="text-xs text-muted-foreground">Auto-generated based on your profile data</p>
+                  <h3 className="font-bold text-foreground text-sm">Business Model Canvas</h3>
+                  <p className="text-[11px] text-muted-foreground">Auto-generated from your profile</p>
                 </div>
               </div>
-              <div className="p-6 grid grid-cols-2 gap-3">
+              <div className="divide-y divide-border">
                 {canvasItems.map(item => (
-                  <div key={item.title} className="bg-secondary/50 rounded-xl p-4 border border-border hover:border-primary/20 hover:shadow-sm transition-all">
-                    <div className="flex items-center gap-2 mb-2">
+                  <div key={item.title} className="px-5 py-3 hover:bg-secondary/30 transition-colors">
+                    <div className="flex items-center gap-2 mb-1">
                       {item.icon}
-                      <span className="text-xs font-bold text-foreground/70 uppercase tracking-wide">{item.title}</span>
+                      <span className="text-xs font-semibold text-foreground">{item.title}</span>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{item.content}</p>
+                    <p className="text-[13px] text-muted-foreground leading-snug pl-6">{item.content}</p>
                   </div>
                 ))}
               </div>
