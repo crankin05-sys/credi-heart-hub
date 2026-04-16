@@ -44,7 +44,7 @@ const HeroSection = () => {
             onClick={() => navigate('/get-started')}
             className="group relative bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] text-white text-base font-bold px-10 py-4.5 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_hsl(220_80%_50%/0.35)] hover:-translate-y-0.5 inline-flex items-center gap-2.5"
           >
-            Check My Score — It's Free
+            Check My Fundability Score
             <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
           </button>
         </ScrollReveal>
