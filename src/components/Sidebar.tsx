@@ -1,5 +1,5 @@
 import { useAuth } from '@/contexts/AuthContext';
-import { Brain, LayoutDashboard, Building2, Zap, Landmark, Bot, BarChart3, Settings, LogOut } from 'lucide-react';
+import { Brain, LayoutDashboard, Building2, Zap, Landmark, Bot, BarChart3, Settings, LogOut, Users, Mail, MessageSquare } from 'lucide-react';
 
 interface SidebarProps {
   activePage: string;
@@ -11,6 +11,11 @@ const navItems = [
   { section: 'Overview', items: [
     { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { id: 'businesses', icon: Building2, label: 'All Businesses' },
+  ]},
+  { section: 'CRM', items: [
+    { id: 'leads', icon: Users, label: 'Leads CRM' },
+    { id: 'nurture-bot', icon: MessageSquare, label: 'Nurture Bot' },
+    { id: 'crm-email', icon: Mail, label: 'Email Outreach' },
   ]},
   { section: 'Capital', items: [
     { id: 'pipeline', icon: Zap, label: 'Pipeline', badge: '10' },
