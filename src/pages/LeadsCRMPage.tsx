@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Filter, Plus, Mail, Phone, Building2, ChevronDown, Eye } from 'lucide-react';
+import { Search, Filter, Plus, Mail, Phone, Building2, ChevronDown, Eye, KeyRound, Copy, Check } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Lead {
   id: string;
@@ -36,6 +37,35 @@ const LeadsCRMPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterFunnel, setFilterFunnel] = useState('all');
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [generatedCode, setGeneratedCode] = useState<string | null>(null);
+  const [generatingCode, setGeneratingCode] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const generateCode = async (lead: Lead) => {
+    setGeneratingCode(true);
+    setGeneratedCode(null);
+    setCopied(false);
+    try {
+      const { data, error } = await supabase.rpc('generate_approval_code', {
+        _email: lead.email,
+        _notes: `${lead.contact_name} — ${lead.company_name}`,
+      });
+      if (error) throw error;
+      setGeneratedCode(data as string);
+      toast.success('Approval code generated');
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to generate code');
+    } finally {
+      setGeneratingCode(false);
+    }
+  };
+
+  const copyCode = async () => {
+    if (!generatedCode) return;
+    await navigator.clipboard.writeText(generatedCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   useEffect(() => {
     fetchLeads();
@@ -172,14 +202,14 @@ const LeadsCRMPage = () => {
 
       {/* Lead detail modal */}
       {selectedLead && (
-        <div className="fixed inset-0 bg-black/50 z-[300] flex items-center justify-center p-4" onClick={() => setSelectedLead(null)}>
+        <div className="fixed inset-0 bg-black/50 z-[300] flex items-center justify-center p-4" onClick={() => { setSelectedLead(null); setGeneratedCode(null); setCopied(false); }}>
           <div className="bg-card border border-border rounded-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h2 className="text-lg font-bold text-foreground">{selectedLead.contact_name}</h2>
                 <p className="text-sm text-muted-foreground">{selectedLead.company_name}</p>
               </div>
-              <button onClick={() => setSelectedLead(null)} className="text-muted-foreground hover:text-foreground bg-transparent border-none cursor-pointer text-lg">✕</button>
+              <button onClick={() => { setSelectedLead(null); setGeneratedCode(null); setCopied(false); }} className="text-muted-foreground hover:text-foreground bg-transparent border-none cursor-pointer text-lg">✕</button>
             </div>
 
             <div className="space-y-3">
@@ -219,6 +249,38 @@ const LeadsCRMPage = () => {
                   </div>
                 </div>
               )}
+
+              {/* Approval code section */}
+              <div className="pt-3 border-t border-border">
+                <div className="text-[10px] text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <KeyRound className="w-3 h-3" /> Client Portal Access
+                </div>
+                {generatedCode ? (
+                  <div className="bg-success/10 border border-success/30 rounded-xl p-3 space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <code className="text-base font-mono font-bold text-foreground tracking-widest">{generatedCode}</code>
+                      <button
+                        onClick={copyCode}
+                        className="text-[10px] font-bold bg-background border border-border rounded-lg px-2.5 py-1.5 cursor-pointer hover:border-primary text-foreground flex items-center gap-1"
+                      >
+                        {copied ? <><Check className="w-3 h-3" /> Copied</> : <><Copy className="w-3 h-3" /> Copy</>}
+                      </button>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground leading-relaxed">
+                      Share this code with <strong>{selectedLead.email}</strong>. They'll use it on the Client Login page to activate their account. Single-use.
+                    </p>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => generateCode(selectedLead)}
+                    disabled={generatingCode}
+                    className="w-full bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-bold py-2.5 rounded-xl border-none cursor-pointer hover:shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-1.5"
+                  >
+                    <KeyRound className="w-3.5 h-3.5" />
+                    {generatingCode ? 'Generating...' : 'Approve & Generate Access Code'}
+                  </button>
+                )}
+              </div>
 
               <div className="pt-3 border-t border-border flex gap-2">
                 <select

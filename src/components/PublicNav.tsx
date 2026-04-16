@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Brain, LayoutDashboard, ArrowRight, Menu, X, LogIn, Home, Info, Sparkles } from 'lucide-react';
+import { Brain, LayoutDashboard, ArrowRight, Menu, X, LogIn, Home, Info, Sparkles, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface NavItem {
@@ -87,7 +87,7 @@ const PublicNav = () => {
                   onClick={() => navigate('/auth')}
                   className="text-[13px] font-medium text-foreground/80 hover:text-foreground bg-transparent border-none cursor-pointer px-3 py-1.5 rounded-lg hover:bg-muted flex items-center gap-1.5 whitespace-nowrap"
                 >
-                  <LogIn className="w-3.5 h-3.5" /> Login
+                  <LogIn className="w-3.5 h-3.5" /> Client Login
                 </button>
                 <button
                   onClick={() => navigate('/get-started')}
@@ -95,6 +95,13 @@ const PublicNav = () => {
                 >
                   Check My Score <ArrowRight className="w-3.5 h-3.5" />
                 </button>
+                <Link
+                  to="/agent-login"
+                  className="ml-1 text-[10px] font-medium text-muted-foreground/60 hover:text-foreground no-underline px-2 py-1 rounded-md hover:bg-muted flex items-center gap-1 whitespace-nowrap"
+                  title="Agent / Admin Portal"
+                >
+                  <Shield className="w-3 h-3" /> Agent
+                </Link>
               </>
             )}
           </div>
@@ -173,7 +180,7 @@ const PublicNav = () => {
                   onClick={() => { setMobileOpen(false); navigate('/auth'); }}
                   className="w-full bg-muted text-foreground font-semibold text-sm py-3.5 rounded-xl border border-border cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <LogIn className="w-4 h-4" /> Login
+                  <LogIn className="w-4 h-4" /> Client Login
                 </button>
                 <button
                   onClick={() => { setMobileOpen(false); navigate('/get-started'); }}
@@ -181,6 +188,13 @@ const PublicNav = () => {
                 >
                   Check My Score <ArrowRight className="w-4 h-4" />
                 </button>
+                <Link
+                  to="/agent-login"
+                  onClick={() => setMobileOpen(false)}
+                  className="w-full text-muted-foreground hover:text-foreground font-medium text-xs py-3 rounded-xl border border-dashed border-border cursor-pointer flex items-center justify-center gap-2 no-underline"
+                >
+                  <Shield className="w-3.5 h-3.5" /> Agent Portal
+                </Link>
               </>
             )}
           </div>

@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index.tsx";
 import AuthPage from "./pages/AuthPage.tsx";
+import AgentLoginPage from "./pages/AgentLoginPage.tsx";
 import OnboardingPage from "./pages/OnboardingPage.tsx";
 import GetStartedPage from "./pages/GetStartedPage.tsx";
 import GoalAdvicePage from "./pages/GoalAdvicePage.tsx";
@@ -27,6 +28,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/agent-login" element={<AgentLoginPage />} />
             <Route path="/get-started" element={<GetStartedPage />} />
             <Route path="/advice" element={<GoalAdvicePage />} />
             <Route path="/onboarding" element={<OnboardingPage />} />
