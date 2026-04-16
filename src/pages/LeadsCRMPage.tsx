@@ -209,7 +209,7 @@ const LeadsCRMPage = () => {
                 <h2 className="text-lg font-bold text-foreground">{selectedLead.contact_name}</h2>
                 <p className="text-sm text-muted-foreground">{selectedLead.company_name}</p>
               </div>
-              <button onClick={() => setSelectedLead(null)} className="text-muted-foreground hover:text-foreground bg-transparent border-none cursor-pointer text-lg">✕</button>
+              <button onClick={() => { setSelectedLead(null); setGeneratedCode(null); setCopied(false); }} className="text-muted-foreground hover:text-foreground bg-transparent border-none cursor-pointer text-lg">✕</button>
             </div>
 
             <div className="space-y-3">
