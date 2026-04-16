@@ -255,6 +255,14 @@ const SectionTitle = ({ title, subtitle }: SectionTitleProps) => (
 );
 
 
+const goalOptions: Option[] = [
+  { label: 'Get a business loan', value: 'loan' },
+  { label: 'Check my fundability', value: 'fundability' },
+  { label: 'Improve my credit', value: 'credit' },
+  { label: 'Grow my business', value: 'grow' },
+  { label: 'Just exploring', value: 'exploring' },
+];
+
 const OnboardingPage = () => {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>('contact');
@@ -262,6 +270,7 @@ const OnboardingPage = () => {
   const [loading, setLoading] = useState(false);
   const [hasLeadData, setHasLeadData] = useState(false);
 
+  const [goal, setGoal] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
