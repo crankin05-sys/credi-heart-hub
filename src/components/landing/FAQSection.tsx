@@ -14,7 +14,7 @@ const FAQSection = () => {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   return (
-    <section className="px-5 md:px-10 py-16 md:py-24 relative overflow-hidden">
+    <section id="faq" className="px-5 md:px-10 py-16 md:py-24 relative overflow-hidden">
       <div className="max-w-3xl mx-auto relative z-10">
         <ScrollReveal>
           <div className="text-center mb-10">

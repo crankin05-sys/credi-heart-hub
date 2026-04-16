@@ -12,7 +12,7 @@ const HowItWorks = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="px-5 md:px-10 py-16 md:py-24 relative overflow-hidden bg-muted/30">
+    <section id="how-it-works" className="px-5 md:px-10 py-16 md:py-24 relative overflow-hidden bg-muted/30">
       <div className="max-w-5xl mx-auto relative z-10">
         <ScrollReveal>
           <div className="text-center mb-12">
