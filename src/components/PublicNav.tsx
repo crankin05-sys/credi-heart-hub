@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Brain, LayoutDashboard, ArrowRight, Menu, X, LogIn, Home, Info, Sparkles } from 'lucide-react';
+import { Brain, LayoutDashboard, ArrowRight, Menu, X, LogIn, Home, Info, Sparkles, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface NavItem {
