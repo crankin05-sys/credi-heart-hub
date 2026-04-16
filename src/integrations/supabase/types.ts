@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      approval_codes: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string
+          email: string
+          id: string
+          notes: string | null
+          used_at: string | null
+          used_by_user_id: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by: string
+          email: string
+          id?: string
+          notes?: string | null
+          used_at?: string | null
+          used_by_user_id?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string
+          email?: string
+          id?: string
+          notes?: string | null
+          used_at?: string | null
+          used_by_user_id?: string | null
+        }
+        Relationships: []
+      }
       businesses: {
         Row: {
           capital_need: number | null
@@ -219,6 +252,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      consume_approval_code: {
+        Args: { _code: string; _email: string; _user_id: string }
+        Returns: boolean
+      }
+      generate_approval_code: {
+        Args: { _email: string; _notes?: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
