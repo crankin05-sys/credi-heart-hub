@@ -518,26 +518,6 @@ const OnboardingPage = () => {
                 </div>
               </div>
 
-              {/* Canvas */}
-              <div className="bg-background rounded-2xl border border-border shadow-sm overflow-hidden">
-                <div className="px-6 py-4 border-b border-border flex items-center justify-between">
-                  <div>
-                    <h3 className="font-bold text-foreground text-base">Your Business Model Canvas</h3>
-                    <p className="text-xs text-muted-foreground">Auto-generated for {businessName || 'your business'}</p>
-                  </div>
-                  <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">FREE</span>
-                </div>
-                <div className="p-6 grid grid-cols-2 gap-3">
-                  <CanvasSection icon={<Sparkles className="w-4 h-4 text-primary" />} title="Value Proposition" content={canvas.valueProposition} />
-                  <CanvasSection icon={<Target className="w-4 h-4 text-primary" />} title="Customer Segments" content={canvas.customerSegments} />
-                  <CanvasSection icon={<DollarSign className="w-4 h-4 text-primary" />} title="Revenue Streams" content={canvas.revenueStreams} />
-                  <CanvasSection icon={<Zap className="w-4 h-4 text-primary" />} title="Key Activities" content={canvas.keyActivities} />
-                  <CanvasSection icon={<FileText className="w-4 h-4 text-primary" />} title="Key Resources" content={canvas.keyResources} />
-                  <CanvasSection icon={<TrendingUp className="w-4 h-4 text-primary" />} title="Channels" content={canvas.channels} />
-                  <CanvasSection icon={<Play className="w-4 h-4 text-emerald-500" />} title="Growth Opportunities" content={canvas.growthOpportunities} />
-                  <CanvasSection icon={<Lock className="w-4 h-4 text-amber-500" />} title="Gaps / Risks" content={canvas.gapsRisks} />
-                </div>
-              </div>
 
               {/* Insights */}
               <div className="bg-background rounded-2xl border border-border shadow-sm p-6">
