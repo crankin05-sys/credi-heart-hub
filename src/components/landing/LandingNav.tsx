@@ -1,25 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Brain, LayoutDashboard, ArrowRight, ChevronDown, Menu, X } from 'lucide-react';
+import { Brain, LayoutDashboard, ArrowRight, Menu, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
-const PRODUCTS = [
-  { label: 'Business Loans', id: 'funding', desc: 'SBA, term loans, lines of credit & more' },
-  { label: 'Credit Repair', id: 'credit', desc: 'AI-powered credit analysis & dispute filing' },
-  { label: 'Coaching', id: 'coaching', desc: 'Growth strategy & business model guidance' },
-  { label: 'Financial Health', id: 'financial', desc: 'Cash flow analysis & profitability tools' },
-  { label: 'Documents', id: 'docs', desc: 'Underwriting prep & document organization' },
-];
-
-interface LandingNavProps {
-  onProductClick?: (productId: string) => void;
-}
-
-const LandingNav = ({ onProductClick }: LandingNavProps) => {
+const LandingNav = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
-  const [showProducts, setShowProducts] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -28,18 +15,10 @@ const LandingNav = ({ onProductClick }: LandingNavProps) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [mobileOpen]);
-
-  const handleProductSelect = (productId: string) => {
-    setShowProducts(false);
-    setMobileOpen(false);
-    if (onProductClick) onProductClick(productId);
-    else navigate('/get-started');
-  };
 
   const scrollTo = (id: string) => {
     setMobileOpen(false);
@@ -65,35 +44,9 @@ const LandingNav = ({ onProductClick }: LandingNavProps) => {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-0.5">
-            <div className="relative"
-              onMouseEnter={() => setShowProducts(true)}
-              onMouseLeave={() => setShowProducts(false)}
-            >
-              <button className={`text-[13px] font-medium transition-all bg-transparent border-none cursor-pointer px-3 py-2 rounded-lg flex items-center gap-1.5 ${
-                scrolled ? 'text-foreground hover:bg-muted' : 'text-white/80 hover:text-white hover:bg-white/10'
-              }`}>
-                Products <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showProducts ? 'rotate-180' : ''}`} />
-              </button>
-
-              {showProducts && (
-                <div className="absolute top-full left-0 mt-1 w-[300px] bg-card rounded-xl border border-border shadow-xl overflow-hidden animate-fade-up">
-                  {PRODUCTS.map((p) => (
-                    <button
-                      key={p.id}
-                      onClick={() => handleProductSelect(p.id)}
-                      className="w-full text-left px-4 py-3 hover:bg-muted transition-colors border-none bg-transparent cursor-pointer group"
-                    >
-                      <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">{p.label}</div>
-                      <div className="text-xs text-muted-foreground mt-0.5">{p.desc}</div>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
             {[
-              { label: 'How It Works', id: 'dashboard-preview' },
-              { label: 'Guidance', id: 'support-layers' },
+              { label: 'How It Works', id: 'how-it-works' },
+              { label: 'FAQ', id: 'faq' },
               { label: 'Contact', id: 'cta' },
             ].map(item => (
               <button
@@ -122,7 +75,7 @@ const LandingNav = ({ onProductClick }: LandingNavProps) => {
                 onClick={() => navigate('/get-started')}
                 className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-semibold px-5 py-2 border-none cursor-pointer rounded-lg transition-all hover:shadow-md hover:-translate-y-0.5 flex items-center gap-1.5"
               >
-                Get Started <ArrowRight className="w-3.5 h-3.5" />
+                Check My Score <ArrowRight className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
@@ -144,24 +97,9 @@ const LandingNav = ({ onProductClick }: LandingNavProps) => {
       {mobileOpen && (
         <div className="fixed inset-0 z-[199] bg-[#0a1628] pt-16 px-5 overflow-y-auto md:hidden animate-fade-in">
           <div className="space-y-1 mb-6 mt-4">
-            <div className="text-[10px] font-bold text-white/40 uppercase tracking-[2px] px-3 mb-2">Products</div>
-            {PRODUCTS.map(p => (
-              <button
-                key={p.id}
-                onClick={() => handleProductSelect(p.id)}
-                className="w-full text-left px-3 py-3 rounded-xl text-white/80 hover:bg-white/[0.08] transition-colors bg-transparent border-none cursor-pointer"
-              >
-                <div className="text-sm font-semibold">{p.label}</div>
-                <div className="text-xs text-white/40 mt-0.5">{p.desc}</div>
-              </button>
-            ))}
-          </div>
-
-          <div className="space-y-1 mb-6">
-            <div className="text-[10px] font-bold text-white/40 uppercase tracking-[2px] px-3 mb-2">Navigate</div>
             {[
-              { label: 'How It Works', id: 'dashboard-preview' },
-              { label: 'Guidance Tools', id: 'support-layers' },
+              { label: 'How It Works', id: 'how-it-works' },
+              { label: 'FAQ', id: 'faq' },
               { label: 'Contact', id: 'cta' },
             ].map(item => (
               <button
@@ -187,7 +125,7 @@ const LandingNav = ({ onProductClick }: LandingNavProps) => {
                 onClick={() => { setMobileOpen(false); navigate('/get-started'); }}
                 className="w-full bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white font-semibold text-sm py-3.5 rounded-xl border-none cursor-pointer flex items-center justify-center gap-2"
               >
-                Get Started <ArrowRight className="w-4 h-4" />
+                Check My Score — Free <ArrowRight className="w-4 h-4" />
               </button>
             )}
           </div>

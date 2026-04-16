@@ -1,22 +1,18 @@
-import { Star, Zap, Shield, TrendingUp, Clock, Award } from 'lucide-react';
+import { Shield, Clock, CheckCircle2 } from 'lucide-react';
 
-const announcements = [
-  { icon: Star, text: 'AI Business Model Canvas Scoring' },
-  { icon: Zap, text: 'Average 48hr Approval' },
-  { icon: Shield, text: 'Bank-Level Security' },
-  { icon: TrendingUp, text: '$50M+ Funding Secured' },
-  { icon: Clock, text: '24/7 AI Support' },
-  { icon: Award, text: 'Top-Rated Platform' },
+const items = [
+  { icon: CheckCircle2, text: 'Free to Use' },
+  { icon: Clock, text: 'Results in 3 Minutes' },
+  { icon: Shield, text: 'No Credit Check Required' },
 ];
 
 const TopMarquee = () => (
-  <div className="bg-primary/[0.08] border-b border-border overflow-hidden">
-    <div className="flex whitespace-nowrap animate-[marquee_25s_linear_infinite] py-2.5">
-      {[...announcements, ...announcements, ...announcements].map((item, i) => (
-        <span key={i} className="inline-flex items-center gap-2 px-6 text-[11px] font-semibold text-primary tracking-wide uppercase">
+  <div className="bg-primary/[0.08] border-b border-border py-2.5">
+    <div className="flex items-center justify-center gap-6 md:gap-10 flex-wrap px-4">
+      {items.map((item, i) => (
+        <span key={i} className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-primary tracking-wide uppercase">
           <item.icon className="w-3 h-3" />
           {item.text}
-          <span className="w-1 h-1 rounded-full bg-primary/30 ml-4" />
         </span>
       ))}
     </div>
