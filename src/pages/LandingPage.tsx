@@ -25,6 +25,7 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen">
+      <TopMarquee />
       <LandingNav onProductClick={handleProductClick} />
       <HeroSection />
       <TrustBar />
