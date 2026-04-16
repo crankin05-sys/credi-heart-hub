@@ -5,31 +5,73 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const goalPrompts: Record<string, string> = {
-  loan: `The user wants to get a business loan. Give them 5 clear, actionable steps they should take right now to prepare for a successful loan application. Include what documents to gather, how to strengthen their application, and what lenders look for. Be encouraging and practical. Use plain language, no jargon.`,
-  credit: `The user wants to improve their business or personal credit. Give them 5 specific, actionable strategies to improve their credit score starting today. Include quick wins and long-term strategies. Mention common mistakes to avoid. Be encouraging and practical.`,
-  grow: `The user wants to grow their business. Give them 5 strategic growth recommendations. Cover revenue growth, customer acquisition, operational efficiency, and funding options that could fuel growth. Be specific and actionable.`,
-  exploring: `The user is just exploring their options. Give them a friendly overview of 5 key areas every business owner should evaluate: fundability, credit health, revenue optimization, growth planning, and available funding programs. Keep it light and inviting — encourage them to take the next step.`,
-  fundability: `The user wants to check their fundability. Explain what a fundability score is, what factors affect it, and give them 5 things they can do right now to improve their chances of getting approved for funding. Be clear and motivating.`,
+const GOAL_PROMPTS: Record<string, string> = {
+  funding: `You are a business funding advisor. The user wants funding. Given their credit score, revenue, and time in business, provide:
+1. A brief credit snapshot (2-3 sentences)
+2. What funding options they likely qualify for
+3. Top 3 things to improve their fundability
+4. Recommended next step
+Keep it warm, direct, and actionable. Use their name. Format with bold titles.`,
+
+  credit: `You are a credit repair specialist. The user wants to improve their credit. Based on their situation, provide:
+1. A credit assessment based on their current situation
+2. A 5-step credit improvement roadmap
+3. Quick wins they can do this week
+4. Timeline expectations
+Keep it encouraging and actionable. Use their name. Format with bold titles.`,
+
+  growth: `You are a business growth strategist. The user wants to grow their business. Based on their focus area, provide:
+1. A lead generation plan tailored to their focus
+2. Business model canvas highlights (value proposition, channels, revenue streams)
+3. Top 3 marketing strategies to implement now
+4. Growth timeline and milestones
+Keep it practical and energizing. Use their name. Format with bold titles.`,
+
+  advisory: `You are a business advisor. Based on the user's business stage, audience, and goals, provide:
+1. A business snapshot assessment
+2. Key strengths and opportunities
+3. Top 3 recommendations for their stage
+4. A suggested action plan for the next 30 days
+5. Whether they should consider funding, credit improvement, or growth coaching
+Keep it insightful and strategic. Use their name. Format with bold titles.`,
+
+  documents: `You are a business documentation specialist. The user needs help organizing documents. Based on the document types they selected, provide:
+1. A complete checklist of documents needed for each category
+2. What format and details are required for each
+3. Common mistakes to avoid
+4. Priority order for gathering these documents
+Keep it organized and clear. Use their name. Format with bold titles.`,
+
+  loan: 'You are a business funding advisor. Give 5 actionable tips for getting a business loan. No jargon, warm and direct. Format with bold titles.',
+  grow: 'You are a growth strategist. Give 5 actionable tips for growing a business. Practical and energizing. Format with bold titles.',
+  exploring: 'You are a business advisor. Give 5 helpful suggestions for someone exploring business support options. Format with bold titles.',
+  fundability: 'You are a funding advisor. Explain fundability scores and give 5 things to improve funding chances. Clear and motivating. Format with bold titles.',
 };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { goal, businessName } = await req.json();
-    
-    if (!goal || !goalPrompts[goal]) {
+    const body = await req.json();
+    const { goal, name, businessName, ...context } = body;
+
+    if (!goal) {
       return new Response(JSON.stringify({ error: "Invalid goal" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const systemPrompt = `You are a friendly, expert business funding advisor at Credibility Suite. You give clear, actionable advice in a warm, professional tone. Keep responses concise — 5 bullet points max, each 1-2 sentences. Use simple language. Format each point with a bold title followed by a brief explanation. Do not use markdown headers. The user's business name is "${businessName || 'their business'}".`;
+    const systemPrompt = GOAL_PROMPTS[goal] || GOAL_PROMPTS.exploring;
+    const contextStr = Object.entries(context)
+      .filter(([_, v]) => v)
+      .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`)
+      .join('\n');
+
+    const userName = name || businessName || 'Friend';
+    const userMessage = `Name: ${userName}\n${contextStr}`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -41,7 +83,7 @@ serve(async (req) => {
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: goalPrompts[goal] },
+          { role: "user", content: userMessage },
         ],
         stream: true,
       }),
