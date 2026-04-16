@@ -29,6 +29,103 @@ interface FormData {
   annualRevenue: string;
 }
 
+const NaicsDropdownStep = ({ selectedCode, selectedLabel, onSelect }: {
+  selectedCode: string;
+  selectedLabel: string;
+  onSelect: (code: string, label: string) => void;
+}) => {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const filtered = useMemo(() => {
+    if (!search.trim()) return NAICS_INDUSTRIES;
+    const q = search.toLowerCase();
+    return NAICS_INDUSTRIES.filter(
+      ind => ind.label.toLowerCase().includes(q) || ind.code.includes(q)
+    );
+  }, [search]);
+
+  return (
+    <div>
+      <h2 className="text-[28px] font-extrabold text-white mb-2">What industry are you in?</h2>
+      <p className="text-[16px] text-white/60 mb-8">Select the category that best fits your business.</p>
+
+      <div ref={dropdownRef} className="relative">
+        <button
+          type="button"
+          onClick={() => setOpen(!open)}
+          className={`w-full text-left px-4 py-3.5 rounded-xl border transition-all duration-200 flex items-center justify-between gap-3 ${
+            selectedCode
+              ? 'bg-[#2563eb]/10 border-[#2563eb]/40 text-white'
+              : 'bg-white/[0.06] border-white/[0.12] text-white/40'
+          }`}
+        >
+          <span className="text-[15px] truncate">
+            {selectedCode ? `${selectedLabel} (NAICS ${selectedCode})` : 'Select your industry…'}
+          </span>
+          <ChevronDown className={`w-5 h-5 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+        </button>
+
+        {open && (
+          <div className="absolute z-50 mt-2 w-full bg-[#0f1d33] border border-white/[0.15] rounded-xl shadow-2xl overflow-hidden">
+            <div className="p-3 border-b border-white/[0.08]">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                <input
+                  type="text"
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  placeholder="Search industries…"
+                  autoFocus
+                  className="w-full bg-white/[0.06] border border-white/[0.1] rounded-lg pl-9 pr-3 py-2.5 text-[14px] text-white placeholder:text-white/30 focus:outline-none focus:border-[#2563eb]/50"
+                />
+              </div>
+            </div>
+            <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
+              {filtered.length === 0 ? (
+                <div className="px-4 py-6 text-center text-white/40 text-[14px]">No industries found</div>
+              ) : (
+                filtered.map(ind => (
+                  <button
+                    key={ind.code}
+                    onClick={() => {
+                      onSelect(ind.code, ind.label);
+                      setOpen(false);
+                      setSearch('');
+                    }}
+                    className={`w-full text-left px-4 py-3 flex items-center justify-between gap-3 transition-colors ${
+                      selectedCode === ind.code
+                        ? 'bg-[#2563eb]/15 text-white'
+                        : 'text-white/70 hover:bg-white/[0.06]'
+                    }`}
+                  >
+                    <div>
+                      <div className="text-[14px] font-medium">{ind.label}</div>
+                      <div className="text-[12px] text-white/35">NAICS {ind.code}</div>
+                    </div>
+                    {selectedCode === ind.code && <Check className="w-4 h-4 text-[#2563eb]" />}
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const IntakePage = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
