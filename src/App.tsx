@@ -8,6 +8,7 @@ import Index from "./pages/Index.tsx";
 import AuthPage from "./pages/AuthPage.tsx";
 import OnboardingPage from "./pages/OnboardingPage.tsx";
 import IntakePage from "./pages/IntakePage.tsx";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.tsx";
 import DashboardLayout from "./pages/DashboardLayout.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/get-started" element={<IntakePage />} />
             <Route path="/onboarding" element={<OnboardingPage />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <DashboardLayout />

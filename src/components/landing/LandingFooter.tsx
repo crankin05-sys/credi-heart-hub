@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const LandingFooter = () => (
   <footer className="relative overflow-hidden">
     <div className="section-glow-divider" />
@@ -12,8 +14,10 @@ const LandingFooter = () => (
             Credibility Suite
           </div>
         </div>
-        <div className="text-[13px] text-foreground/45 font-mono tracking-wide">
-          Powered by She Wins With AI · Atlanta, GA 30309
+        <div className="flex items-center gap-4 text-[13px] text-foreground/45">
+          <span className="font-mono tracking-wide">Powered by She Wins With AI · Atlanta, GA 30309</span>
+          <span className="text-foreground/20">·</span>
+          <Link to="/privacy" className="hover:text-foreground transition-colors no-underline text-foreground/45">Privacy Policy</Link>
         </div>
         <div className="neon-card text-primary text-[12px] font-bold px-5 py-2.5 tracking-[2px] uppercase rounded-full hover:border-primary/30 transition-all cursor-pointer">
           Business Guidance Platform
