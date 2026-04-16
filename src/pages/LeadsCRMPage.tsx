@@ -37,6 +37,35 @@ const LeadsCRMPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterFunnel, setFilterFunnel] = useState('all');
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [generatedCode, setGeneratedCode] = useState<string | null>(null);
+  const [generatingCode, setGeneratingCode] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const generateCode = async (lead: Lead) => {
+    setGeneratingCode(true);
+    setGeneratedCode(null);
+    setCopied(false);
+    try {
+      const { data, error } = await supabase.rpc('generate_approval_code', {
+        _email: lead.email,
+        _notes: `${lead.contact_name} — ${lead.company_name}`,
+      });
+      if (error) throw error;
+      setGeneratedCode(data as string);
+      toast.success('Approval code generated');
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to generate code');
+    } finally {
+      setGeneratingCode(false);
+    }
+  };
+
+  const copyCode = async () => {
+    if (!generatedCode) return;
+    await navigator.clipboard.writeText(generatedCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   useEffect(() => {
     fetchLeads();
