@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import LandingNav from '@/components/landing/LandingNav';
 import HeroSection from '@/components/landing/HeroSection';
 import TrustBar from '@/components/landing/TrustBar';
@@ -12,6 +14,20 @@ import LandingFooter from '@/components/landing/LandingFooter';
 import TechChatWidget from '@/components/TechChatWidget';
 
 const LandingPage = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const leadCaptured = sessionStorage.getItem('leadCaptured');
+    if (!leadCaptured) {
+      navigate('/get-started', { replace: true });
+    }
+  }, [navigate]);
+
+  // If not captured, don't render anything while redirecting
+  if (!sessionStorage.getItem('leadCaptured')) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen">
       <LandingNav />
