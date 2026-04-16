@@ -44,10 +44,8 @@ const PublicNav = () => {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-300 ${
-          scrolled
-            ? 'bg-background/95 backdrop-blur-xl border-b border-border py-2 shadow-sm'
-            : 'bg-background/70 backdrop-blur-md border-b border-border/50 py-3'
+        className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-300 bg-background/95 backdrop-blur-xl border-b border-border ${
+          scrolled ? 'py-2 shadow-md' : 'py-3 shadow-sm'
         }`}
       >
         <div className="max-w-7xl mx-auto px-5 md:px-8 flex justify-between items-center">
