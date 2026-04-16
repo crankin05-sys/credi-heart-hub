@@ -30,7 +30,7 @@ const HeroSection = () => {
 
         <ScrollReveal delay={0.2}>
           <div className="flex flex-wrap gap-x-6 gap-y-2 justify-center mb-8">
-            {['Free — no credit card', '3 minutes', 'No credit pull'].map(item => (
+            {['Free Evaluation', '3 minutes', 'No credit pull'].map(item => (
               <div key={item} className="flex items-center gap-1.5 text-sm text-white/60">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                 {item}
