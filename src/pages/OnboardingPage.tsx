@@ -34,22 +34,6 @@ const getScoreLabel = (s: number) => {
   return { text: 'Getting Started — We can help', tier: 'Tier 4', color: 'text-gray-500', bg: 'bg-gray-100', ring: '#9ca3af' };
 };
 
-const generateCanvas = (revenue: string, time: string, businessName: string) => {
-  const isEstablished = ['10+', '2-10'].includes(time);
-  const hasRevenue = !['pre', 'under100k'].includes(revenue);
-  return {
-    valueProposition: hasRevenue
-      ? `${businessName} delivers proven value with an established revenue model and market traction.`
-      : `${businessName} is positioned to capture market share with a fresh approach and growth potential.`,
-    customerSegments: isEstablished ? 'Established customer base with repeat buyers and referral networks' : 'Early adopters and initial market segment — room to expand',
-    revenueStreams: hasRevenue ? 'Active revenue streams generating consistent income' : 'Revenue model in development — focus on first sales and validation',
-    keyActivities: isEstablished ? 'Operations, customer fulfillment, scaling systems' : 'Product development, market validation, customer acquisition',
-    keyResources: hasRevenue ? 'Team, technology, customer relationships, brand equity' : 'Founder expertise, initial capital, development tools',
-    channels: isEstablished ? 'Direct sales, partnerships, digital marketing, referrals' : 'Social media, direct outreach, online presence building',
-    growthOpportunities: hasRevenue ? 'Expand product lines, enter new markets, build recurring revenue' : 'Validate product-market fit, build initial customer base, secure funding',
-    gapsRisks: !hasRevenue ? 'Pre-revenue risk — need to establish cash flow quickly' : isEstablished ? 'Scaling risk — systems may need upgrading for next growth phase' : 'Growth stage risk — capital allocation and operational efficiency',
-  };
-};
 
 const generateInsights = (credit: string, revenue: string, time: string) => {
   const insights: string[] = [];
@@ -236,21 +220,6 @@ const SectionTitle = ({ title, subtitle }: SectionTitleProps) => (
   </div>
 );
 
-interface CanvasSectionProps {
-  title: string;
-  icon: ReactNode;
-  content: string;
-}
-
-const CanvasSection = ({ title, icon, content }: CanvasSectionProps) => (
-  <div className="bg-secondary/50 rounded-xl p-4 border border-border hover:border-primary/20 hover:shadow-sm transition-all">
-    <div className="flex items-center gap-2 mb-2">
-      {icon}
-      <span className="text-xs font-bold text-foreground/70 uppercase tracking-wide">{title}</span>
-    </div>
-    <p className="text-sm text-muted-foreground leading-relaxed">{content}</p>
-  </div>
-);
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
@@ -343,7 +312,6 @@ const OnboardingPage = () => {
   }, [creditScore, revenue, timeInBusiness]);
 
   const scoreInfo = getScoreLabel(fundabilityScore);
-  const canvas = useMemo(() => generateCanvas(revenue, timeInBusiness, businessName || 'Your Business'), [revenue, timeInBusiness, businessName]);
   const insights = useMemo(() => generateInsights(creditScore, revenue, timeInBusiness), [creditScore, revenue, timeInBusiness]);
 
   const handleSignUp = async () => {
