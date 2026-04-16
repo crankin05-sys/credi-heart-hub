@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import { Brain, ArrowRight, Calendar, Sparkles, Loader2, RefreshCw } from 'lucide-react';
+import { Brain, ArrowRight, Calendar, Sparkles, RefreshCw } from 'lucide-react';
 import AdviceRenderer from '@/components/journeys/AdviceRenderer';
+import ScanningLoader from '@/components/journeys/ScanningLoader';
 
 const goalLabels: Record<string, string> = {
   loan: 'Getting a Business Loan',
@@ -114,12 +115,7 @@ const GoalAdvicePage = () => {
 
           {/* Advice card */}
           <div className="bg-background rounded-2xl border border-border shadow-sm p-6 md:p-8 min-h-[200px]">
-            {loading && !advice && (
-              <div className="flex items-center justify-center gap-3 py-12">
-                <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                <span className="text-sm text-muted-foreground">Generating your personalized advice...</span>
-              </div>
-            )}
+            {loading && !advice && <ScanningLoader variant="themed" />}
 
             {error && (
               <div className="text-center py-8">

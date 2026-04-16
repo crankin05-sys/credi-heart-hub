@@ -1,5 +1,6 @@
-import { Loader2, RefreshCw } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import AdviceRenderer from './AdviceRenderer';
+import ScanningLoader from './ScanningLoader';
 
 interface AdviceCardProps {
   advice: string;
@@ -9,15 +10,10 @@ interface AdviceCardProps {
   loadingText?: string;
 }
 
-const AdviceCard = ({ advice, loading, error, onRetry, loadingText = 'Generating your personalized guidance...' }: AdviceCardProps) => {
+const AdviceCard = ({ advice, loading, error, onRetry }: AdviceCardProps) => {
   return (
     <div className="bg-white/[0.04] rounded-2xl border border-white/[0.1] p-6 md:p-8 min-h-[180px]">
-      {loading && !advice && (
-        <div className="flex items-center justify-center gap-3 py-10">
-          <Loader2 className="w-5 h-5 text-primary animate-spin" />
-          <span className="text-sm text-white/50">{loadingText}</span>
-        </div>
-      )}
+      {loading && !advice && <ScanningLoader variant="dark" />}
       {error && (
         <div className="text-center py-8">
           <p className="text-sm text-red-400 mb-4">{error}</p>
