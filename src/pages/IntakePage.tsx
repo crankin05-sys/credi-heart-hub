@@ -287,34 +287,11 @@ const IntakePage = () => {
 
           {/* STEP 2: Industry & NAICS */}
           {step === 2 && (
-            <div>
-              <h2 className="text-[28px] font-extrabold text-white mb-2">What industry are you in?</h2>
-              <p className="text-[16px] text-white/60 mb-8">Select the category that best fits your business. This helps us tailor your guidance.</p>
-
-              <div className="space-y-2 max-h-[420px] overflow-y-auto pr-2 custom-scrollbar">
-                {NAICS_INDUSTRIES.map(ind => (
-                  <button
-                    key={ind.code}
-                    onClick={() => selectIndustry(ind.code, ind.label)}
-                    className={`w-full text-left px-5 py-4 rounded-xl border transition-all duration-200 flex items-center justify-between gap-3 ${
-                      form.naicsCode === ind.code
-                        ? 'bg-[#2563eb]/15 border-[#2563eb]/40 text-white'
-                        : 'bg-white/[0.04] border-white/[0.08] text-white/70 hover:bg-white/[0.07] hover:border-white/[0.15]'
-                    }`}
-                  >
-                    <div>
-                      <div className="text-[15px] font-semibold">{ind.label}</div>
-                      <div className="text-[13px] text-white/40 mt-0.5">NAICS {ind.code}</div>
-                    </div>
-                    {form.naicsCode === ind.code && (
-                      <div className="w-6 h-6 rounded-full bg-[#2563eb] flex items-center justify-center flex-shrink-0">
-                        <Check className="w-3.5 h-3.5 text-white" />
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <NaicsDropdownStep
+              selectedCode={form.naicsCode}
+              selectedLabel={form.industry}
+              onSelect={selectIndustry}
+            />
           )}
 
           {/* STEP 3: Needs (Multi-Select) */}
