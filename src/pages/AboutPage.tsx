@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Brain, ArrowLeft, Award, Users, Target, Briefcase, Globe, Heart, Sparkles } from 'lucide-react';
+import { Brain, ArrowLeft, Users, Target, Briefcase, Globe, Heart, Sparkles } from 'lucide-react';
 import teamPhoto from '@/assets/team.jpg';
 
 const AboutPage = () => {
