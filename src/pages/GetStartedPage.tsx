@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Brain, ArrowRight, ArrowLeft, Check, Shield, Globe, Loader2, AlertCircle } from 'lucide-react';
+import { Brain, ArrowRight, ArrowLeft, Check, Shield, Globe, Loader2, AlertCircle, LogIn, LayoutDashboard } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import FundingJourney from '@/components/journeys/FundingJourney';
@@ -9,6 +9,7 @@ import CreditJourney from '@/components/journeys/CreditJourney';
 import GrowthJourney from '@/components/journeys/GrowthJourney';
 import AdvisoryJourney from '@/components/journeys/AdvisoryJourney';
 import DocumentationJourney from '@/components/journeys/DocumentationJourney';
+import { useAuth } from '@/contexts/AuthContext';
 
 const GOALS = [
   { label: 'I need funding for my business', value: 'funding', icon: '💰' },
@@ -77,6 +78,7 @@ const clearProgress = () => {
 
 const GetStartedPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [phase, setPhase] = useState<Phase>('welcome');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -189,7 +191,7 @@ const GetStartedPage = () => {
   if (phase === 'welcome') {
     return (
       <div className="min-h-screen bg-[#0a1628] flex flex-col">
-        <Nav />
+        <Nav hasUser={Boolean(user)} />
         <div className="flex-1 flex items-center justify-center px-6">
           <div className="max-w-lg w-full text-center animate-fade-up">
             <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-primary to-[hsl(260,70%,60%)] flex items-center justify-center shadow-lg">
@@ -238,7 +240,7 @@ const GetStartedPage = () => {
   if (phase === 'capture') {
     return (
       <div className="min-h-screen bg-[#0a1628] flex flex-col">
-        <Nav step="1 of 3" />
+        <Nav step="1 of 3" hasUser={Boolean(user)} />
         <ProgressBar current={1} total={3} />
         <div className="flex-1 flex items-start justify-center px-6 pt-4 pb-12">
           <div className="max-w-md w-full animate-fade-up">
@@ -321,7 +323,7 @@ const GetStartedPage = () => {
   if (phase === 'goals') {
     return (
       <div className="min-h-screen bg-[#0a1628] flex flex-col">
-        <Nav step="2 of 3" />
+        <Nav step="2 of 3" hasUser={Boolean(user)} />
         <ProgressBar current={2} total={3} />
         <div className="flex-1 flex items-start justify-center px-6 pt-4 pb-12">
           <div className="max-w-lg w-full animate-fade-up">
@@ -374,7 +376,7 @@ const GetStartedPage = () => {
   if (phase === 'routing') {
     return (
       <div className="min-h-screen bg-[#0a1628] flex flex-col">
-        <Nav />
+        <Nav hasUser={Boolean(user)} />
         <div className="flex-1 flex items-center justify-center px-6">
           <div className="text-center animate-fade-up">
             <Loader2 className="w-10 h-10 text-[#2563eb] animate-spin mx-auto mb-4" />
@@ -404,15 +406,42 @@ const GetStartedPage = () => {
 };
 
 // Sub-components
-const Nav = ({ step }: { step?: string }) => (
-  <nav className="px-6 py-5 flex items-center justify-between">
+const Nav = ({ step, hasUser }: { step?: string; hasUser?: boolean }) => (
+  <nav className="px-6 py-5 flex items-center justify-between gap-4 flex-wrap">
     <Link to="/" className="flex items-center gap-3 no-underline">
       <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-[hsl(260,70%,60%)] flex items-center justify-center shadow-md">
         <Brain className="w-5 h-5 text-white" />
       </div>
       <span className="text-lg font-bold text-white">Credibility Suite</span>
     </Link>
-    {step && <div className="text-sm text-white/50 font-mono">Step {step}</div>}
+
+    <div className="flex items-center gap-2 flex-wrap justify-end ml-auto">
+      {step && <div className="text-sm text-white/50 font-mono mr-2">Step {step}</div>}
+
+      {hasUser ? (
+        <Link
+          to="/dashboard"
+          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] px-3.5 py-2 text-xs font-semibold text-white no-underline"
+        >
+          <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
+        </Link>
+      ) : (
+        <>
+          <Link
+            to="/auth"
+            className="inline-flex items-center gap-2 rounded-lg border border-white/[0.12] bg-white/[0.06] px-3 py-2 text-xs font-medium text-white/85 no-underline hover:bg-white/[0.1]"
+          >
+            <LogIn className="w-3.5 h-3.5" /> Client Login
+          </Link>
+          <Link
+            to="/agent-login"
+            className="inline-flex items-center gap-2 rounded-lg border border-dashed border-white/[0.16] px-3 py-2 text-[11px] font-medium text-white/70 no-underline hover:bg-white/[0.06] hover:text-white"
+          >
+            <Shield className="w-3.5 h-3.5" /> Agent
+          </Link>
+        </>
+      )}
+    </div>
   </nav>
 );
 
