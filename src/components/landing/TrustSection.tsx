@@ -1,47 +1,39 @@
 import ScrollReveal from '@/components/ScrollReveal';
 
 const outcomes = [
-  { icon: '🎯', stat: '78+', label: 'Avg Readiness Score', sub: 'After completing guidance steps' },
-  { icon: '⏱️', stat: '60', label: 'Days to Fundable', sub: 'Average with platform support' },
-  { icon: '📋', stat: '100%', label: 'Canvas Completion', sub: 'Instant business snapshot' },
-  { icon: '💡', stat: 'Free', label: 'To Get Started', sub: 'See your dashboard today' },
+  { stat: '78+', label: 'Avg Readiness Score', sub: 'After completing guidance' },
+  { stat: '60', label: 'Days to Fundable', sub: 'With platform support' },
+  { stat: '100%', label: 'Canvas Completion', sub: 'Instant business snapshot' },
+  { stat: 'Free', label: 'To Get Started', sub: 'See your dashboard today' },
 ];
 
 const TrustSection = () => (
-  <section className="px-6 md:px-10 py-28 relative overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-b from-background via-[hsl(218_55%_11%)] to-background" />
-
-    <div className="max-w-7xl mx-auto relative z-10">
+  <section className="px-5 md:px-10 py-16 md:py-24 relative overflow-hidden bg-muted/30">
+    <div className="max-w-6xl mx-auto relative z-10">
       <ScrollReveal>
-        <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 glass rounded-full text-primary text-[13px] font-bold px-4 py-2 tracking-[3px] uppercase mb-5 font-mono">
-            <span className="w-1.5 h-1.5 bg-success rounded-full" />
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 bg-[hsl(var(--success)/0.08)] border border-[hsl(var(--success)/0.15)] rounded-full text-[hsl(var(--success))] text-xs font-bold px-4 py-1.5 tracking-wider uppercase mb-4">
+            <span className="w-1.5 h-1.5 bg-[hsl(var(--success))] rounded-full" />
             Results
           </div>
-          <h2 className="font-display text-[clamp(32px,3.5vw,50px)] font-extrabold text-foreground leading-[1.08] mb-5 tracking-tight">
-            Clarity Leads to<br /><span className="text-gradient-gold">Stronger Businesses.</span>
+          <h2 className="text-[clamp(26px,3.5vw,42px)] font-extrabold text-foreground leading-tight mb-3 tracking-tight">
+            Clarity Leads to<br /><span className="text-gradient-gold">Stronger Businesses</span>
           </h2>
-          <p className="text-[17px] text-foreground/70 leading-[1.8] max-w-[540px] mx-auto">
+          <p className="text-base text-muted-foreground leading-relaxed max-w-md mx-auto">
             When business owners understand their strengths and gaps, they make better decisions — and become more fundable.
           </p>
         </div>
       </ScrollReveal>
 
       <ScrollReveal delay={0.1}>
-        <div className="neon-card border-x-0 rounded-none relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.03] via-transparent to-primary/[0.03]" />
-          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 relative z-10">
-            {outcomes.map((o, i) => (
-              <div key={i} className={`px-8 py-14 text-center group transition-all duration-300 hover:bg-foreground/[0.03] ${
-                i < outcomes.length - 1 ? 'border-r border-foreground/[0.08]' : ''
-              }`}>
-                <div className="text-2xl mb-3 group-hover:scale-125 transition-transform duration-300">{o.icon}</div>
-                <div className="font-display text-[42px] font-bold text-gradient-gold leading-none mb-2">{o.stat}</div>
-                <div className="text-[13px] text-foreground/70 uppercase tracking-[2px] font-mono mb-1 font-bold">{o.label}</div>
-                <div className="text-[13px] text-foreground/50">{o.sub}</div>
-              </div>
-            ))}
-          </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {outcomes.map((o, i) => (
+            <div key={i} className="bg-card border border-border rounded-xl p-5 md:p-6 text-center group hover:border-primary/30 hover:shadow-md transition-all">
+              <div className="text-3xl md:text-4xl font-bold text-gradient-gold leading-none mb-2">{o.stat}</div>
+              <div className="text-xs text-foreground/70 uppercase tracking-wider font-bold mb-0.5">{o.label}</div>
+              <div className="text-xs text-muted-foreground">{o.sub}</div>
+            </div>
+          ))}
         </div>
       </ScrollReveal>
     </div>

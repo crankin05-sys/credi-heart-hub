@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
+import { useIsMobile } from '@/hooks/use-mobile';
 import Sidebar from '@/components/Sidebar';
 import ClientSidebar from '@/components/ClientSidebar';
 import Topbar from '@/components/Topbar';
@@ -15,30 +16,33 @@ import ClientDashboard from './ClientDashboard';
 import LeadsCRMPage from './LeadsCRMPage';
 import NurtureBotPage from './NurtureBotPage';
 import CRMEmailPage from './CRMEmailPage';
+import { Menu } from 'lucide-react';
 
 const adminPageTitles: Record<string, { title: string; subtitle?: string }> = {
   dashboard: { title: 'Fund Manager Dashboard' },
-  businesses: { title: 'All Businesses — Complete Fundability View', subtitle: '10 businesses tracked' },
+  businesses: { title: 'All Businesses', subtitle: 'Complete fundability view' },
   leads: { title: 'Leads CRM', subtitle: 'Manage and nurture your leads' },
-  'nurture-bot': { title: 'Lead Nurture Bot', subtitle: 'AI-powered lead nurturing assistant' },
-  'crm-email': { title: 'Email Outreach', subtitle: 'Send personalized emails to leads' },
+  'nurture-bot': { title: 'Lead Nurture Bot', subtitle: 'AI-powered lead nurturing' },
+  'crm-email': { title: 'Email Outreach', subtitle: 'Send personalized emails' },
   pipeline: { title: 'Fundability Pipeline', subtitle: 'Pipeline view of all businesses' },
-  loans: { title: 'Loan Approval Queue', subtitle: 'Review and approve loan applications' },
-  agents: { title: 'AI Agents', subtitle: 'Run AI-powered analysis on your businesses' },
+  loans: { title: 'Loan Approval Queue', subtitle: 'Review and approve applications' },
+  agents: { title: 'AI Agents', subtitle: 'AI-powered analysis' },
   analytics: { title: 'Analytics & Reporting', subtitle: 'Portfolio performance metrics' },
-  settings: { title: 'Settings', subtitle: 'Manage your profile and fund configuration' },
+  settings: { title: 'Settings', subtitle: 'Profile and fund configuration' },
 };
 
 const clientPageTitles: Record<string, { title: string; subtitle?: string }> = {
-  dashboard: { title: 'My Fundability Dashboard', subtitle: 'Track your progress to capital access' },
-  agents: { title: 'AI Agents', subtitle: 'Run AI-powered analysis on your business' },
+  dashboard: { title: 'My Dashboard', subtitle: 'Track your progress to capital access' },
+  agents: { title: 'AI Agents', subtitle: 'AI-powered analysis' },
   settings: { title: 'Settings', subtitle: 'Manage your profile' },
 };
 
 const DashboardLayout = () => {
   const [activePage, setActivePage] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { signOut } = useAuth();
   const { isAdmin, loading } = useUserRole();
+  const isMobile = useIsMobile();
 
   if (loading) {
     return (
@@ -51,23 +55,38 @@ const DashboardLayout = () => {
   const pageTitles = isAdmin ? adminPageTitles : clientPageTitles;
   const pageInfo = pageTitles[activePage] || pageTitles.dashboard;
 
+  const handleNavigate = (page: string) => {
+    setActivePage(page);
+    setSidebarOpen(false);
+  };
+
   return (
     <div className="flex min-h-screen bg-secondary/50">
-      {isAdmin ? (
-        <Sidebar activePage={activePage} onNavigate={setActivePage} onSignOut={signOut} />
-      ) : (
-        <ClientSidebar activePage={activePage} onNavigate={setActivePage} onSignOut={signOut} />
+      {/* Mobile overlay */}
+      {isMobile && sidebarOpen && (
+        <div className="fixed inset-0 bg-black/50 z-[99] md:hidden" onClick={() => setSidebarOpen(false)} />
       )}
-      <div className="ml-[260px] flex-1 min-h-screen flex flex-col">
+
+      {/* Sidebar */}
+      <div className={`${isMobile ? `fixed z-[100] transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}` : ''}`}>
+        {isAdmin ? (
+          <Sidebar activePage={activePage} onNavigate={handleNavigate} onSignOut={signOut} />
+        ) : (
+          <ClientSidebar activePage={activePage} onNavigate={handleNavigate} onSignOut={signOut} />
+        )}
+      </div>
+
+      <div className={`${isMobile ? 'w-full' : 'ml-[260px]'} flex-1 min-h-screen flex flex-col`}>
         <Topbar
           title={pageInfo.title}
           subtitle={pageInfo.subtitle}
           onLoanQueue={isAdmin && activePage === 'dashboard' ? () => setActivePage('loans') : undefined}
+          onMenuToggle={isMobile ? () => setSidebarOpen(!sidebarOpen) : undefined}
         />
-        <main className="p-6 flex-1">
+        <main className="p-4 md:p-6 flex-1 overflow-x-hidden">
           {isAdmin ? (
             <>
-              {activePage === 'dashboard' && <DashboardPage onNavigate={setActivePage} />}
+              {activePage === 'dashboard' && <DashboardPage onNavigate={handleNavigate} />}
               {activePage === 'businesses' && <BusinessesPage />}
               {activePage === 'leads' && <LeadsCRMPage />}
               {activePage === 'nurture-bot' && <NurtureBotPage />}
