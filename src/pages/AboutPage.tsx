@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Brain, Users, Target, Briefcase, Globe, Heart, Sparkles } from 'lucide-react';
+import teamPhoto from '@/assets/team.jpg';
 import PublicNav from '@/components/PublicNav';
 
 const AboutPage = () => {
