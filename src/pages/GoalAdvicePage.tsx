@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { Brain, ArrowRight, Calendar, Sparkles, Loader2, RefreshCw } from 'lucide-react';
+import AdviceRenderer from '@/components/journeys/AdviceRenderer';
 
 const goalLabels: Record<string, string> = {
   loan: 'Getting a Business Loan',
