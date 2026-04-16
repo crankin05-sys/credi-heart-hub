@@ -138,7 +138,7 @@ const PublicNav = () => {
 
       {/* Mobile sheet */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-[199] bg-background pt-16 px-5 overflow-y-auto md:hidden animate-fade-in">
+        <div className="fixed inset-0 z-[199] bg-background pt-14 px-5 overflow-y-auto md:hidden animate-fade-in">
           <div className="space-y-1 mb-6 mt-4">
             {NAV.map((item) => {
               const Icon = item.icon;
