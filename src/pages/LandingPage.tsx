@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import LandingNav from '@/components/landing/LandingNav';
 import HeroSection from '@/components/landing/HeroSection';
 import TrustBar from '@/components/landing/TrustBar';
@@ -12,9 +14,17 @@ import LandingFooter from '@/components/landing/LandingFooter';
 import TechChatWidget from '@/components/TechChatWidget';
 
 const LandingPage = () => {
+  const navigate = useNavigate();
+
+  const handleProductClick = (productId: string) => {
+    // Store which product they're interested in, then send to intake
+    sessionStorage.setItem('selectedProduct', productId);
+    navigate('/get-started');
+  };
+
   return (
     <div className="min-h-screen">
-      <LandingNav />
+      <LandingNav onProductClick={handleProductClick} />
       <HeroSection />
       <TrustBar />
       <BenefitsSection />
