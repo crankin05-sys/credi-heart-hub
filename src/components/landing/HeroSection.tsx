@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ScrollReveal from '@/components/ScrollReveal';
 import { ArrowRight, CheckCircle2, Shield } from 'lucide-react';
@@ -6,19 +5,76 @@ import { ArrowRight, CheckCircle2, Shield } from 'lucide-react';
 const HeroSection = () => {
   const navigate = useNavigate();
 
+  // Animated tech lines config — random positions/delays/durations
+  const hLines = [
+    { top: '12%', delay: '0s', duration: '7s', width: '180px' },
+    { top: '28%', delay: '2.5s', duration: '9s', width: '120px' },
+    { top: '46%', delay: '1s', duration: '8s', width: '220px' },
+    { top: '63%', delay: '4s', duration: '10s', width: '150px' },
+    { top: '82%', delay: '3s', duration: '7.5s', width: '200px' },
+  ];
+  const vLines = [
+    { left: '8%', delay: '1.5s', duration: '9s', height: '160px' },
+    { left: '32%', delay: '0.5s', duration: '11s', height: '120px' },
+    { left: '68%', delay: '3.5s', duration: '8s', height: '200px' },
+    { left: '88%', delay: '2s', duration: '10s', height: '140px' },
+  ];
+
   return (
-    <section className="min-h-[85vh] flex items-center px-5 md:px-10 pt-20 pb-16 relative overflow-hidden bg-[#0a1628]">
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)',
-        backgroundSize: '60px 60px'
-      }} />
-      <div className="absolute top-[10%] right-[15%] w-[500px] h-[500px] bg-[radial-gradient(circle,hsl(220_70%_30%/0.3),transparent_70%)] blur-[60px] pointer-events-none" />
+    <section className="min-h-[85vh] flex items-center px-5 md:px-10 pt-20 pb-16 relative overflow-hidden bg-[hsl(var(--brand-bg))]">
+      {/* Animated grid background */}
+      <div
+        className="absolute inset-0 animate-[grid-pulse_6s_ease-in-out_infinite]"
+        style={{
+          backgroundImage:
+            'linear-gradient(hsl(var(--brand-blue-400) / 0.5) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--brand-blue-400) / 0.5) 1px, transparent 1px)',
+          backgroundSize: '60px 60px',
+        }}
+      />
+
+      {/* Radial blue glows */}
+      <div className="absolute top-[10%] right-[10%] w-[500px] h-[500px] bg-[radial-gradient(circle,hsl(var(--brand-blue-600)/0.35),transparent_70%)] blur-[60px] pointer-events-none" />
+      <div className="absolute bottom-[5%] left-[5%] w-[400px] h-[400px] bg-[radial-gradient(circle,hsl(var(--brand-blue-500)/0.2),transparent_70%)] blur-[60px] pointer-events-none" />
+
+      {/* Animated horizontal tech lines */}
+      {hLines.map((l, i) => (
+        <div
+          key={`h-${i}`}
+          className="absolute h-px pointer-events-none"
+          style={{
+            top: l.top,
+            left: 0,
+            width: l.width,
+            background: `linear-gradient(90deg, transparent, hsl(var(--brand-blue-400) / 0.9), hsl(var(--brand-blue-300)), transparent)`,
+            boxShadow: '0 0 8px hsl(var(--brand-blue-400) / 0.6)',
+            animation: `tech-line-h ${l.duration} linear ${l.delay} infinite`,
+          }}
+        />
+      ))}
+
+      {/* Animated vertical tech lines */}
+      {vLines.map((l, i) => (
+        <div
+          key={`v-${i}`}
+          className="absolute w-px pointer-events-none"
+          style={{
+            left: l.left,
+            top: 0,
+            height: l.height,
+            background: `linear-gradient(180deg, transparent, hsl(var(--brand-blue-400) / 0.8), hsl(var(--brand-blue-300)), transparent)`,
+            boxShadow: '0 0 8px hsl(var(--brand-blue-400) / 0.5)',
+            animation: `tech-line-v ${l.duration} linear ${l.delay} infinite`,
+          }}
+        />
+      ))}
 
       <div className="max-w-4xl mx-auto w-full relative z-10 text-center">
         <ScrollReveal>
           <h1 className="text-[clamp(30px,5.5vw,60px)] font-extrabold leading-[1.08] tracking-tight mb-5 text-white">
             Your Next Move<br />
-            <span className="bg-gradient-to-r from-[#4d8fef] to-[#38bdf8] bg-clip-text text-transparent">Starts Here</span>
+            <span className="bg-gradient-to-r from-[hsl(var(--brand-blue-400))] to-[hsl(var(--brand-blue-300))] bg-clip-text text-transparent">
+              Starts Here
+            </span>
           </h1>
         </ScrollReveal>
 
@@ -42,7 +98,7 @@ const HeroSection = () => {
         <ScrollReveal delay={0.25}>
           <button
             onClick={() => navigate('/get-started')}
-            className="group relative bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] text-white text-base font-bold px-10 py-4.5 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_hsl(220_80%_50%/0.35)] hover:-translate-y-0.5 inline-flex items-center gap-2.5"
+            className="group relative bg-gradient-to-r from-[hsl(var(--brand-blue-600))] to-[hsl(var(--brand-blue-700))] text-white text-base font-bold px-10 py-4 border-none cursor-pointer rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_hsl(var(--brand-blue-600)/0.5)] hover:-translate-y-0.5 inline-flex items-center gap-2.5"
           >
             Get Started <ArrowRight className="w-5 h-5" />
           </button>
