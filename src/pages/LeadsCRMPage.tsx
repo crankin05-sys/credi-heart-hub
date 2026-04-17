@@ -40,6 +40,32 @@ const LeadsCRMPage = () => {
   const [generatedCode, setGeneratedCode] = useState<string | null>(null);
   const [generatingCode, setGeneratingCode] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [newLead, setNewLead] = useState({ contact_name: '', email: '', phone: '', company_name: '', industry: '', amount_seeking: '' });
+  const [creating, setCreating] = useState(false);
+
+  const createLead = async () => {
+    if (!newLead.contact_name || !newLead.email || !newLead.company_name) {
+      toast.error('Name, email, and company are required');
+      return;
+    }
+    setCreating(true);
+    const { error } = await supabase.from('leads').insert({
+      contact_name: newLead.contact_name,
+      email: newLead.email.toLowerCase().trim(),
+      phone: newLead.phone || null,
+      company_name: newLead.company_name,
+      industry: newLead.industry || null,
+      amount_seeking: newLead.amount_seeking ? Number(newLead.amount_seeking) : null,
+      funnel: 'new',
+      status: 'new',
+    });
+    setCreating(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Lead created');
+    setShowNew(false);
+    setNewLead({ contact_name: '', email: '', phone: '', company_name: '', industry: '', amount_seeking: '' });
+  };
 
   const generateCode = async (lead: Lead) => {
     setGeneratingCode(true);
