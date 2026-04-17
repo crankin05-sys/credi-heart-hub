@@ -1,9 +1,68 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import BusinessModal from '@/components/BusinessModal';
 import { businesses, Business, getScoreColor, getStatusLabel } from '@/data/businesses';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { Plus, Building2 } from 'lucide-react';
+import { toast } from 'sonner';
+
+interface DBBusiness {
+  id: string;
+  name: string;
+  industry: string | null;
+  score: number;
+  status: string;
+  capital_need: number | null;
+  top_gap: string | null;
+  created_at: string;
+}
 
 const BusinessesPage = () => {
   const [selectedBiz, setSelectedBiz] = useState<Business | null>(null);
+  const { user } = useAuth();
+  const [dbBusinesses, setDbBusinesses] = useState<DBBusiness[]>([]);
+  const [showNew, setShowNew] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [form, setForm] = useState({ name: '', industry: '', capital_need: '', status: 'assessment', top_gap: '' });
+
+  useEffect(() => {
+    supabase.from('businesses').select('id,name,industry,score,status,capital_need,top_gap,created_at').order('created_at', { ascending: false }).then(({ data }) => {
+      if (data) setDbBusinesses(data as DBBusiness[]);
+    });
+    const channel = supabase
+      .channel('businesses-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'businesses' }, (payload) => {
+        if (payload.eventType === 'INSERT') {
+          setDbBusinesses(prev => [payload.new as DBBusiness, ...prev.filter(b => b.id !== (payload.new as DBBusiness).id)]);
+        } else if (payload.eventType === 'UPDATE') {
+          setDbBusinesses(prev => prev.map(b => b.id === (payload.new as DBBusiness).id ? payload.new as DBBusiness : b));
+        } else if (payload.eventType === 'DELETE') {
+          setDbBusinesses(prev => prev.filter(b => b.id !== (payload.old as DBBusiness).id));
+        }
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
+  const createBusiness = async () => {
+    if (!form.name) { toast.error('Business name is required'); return; }
+    if (!user) { toast.error('You must be signed in'); return; }
+    setCreating(true);
+    const { error } = await supabase.from('businesses').insert({
+      user_id: user.id,
+      name: form.name,
+      industry: form.industry || null,
+      capital_need: form.capital_need ? Number(form.capital_need) : 0,
+      status: form.status,
+      top_gap: form.top_gap || null,
+      score: 0,
+    });
+    setCreating(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Business created');
+    setShowNew(false);
+    setForm({ name: '', industry: '', capital_need: '', status: 'assessment', top_gap: '' });
+  };
 
   const stages: { key: Business['status']; label: string }[] = [
     { key: 'assessment', label: 'Assessment' },
@@ -15,9 +74,55 @@ const BusinessesPage = () => {
 
   return (
     <div className="animate-fade-up">
-      <div className="text-sm text-muted-foreground mb-4">
-        10 businesses tracked · Click any business to view full checklist
+      <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+        <div className="text-sm text-muted-foreground">
+          {dbBusinesses.length + businesses.length} businesses tracked · Click any business to view checklist
+        </div>
+        <button
+          onClick={() => setShowNew(true)}
+          className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-bold px-4 py-2.5 rounded-xl border-none cursor-pointer flex items-center gap-1.5 hover:shadow-md transition-all"
+        >
+          <Plus className="w-4 h-4" /> New Business
+        </button>
       </div>
+
+      {/* Live businesses from DB */}
+      {dbBusinesses.length > 0 && (
+        <div className="bg-card border border-border mb-4 rounded-xl overflow-hidden">
+          <div className="px-4 py-3 bg-background border-b border-border flex justify-between items-center">
+            <span className="text-[9px] font-bold tracking-[2px] uppercase text-primary font-mono flex items-center gap-2">
+              <Building2 className="w-3.5 h-3.5" /> Your Businesses ({dbBusinesses.length})
+            </span>
+            <span className="flex items-center gap-1.5 text-[9px] font-bold tracking-[2px] uppercase text-success font-mono">
+              <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" /> Live
+            </span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr>
+                  {['Business', 'Industry', 'Score', 'Status', 'Capital Need', 'Created'].map(h => (
+                    <th key={h} className="bg-secondary/50 text-muted-foreground text-[8px] font-bold tracking-[2px] uppercase px-3 py-2.5 text-left border-b border-border font-mono">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {dbBusinesses.map(b => (
+                  <tr key={b.id} className="hover:bg-secondary/30">
+                    <td className="px-3 py-2.5 text-xs font-bold text-foreground border-b border-border/40">{b.name}</td>
+                    <td className="px-3 py-2.5 text-[11.5px] text-foreground/65 border-b border-border/40">{b.industry || '—'}</td>
+                    <td className={`px-3 py-2.5 text-[11.5px] font-bold border-b border-border/40 ${getScoreColor(b.score)}`}>{b.score}</td>
+                    <td className="px-3 py-2.5 text-[10px] uppercase text-muted-foreground border-b border-border/40">{b.status}</td>
+                    <td className="px-3 py-2.5 text-[11.5px] text-foreground/65 border-b border-border/40">${(b.capital_need || 0).toLocaleString()}</td>
+                    <td className="px-3 py-2.5 text-[10px] text-muted-foreground font-mono border-b border-border/40">{new Date(b.created_at).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
 
       {/* Full Table */}
       <div className="bg-card border border-border mb-4">
