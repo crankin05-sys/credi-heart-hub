@@ -44,6 +44,35 @@
     --shadow-soft: 0 1px 3px hsl(220 20% 10% / 0.06), 0 1px 2px hsl(220 20% 10% / 0.04);
     --shadow-md: 0 4px 6px -1px hsl(220 20% 10% / 0.07), 0 2px 4px -2px hsl(220 20% 10% / 0.05);
     --shadow-lg: 0 10px 25px -3px hsl(220 20% 10% / 0.08), 0 4px 6px -4px hsl(220 20% 10% / 0.04);
+
+    /* ===== Unified Brand Blue Scale ===== */
+    --brand-bg: 217 60% 9%;        /* deep navy bg */
+    --brand-bg-2: 217 55% 13%;     /* card/surface navy */
+    --brand-blue-700: 222 80% 42%; /* deepest action blue */
+    --brand-blue-600: 222 84% 52%; /* primary action */
+    --brand-blue-500: 217 90% 60%; /* accent / highlight */
+    --brand-blue-400: 210 95% 68%; /* light accent / text gradient */
+    --brand-blue-300: 198 92% 72%; /* glow / soft cyan-blue */
+    --gradient-brand: linear-gradient(135deg, hsl(var(--brand-blue-600)), hsl(var(--brand-blue-700)));
+    --gradient-brand-text: linear-gradient(135deg, hsl(var(--brand-blue-400)), hsl(var(--brand-blue-300)));
+  }
+
+  /* Tech line animations */
+  @keyframes tech-line-h {
+    0% { transform: translateX(-100%); opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { transform: translateX(100vw); opacity: 0; }
+  }
+  @keyframes tech-line-v {
+    0% { transform: translateY(-100%); opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { transform: translateY(100vh); opacity: 0; }
+  }
+  @keyframes grid-pulse {
+    0%, 100% { opacity: 0.04; }
+    50% { opacity: 0.09; }
   }
 
   * {
