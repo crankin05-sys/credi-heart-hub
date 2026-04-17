@@ -144,6 +144,12 @@ const LeadsCRMPage = () => {
             className="w-full bg-card border border-border text-foreground text-sm pl-10 pr-4 py-2.5 rounded-xl outline-none focus:border-primary transition-colors"
           />
         </div>
+        <button
+          onClick={() => setShowNew(true)}
+          className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-bold px-4 py-2.5 rounded-xl border-none cursor-pointer flex items-center gap-1.5 hover:shadow-md transition-all whitespace-nowrap"
+        >
+          <Plus className="w-4 h-4" /> New Lead
+        </button>
       </div>
 
       {/* Leads table */}
@@ -151,6 +157,9 @@ const LeadsCRMPage = () => {
         <div className="px-4 py-3 bg-background border-b border-border flex justify-between items-center">
           <span className="text-[9px] font-bold tracking-[2px] uppercase text-primary font-mono">
             📋 All Leads ({filtered.length})
+          </span>
+          <span className="flex items-center gap-1.5 text-[9px] font-bold tracking-[2px] uppercase text-success font-mono">
+            <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" /> Live
           </span>
         </div>
         {loading ? (
