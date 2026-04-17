@@ -361,6 +361,45 @@ const LeadsCRMPage = () => {
           </div>
         </div>
       )}
+
+      {/* New Lead modal */}
+      {showNew && (
+        <div className="fixed inset-0 bg-black/50 z-[300] flex items-center justify-center p-4" onClick={() => setShowNew(false)}>
+          <div className="bg-card border border-border rounded-2xl w-full max-w-md p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-start mb-4">
+              <h2 className="text-lg font-bold text-foreground">Create New Lead</h2>
+              <button onClick={() => setShowNew(false)} className="text-muted-foreground hover:text-foreground bg-transparent border-none cursor-pointer text-lg">✕</button>
+            </div>
+            <div className="space-y-3">
+              {[
+                { k: 'contact_name', label: 'Contact Name *', type: 'text' },
+                { k: 'email', label: 'Email *', type: 'email' },
+                { k: 'phone', label: 'Phone', type: 'tel' },
+                { k: 'company_name', label: 'Company *', type: 'text' },
+                { k: 'industry', label: 'Industry', type: 'text' },
+                { k: 'amount_seeking', label: 'Amount Seeking ($)', type: 'number' },
+              ].map(f => (
+                <div key={f.k}>
+                  <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1">{f.label}</label>
+                  <input
+                    type={f.type}
+                    value={(newLead as any)[f.k]}
+                    onChange={e => setNewLead({ ...newLead, [f.k]: e.target.value })}
+                    className="w-full bg-secondary border border-border text-foreground text-sm px-3 py-2 rounded-xl outline-none focus:border-primary transition-colors"
+                  />
+                </div>
+              ))}
+              <button
+                onClick={createLead}
+                disabled={creating}
+                className="w-full bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-sm font-bold py-2.5 rounded-xl border-none cursor-pointer disabled:opacity-50 mt-2"
+              >
+                {creating ? 'Creating...' : 'Create Lead'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
