@@ -224,6 +224,44 @@ const BusinessesPage = () => {
       </div>
 
       <BusinessModal business={selectedBiz} onClose={() => setSelectedBiz(null)} />
+
+      {showNew && (
+        <div className="fixed inset-0 bg-black/50 z-[300] flex items-center justify-center p-4" onClick={() => setShowNew(false)}>
+          <div className="bg-card border border-border rounded-2xl w-full max-w-md p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-start mb-4">
+              <h2 className="text-lg font-bold text-foreground">Create New Business</h2>
+              <button onClick={() => setShowNew(false)} className="text-muted-foreground hover:text-foreground bg-transparent border-none cursor-pointer text-lg">✕</button>
+            </div>
+            <div className="space-y-3">
+              <div>
+                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Business Name *</label>
+                <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full bg-secondary border border-border text-foreground text-sm px-3 py-2 rounded-xl outline-none focus:border-primary" />
+              </div>
+              <div>
+                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Industry</label>
+                <input value={form.industry} onChange={e => setForm({ ...form, industry: e.target.value })} className="w-full bg-secondary border border-border text-foreground text-sm px-3 py-2 rounded-xl outline-none focus:border-primary" />
+              </div>
+              <div>
+                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Capital Need ($)</label>
+                <input type="number" value={form.capital_need} onChange={e => setForm({ ...form, capital_need: e.target.value })} className="w-full bg-secondary border border-border text-foreground text-sm px-3 py-2 rounded-xl outline-none focus:border-primary" />
+              </div>
+              <div>
+                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Status</label>
+                <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} className="w-full bg-secondary border border-border text-foreground text-sm px-3 py-2 rounded-xl outline-none">
+                  {['assessment', 'improving', 'capital-ready', 'under-review', 'funded'].map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Top Blocking Gap</label>
+                <input value={form.top_gap} onChange={e => setForm({ ...form, top_gap: e.target.value })} className="w-full bg-secondary border border-border text-foreground text-sm px-3 py-2 rounded-xl outline-none focus:border-primary" />
+              </div>
+              <button onClick={createBusiness} disabled={creating} className="w-full bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-sm font-bold py-2.5 rounded-xl border-none cursor-pointer disabled:opacity-50 mt-2">
+                {creating ? 'Creating...' : 'Create Business'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
