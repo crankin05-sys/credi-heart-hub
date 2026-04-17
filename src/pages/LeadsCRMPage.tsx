@@ -40,6 +40,32 @@ const LeadsCRMPage = () => {
   const [generatedCode, setGeneratedCode] = useState<string | null>(null);
   const [generatingCode, setGeneratingCode] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [newLead, setNewLead] = useState({ contact_name: '', email: '', phone: '', company_name: '', industry: '', amount_seeking: '' });
+  const [creating, setCreating] = useState(false);
+
+  const createLead = async () => {
+    if (!newLead.contact_name || !newLead.email || !newLead.company_name) {
+      toast.error('Name, email, and company are required');
+      return;
+    }
+    setCreating(true);
+    const { error } = await supabase.from('leads').insert({
+      contact_name: newLead.contact_name,
+      email: newLead.email.toLowerCase().trim(),
+      phone: newLead.phone || null,
+      company_name: newLead.company_name,
+      industry: newLead.industry || null,
+      amount_seeking: newLead.amount_seeking ? Number(newLead.amount_seeking) : null,
+      funnel: 'new',
+      status: 'new',
+    });
+    setCreating(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Lead created');
+    setShowNew(false);
+    setNewLead({ contact_name: '', email: '', phone: '', company_name: '', industry: '', amount_seeking: '' });
+  };
 
   const generateCode = async (lead: Lead) => {
     setGeneratingCode(true);
@@ -69,6 +95,20 @@ const LeadsCRMPage = () => {
 
   useEffect(() => {
     fetchLeads();
+    const channel = supabase
+      .channel('leads-crm-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, (payload) => {
+        if (payload.eventType === 'INSERT') {
+          setLeads(prev => [payload.new as Lead, ...prev.filter(l => l.id !== (payload.new as Lead).id)]);
+          toast.success(`New lead: ${(payload.new as Lead).contact_name}`);
+        } else if (payload.eventType === 'UPDATE') {
+          setLeads(prev => prev.map(l => l.id === (payload.new as Lead).id ? payload.new as Lead : l));
+        } else if (payload.eventType === 'DELETE') {
+          setLeads(prev => prev.filter(l => l.id !== (payload.old as Lead).id));
+        }
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const fetchLeads = async () => {
@@ -130,6 +170,12 @@ const LeadsCRMPage = () => {
             className="w-full bg-card border border-border text-foreground text-sm pl-10 pr-4 py-2.5 rounded-xl outline-none focus:border-primary transition-colors"
           />
         </div>
+        <button
+          onClick={() => setShowNew(true)}
+          className="bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-xs font-bold px-4 py-2.5 rounded-xl border-none cursor-pointer flex items-center gap-1.5 hover:shadow-md transition-all whitespace-nowrap"
+        >
+          <Plus className="w-4 h-4" /> New Lead
+        </button>
       </div>
 
       {/* Leads table */}
@@ -137,6 +183,9 @@ const LeadsCRMPage = () => {
         <div className="px-4 py-3 bg-background border-b border-border flex justify-between items-center">
           <span className="text-[9px] font-bold tracking-[2px] uppercase text-primary font-mono">
             📋 All Leads ({filtered.length})
+          </span>
+          <span className="flex items-center gap-1.5 text-[9px] font-bold tracking-[2px] uppercase text-success font-mono">
+            <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" /> Live
           </span>
         </div>
         {loading ? (
@@ -308,6 +357,45 @@ const LeadsCRMPage = () => {
                   ))}
                 </select>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* New Lead modal */}
+      {showNew && (
+        <div className="fixed inset-0 bg-black/50 z-[300] flex items-center justify-center p-4" onClick={() => setShowNew(false)}>
+          <div className="bg-card border border-border rounded-2xl w-full max-w-md p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-start mb-4">
+              <h2 className="text-lg font-bold text-foreground">Create New Lead</h2>
+              <button onClick={() => setShowNew(false)} className="text-muted-foreground hover:text-foreground bg-transparent border-none cursor-pointer text-lg">✕</button>
+            </div>
+            <div className="space-y-3">
+              {[
+                { k: 'contact_name', label: 'Contact Name *', type: 'text' },
+                { k: 'email', label: 'Email *', type: 'email' },
+                { k: 'phone', label: 'Phone', type: 'tel' },
+                { k: 'company_name', label: 'Company *', type: 'text' },
+                { k: 'industry', label: 'Industry', type: 'text' },
+                { k: 'amount_seeking', label: 'Amount Seeking ($)', type: 'number' },
+              ].map(f => (
+                <div key={f.k}>
+                  <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1">{f.label}</label>
+                  <input
+                    type={f.type}
+                    value={(newLead as any)[f.k]}
+                    onChange={e => setNewLead({ ...newLead, [f.k]: e.target.value })}
+                    className="w-full bg-secondary border border-border text-foreground text-sm px-3 py-2 rounded-xl outline-none focus:border-primary transition-colors"
+                  />
+                </div>
+              ))}
+              <button
+                onClick={createLead}
+                disabled={creating}
+                className="w-full bg-gradient-to-r from-primary to-[hsl(260,70%,60%)] text-white text-sm font-bold py-2.5 rounded-xl border-none cursor-pointer disabled:opacity-50 mt-2"
+              >
+                {creating ? 'Creating...' : 'Create Lead'}
+              </button>
             </div>
           </div>
         </div>

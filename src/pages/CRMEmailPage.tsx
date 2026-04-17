@@ -51,6 +51,19 @@ const CRMEmailPage = () => {
     supabase.from('leads').select('*').order('created_at', { ascending: false }).then(({ data }) => {
       if (data) setLeads(data as Lead[]);
     });
+    const channel = supabase
+      .channel('crm-email-leads-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, (payload) => {
+        if (payload.eventType === 'INSERT') {
+          setLeads(prev => [payload.new as Lead, ...prev.filter(l => l.id !== (payload.new as Lead).id)]);
+        } else if (payload.eventType === 'UPDATE') {
+          setLeads(prev => prev.map(l => l.id === (payload.new as Lead).id ? payload.new as Lead : l));
+        } else if (payload.eventType === 'DELETE') {
+          setLeads(prev => prev.filter(l => l.id !== (payload.old as Lead).id));
+        }
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const handleTemplateChange = (templateId: string) => {
