@@ -35,8 +35,8 @@ const LandingNav = () => {
     <>
       <nav className={`sticky top-0 left-0 right-0 z-[200] transition-all duration-400 backdrop-blur-2xl backdrop-saturate-150 ${
         scrolled
-          ? 'bg-background/60 border-b border-white/10 py-2 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)] ring-1 ring-white/5'
-          : 'bg-background/30 border-b border-white/5 py-3 shadow-[0_4px_24px_-12px_rgba(0,0,0,0.3)]'
+          ? 'bg-background/70 border-b border-white/10 py-2 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)] ring-1 ring-white/5'
+          : 'bg-background/55 border-b border-white/10 py-3 shadow-[0_6px_28px_-10px_rgba(0,0,0,0.45)]'
       }`}>
         {/* Subtle top highlight for glass edge */}
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
