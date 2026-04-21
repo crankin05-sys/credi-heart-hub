@@ -33,7 +33,7 @@ const LandingNav = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-400 ${
+      <nav className={`sticky top-0 left-0 right-0 z-[200] transition-all duration-400 ${
         scrolled
           ? 'bg-background/95 backdrop-blur-xl border-b border-border py-2 shadow-sm'
           : 'bg-transparent py-3'
