@@ -33,11 +33,13 @@ const LandingNav = () => {
 
   return (
     <>
-      <nav className={`sticky top-0 left-0 right-0 z-[200] transition-all duration-400 ${
+      <nav className={`sticky top-0 left-0 right-0 z-[200] transition-all duration-400 backdrop-blur-2xl backdrop-saturate-150 ${
         scrolled
-          ? 'bg-background/95 backdrop-blur-xl border-b border-border py-2 shadow-sm'
-          : 'bg-transparent py-3'
+          ? 'bg-background/60 border-b border-white/10 py-2 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)] ring-1 ring-white/5'
+          : 'bg-background/30 border-b border-white/5 py-3 shadow-[0_4px_24px_-12px_rgba(0,0,0,0.3)]'
       }`}>
+        {/* Subtle top highlight for glass edge */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         <div className="max-w-7xl mx-auto px-5 md:px-10 flex justify-between items-center">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-[hsl(260,70%,60%)] flex items-center justify-center shadow-md">
