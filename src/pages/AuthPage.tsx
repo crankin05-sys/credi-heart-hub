@@ -31,14 +31,12 @@ const AuthPage = () => {
 
     try {
       if (isSignUp) {
-        // 1. Validate code BEFORE creating account (we can't pre-validate-only,
-        //    so we check by attempting non-mutating lookup via RPC after signup user_id is known).
-        //    For now, require a non-empty code shape.
-        if (!approvalCode || approvalCode.trim().length < 4) {
-          throw new Error('Please enter the approval code provided by your advisor.');
+        // Validate fixed client access code
+        if (approvalCode.trim() !== '5555') {
+          throw new Error('Invalid access code. Please enter the code provided by your advisor.');
         }
 
-        // 2. Sign up
+        // Sign up
         const { data, error: signUpError } = await supabase.auth.signUp({
           email: cleanEmail,
           password,
@@ -46,19 +44,6 @@ const AuthPage = () => {
         });
         if (signUpError) throw signUpError;
         if (!data.user) throw new Error('Sign-up failed. Please try again.');
-
-        // 3. Consume code (server validates email+code+unused)
-        const { data: ok, error: rpcErr } = await supabase.rpc('consume_approval_code', {
-          _email: cleanEmail,
-          _code: approvalCode.trim().toUpperCase(),
-          _user_id: data.user.id,
-        });
-
-        if (rpcErr || !ok) {
-          // Hard fail — sign them out so they can't use the account
-          await supabase.auth.signOut();
-          throw new Error('Invalid or already-used approval code. Contact your advisor.');
-        }
 
         if (data.session) {
           navigate('/dashboard', { replace: true });
