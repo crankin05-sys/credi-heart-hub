@@ -104,59 +104,25 @@ const GoalAdvicePage = () => {
             <p className="text-sm text-muted-foreground">Here's what we recommend based on your goal.</p>
           </div>
 
-          {/* Advice container — premium glass report */}
-          <div className="relative">
-            {/* Ambient glows */}
-            {(loading || advice) && (
-              <>
-                <div className="pointer-events-none absolute -top-20 -left-16 w-72 h-72 rounded-full bg-primary/15 blur-3xl animate-pulse" />
-                <div className="pointer-events-none absolute -bottom-20 -right-16 w-72 h-72 rounded-full bg-purple-500/10 blur-3xl animate-pulse [animation-delay:1.2s]" />
-              </>
+          {/* Advice card */}
+          <div className="bg-background rounded-2xl border border-border shadow-sm p-6 md:p-8 min-h-[200px]">
+            {loading && !advice && <ScanningLoader variant="themed" />}
+
+            {error && (
+              <div className="text-center py-8">
+                <p className="text-sm text-destructive mb-4">{error}</p>
+                <button onClick={fetchAdvice} className="text-sm text-primary font-medium inline-flex items-center gap-1.5 hover:underline cursor-pointer bg-transparent border-none">
+                  <RefreshCw className="w-3.5 h-3.5" /> Try again
+                </button>
+              </div>
             )}
 
-            <div className="relative bg-gradient-to-br from-background via-background to-secondary/40 rounded-3xl border border-border shadow-[0_20px_60px_-20px_hsl(var(--primary)/0.25)] p-6 md:p-8 min-h-[220px] backdrop-blur-xl overflow-hidden">
-              {/* Report header strip */}
-              {advice && (
-                <div className="flex items-center justify-between gap-3 mb-5 pb-4 border-b border-border">
-                  <div className="flex items-center gap-2">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
-                    </span>
-                    <span className="text-[11px] font-semibold tracking-[0.18em] uppercase text-muted-foreground">
-                      {loading ? 'AI Generating · Live' : 'AI Strategy Report'}
-                    </span>
-                  </div>
-                  <span className="text-[10px] font-mono text-muted-foreground/70 px-2 py-1 rounded-md bg-secondary border border-border">
-                    v1.0
-                  </span>
-                </div>
-              )}
-
-              {loading && !advice && <ScanningLoader variant="themed" />}
-
-              {error && (
-                <div className="text-center py-8">
-                  <p className="text-sm text-destructive mb-4">{error}</p>
-                  <button onClick={fetchAdvice} className="text-sm text-primary font-medium inline-flex items-center gap-1.5 hover:underline cursor-pointer bg-transparent border-none">
-                    <RefreshCw className="w-3.5 h-3.5" /> Try again
-                  </button>
-                </div>
-              )}
-
-              {advice && (
-                <div>
-                  <AdviceRenderer text={advice} variant="themed" />
-                  {loading && (
-                    <span className="inline-flex items-center gap-1 mt-3">
-                      <span className="inline-block w-1.5 h-4 bg-primary rounded-sm animate-pulse" />
-                      <span className="inline-block w-1 h-3 bg-primary/60 rounded-sm animate-pulse [animation-delay:0.2s]" />
-                      <span className="inline-block w-0.5 h-2 bg-primary/40 rounded-sm animate-pulse [animation-delay:0.4s]" />
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
+            {advice && (
+              <div>
+                <AdviceRenderer text={advice} variant="themed" />
+                {loading && <span className="inline-block w-2 h-4 bg-primary/60 animate-pulse rounded-sm mt-1" />}
+              </div>
+            )}
           </div>
 
           {/* Actions */}
