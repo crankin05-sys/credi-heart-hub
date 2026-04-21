@@ -31,14 +31,12 @@ const AuthPage = () => {
 
     try {
       if (isSignUp) {
-        // 1. Validate code BEFORE creating account (we can't pre-validate-only,
-        //    so we check by attempting non-mutating lookup via RPC after signup user_id is known).
-        //    For now, require a non-empty code shape.
-        if (!approvalCode || approvalCode.trim().length < 4) {
-          throw new Error('Please enter the approval code provided by your advisor.');
+        // Validate fixed client access code
+        if (approvalCode.trim() !== '5555') {
+          throw new Error('Invalid access code. Please enter the code provided by your advisor.');
         }
 
-        // 2. Sign up
+        // Sign up
         const { data, error: signUpError } = await supabase.auth.signUp({
           email: cleanEmail,
           password,
@@ -46,19 +44,6 @@ const AuthPage = () => {
         });
         if (signUpError) throw signUpError;
         if (!data.user) throw new Error('Sign-up failed. Please try again.');
-
-        // 3. Consume code (server validates email+code+unused)
-        const { data: ok, error: rpcErr } = await supabase.rpc('consume_approval_code', {
-          _email: cleanEmail,
-          _code: approvalCode.trim().toUpperCase(),
-          _user_id: data.user.id,
-        });
-
-        if (rpcErr || !ok) {
-          // Hard fail — sign them out so they can't use the account
-          await supabase.auth.signOut();
-          throw new Error('Invalid or already-used approval code. Contact your advisor.');
-        }
 
         if (data.session) {
           navigate('/dashboard', { replace: true });
@@ -132,19 +117,19 @@ const AuthPage = () => {
         {isSignUp && (
           <div className="mb-5">
             <label className="block text-xs font-semibold text-muted-foreground mb-1.5 flex items-center gap-1.5">
-              <KeyRound className="w-3.5 h-3.5" /> Approval Code
+              <KeyRound className="w-3.5 h-3.5" /> Access Code
             </label>
             <input
               type="text"
               value={approvalCode}
-              onChange={e => { setApprovalCode(e.target.value.toUpperCase()); setError(''); }}
+              onChange={e => { setApprovalCode(e.target.value); setError(''); }}
               required
-              maxLength={16}
-              className="w-full bg-muted border border-border text-foreground text-sm px-3.5 py-2.5 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-xl font-mono tracking-widest uppercase"
-              placeholder="XXXXXXXX"
+              maxLength={8}
+              className="w-full bg-muted border border-border text-foreground text-sm px-3.5 py-2.5 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-xl font-mono tracking-widest text-center"
+              placeholder="••••"
             />
             <p className="text-[10px] text-muted-foreground mt-1.5">
-              Provided by your Credibility Suite advisor after approval.
+              Enter the access code provided by your advisor to activate your client dashboard.
             </p>
           </div>
         )}
