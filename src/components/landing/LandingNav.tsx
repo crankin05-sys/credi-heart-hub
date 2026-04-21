@@ -41,7 +41,7 @@ const LandingNav = () => {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-[hsl(260,70%,60%)] flex items-center justify-center shadow-md">
               <Brain className="w-4 h-4 text-white" />
             </div>
-            <div className={`text-base font-bold transition-colors ${scrolled ? 'text-foreground' : 'text-white'}`}>
+            <div className="text-base font-bold text-white">
               Credibility Suite
             </div>
           </div>
@@ -52,9 +52,7 @@ const LandingNav = () => {
               <button
                 key={item.label}
                 onClick={() => scrollTo(item.id)}
-                className={`text-[13px] font-medium transition-all bg-transparent border-none cursor-pointer px-3 py-2 rounded-lg ${
-                  scrolled ? 'text-muted-foreground hover:text-foreground hover:bg-muted' : 'text-white/60 hover:text-white hover:bg-white/10'
-                }`}
+                className="text-[13px] font-medium transition-all bg-transparent border-none cursor-pointer px-3 py-2 rounded-lg text-white/75 hover:text-white hover:bg-white/10"
               >
                 {item.label}
               </button>
@@ -62,14 +60,12 @@ const LandingNav = () => {
 
             <Link
               to="/about"
-              className={`text-[13px] font-medium transition-all no-underline px-3 py-2 rounded-lg ${
-                scrolled ? 'text-muted-foreground hover:text-foreground hover:bg-muted' : 'text-white/60 hover:text-white hover:bg-white/10'
-              }`}
+              className="text-[13px] font-medium transition-all no-underline px-3 py-2 rounded-lg text-white/75 hover:text-white hover:bg-white/10"
             >
               About
             </Link>
 
-            <div className={`w-px h-5 mx-2 ${scrolled ? 'bg-border' : 'bg-white/15'}`} />
+            <div className="w-px h-5 mx-2 bg-white/15" />
 
             {user ? (
               <button
@@ -83,9 +79,7 @@ const LandingNav = () => {
               <>
                 <button
                   onClick={() => navigate('/auth')}
-                  className={`text-[13px] font-medium transition-all bg-transparent border-none cursor-pointer px-3 py-2 rounded-lg flex items-center gap-1.5 ${
-                    scrolled ? 'text-foreground/80 hover:text-foreground hover:bg-muted' : 'text-white/75 hover:text-white hover:bg-white/10'
-                  }`}
+                  className="text-[13px] font-medium transition-all bg-transparent border-none cursor-pointer px-3 py-2 rounded-lg flex items-center gap-1.5 text-white/85 hover:text-white hover:bg-white/10"
                 >
                   <LogIn className="w-3.5 h-3.5" /> Client Login
                 </button>
@@ -97,9 +91,7 @@ const LandingNav = () => {
                 </button>
                 <Link
                   to="/agent-login"
-                  className={`ml-1 text-[10px] font-medium no-underline px-2 py-1 rounded-md flex items-center gap-1 whitespace-nowrap ${
-                    scrolled ? 'text-muted-foreground/60 hover:text-foreground hover:bg-muted' : 'text-white/55 hover:text-white hover:bg-white/10'
-                  }`}
+                  className="ml-1 text-[10px] font-medium no-underline px-2 py-1 rounded-md flex items-center gap-1 whitespace-nowrap text-white/65 hover:text-white hover:bg-white/10"
                   title="Agent / Admin Portal"
                 >
                   <Shield className="w-3 h-3" /> Agent
@@ -121,9 +113,7 @@ const LandingNav = () => {
               <>
                 <button
                   onClick={() => navigate('/auth')}
-                  className={`text-[12px] font-medium transition-all bg-transparent border-none cursor-pointer px-2.5 py-2 rounded-lg flex items-center gap-1.5 whitespace-nowrap ${
-                    scrolled ? 'text-foreground/80 hover:text-foreground hover:bg-muted' : 'text-white/75 hover:text-white hover:bg-white/10'
-                  }`}
+                  className="text-[12px] font-medium transition-all bg-transparent border-none cursor-pointer px-2.5 py-2 rounded-lg flex items-center gap-1.5 whitespace-nowrap text-white/85 hover:text-white hover:bg-white/10"
                 >
                   <LogIn className="w-3.5 h-3.5" /> Client Login
                 </button>
@@ -135,9 +125,7 @@ const LandingNav = () => {
                 </button>
                 <Link
                   to="/agent-login"
-                  className={`text-[11px] font-medium no-underline px-2 py-2 rounded-md flex items-center gap-1 whitespace-nowrap ${
-                    scrolled ? 'text-muted-foreground/70 hover:text-foreground hover:bg-muted' : 'text-white/55 hover:text-white hover:bg-white/10'
-                  }`}
+                  className="text-[11px] font-medium no-underline px-2 py-2 rounded-md flex items-center gap-1 whitespace-nowrap text-white/65 hover:text-white hover:bg-white/10"
                 >
                   <Shield className="w-3 h-3" /> Agent
                 </Link>
@@ -145,9 +133,7 @@ const LandingNav = () => {
             )}
 
             <button
-              className={`bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors ${
-                scrolled ? 'text-foreground hover:bg-muted' : 'text-white hover:bg-white/10'
-              }`}
+              className="bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors text-white hover:bg-white/10"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             >
@@ -157,9 +143,7 @@ const LandingNav = () => {
 
           {/* Mobile hamburger */}
           <button
-            className={`md:hidden bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors ${
-              scrolled ? 'text-foreground hover:bg-muted' : 'text-white hover:bg-white/10'
-            }`}
+            className="md:hidden bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors text-white hover:bg-white/10"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           >
